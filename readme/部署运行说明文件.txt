@@ -1,0 +1,24 @@
+1.部署数据库
+	1.1创建数据库5igu8
+	CREATE DATABASE 5igu8 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+	1.2运行数据库脚本5igu8.sql
+	/***
+	* windows
+	* mysqldump --opt -d 5igu8 -udevuser -pdevuser --default-character-set=utf8mb4 |sed "s/AUTO_INCREMENT=[0-9]*//g" >5igu8.sql
+	*
+	* linux
+	* mysqldump --opt -d 5igu8 -udevuser -pdevuser --default-character-set=utf8mb4 |sed 's/AUTO_INCREMENT=[0-9]*//g' >5igu8.sql
+	*
+	* 或者先导出5igu8.sql 在使用sed (sed -i 's/AUTO_INCREMENT=[0-9]*//g' 5igu8.sql)
+	*
+	***/
+	
+	use 5igu8 ; source 5igu8.sql;
+	
+2.修改packaged/config.txt文件
+
+3.导出war包
+
+
+	
+	
