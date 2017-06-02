@@ -3,6 +3,7 @@
  */
 package cn.guba.igu8.processor.igupiaoWeb.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +36,7 @@ import cn.guba.igu8.web.content.service.ContentsService;
  *
  */
 public class IgpMsgService {
-	
+
 	private static Log log = Logs.get();
 
 	private static volatile IgpMsgService igpMsgService;
@@ -141,8 +142,8 @@ public class IgpMsgService {
 
 		// 生成消息内容
 		Teacher teacher = TeacherDao.getTeacher(teacherId);
-		log.debug(teacher.getName() + " === " + msg.getRec_time_desc() + " == thread == "
-				+ Thread.currentThread() + " == " + new Date());
+		log.info(teacher.getName() + " === " + msg.getRec_time_desc() + " == thread == " + Thread.currentThread()
+				+ " == " + new Date());
 
 		// 发送email
 		Boolean isSendEmail = PropKit.getBoolean("sendEmail", false);
@@ -153,7 +154,7 @@ public class IgpMsgService {
 		}
 		// 发送短消息消息
 		Boolean isSendSms = PropKit.getBoolean("sendSms", false);
-		if (sendSms && isSendSms && msg.getKind().equals(EIgpKind.VIP.getValue())) {
+		if (sendSms && isSendSms && msg.getKind().equals(EIgpKind.VIP.getValue()) && isMarketOpen()) {
 			// 是否加入邮箱信息发送短消息
 			Boolean sendSmsWithEmail = PropKit.getBoolean("sendSmsWithEmail", false);
 			if (sendSmsWithEmail) {
@@ -168,6 +169,23 @@ public class IgpMsgService {
 				SmsFactory.getInstance().sendSms(vipPhones, smsContent);
 			}
 		}
+	}
+
+	/***
+	 * 是否开始
+	 * 
+	 * @return
+	 */
+	private boolean isMarketOpen() {
+		int beginHour = 9;
+		int endHour = 15;
+		Calendar instance = Calendar.getInstance();
+		int curHour = instance.get(Calendar.HOUR_OF_DAY);
+		System.out.println(curHour);
+		if (curHour >= beginHour && curHour < endHour) {
+			return true;
+		}
+		return false;
 	}
 
 	/***

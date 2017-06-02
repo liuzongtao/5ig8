@@ -36,7 +36,7 @@ public class IgpAceInfo {
 			IgpWebMsgBean igpWebMsgBean = msg_list[i];
 			long id = Long.valueOf(igpWebMsgBean.getId());
 			if (id > maxId) {
-				log.debug("new msg : teacherId = " + teacherId + "; kind = " + igpWebMsgBean.getKind()
+				log.info("new msg : teacherId = " + teacherId + "; kind = " + igpWebMsgBean.getKind()
 						+ " ; time = " + igpWebMsgBean.getRec_time_desc() + " ; id= " + id + "; maxId=" + maxId);
 				// 插入数据库
 				IgpcontentDao.insertMsg(teacherId, igpWebMsgBean);
