@@ -1,6 +1,3 @@
-/**
- * 
- */
 package cn.guba.igu8.core.config;
 
 import com.jfinal.config.Constants;
@@ -9,6 +6,7 @@ import com.jfinal.config.Interceptors;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
+import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
@@ -21,12 +19,20 @@ import cn.guba.igu8.processor.igupiaoWeb.IgupiaoProcessor;
 import cn.guba.igu8.web.content.controller.CommenedContentController;
 import cn.guba.igu8.web.content.controller.ContentsController;
 import cn.guba.igu8.web.index.controller.IndexController;
+import cn.guba.igu8.web.user.controller.UserController;
 
 /**
  * @author zongtao liu
  *
  */
 public class MyConfig extends JFinalConfig {
+
+	public static void main(String[] args) {
+		JFinal.start("src/main/webapp", 80, "/", 5);
+		// System.out.println(System.currentTimeMillis() + 1000l*
+		// 60*60*24*365*100);//4649279698951
+		// System.out.println("http://47.92.157.16/cc/158262".length());
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -50,9 +56,10 @@ public class MyConfig extends JFinalConfig {
 	@Override
 	public void configRoute(Routes me) {
 		me.setBaseViewPath("/view");
-		me.add("/", IndexController.class, "index");
+		me.add("/", IndexController.class,"index");
 		me.add("/ccc", CommenedContentController.class, "content");
 		me.add("/cc", ContentsController.class, "content");
+		me.add("/user", UserController.class);
 	}
 
 	/*
@@ -65,6 +72,7 @@ public class MyConfig extends JFinalConfig {
 	public void configEngine(Engine me) {
 		me.addSharedFunction("/view/common/_layout.html");
 		me.addSharedFunction("/view/common/_paginate.html");
+		me.addSharedFunction("/view/common/_include.html");
 	}
 
 	public static DruidPlugin createDruidPlugin() {

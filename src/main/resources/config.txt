@@ -5,5 +5,5 @@ devMode = true
 
 sendSms=false
 sendSmsWithEmail=true
-sendEmail=true
+sendEmail=false
 

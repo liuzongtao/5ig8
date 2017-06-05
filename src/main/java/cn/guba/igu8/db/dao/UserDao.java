@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.lang.Lang;
+
 import cn.guba.igu8.db.mysqlModel.User;
 
 /**
@@ -48,6 +50,24 @@ public class UserDao {
 		User user = null;
 		for (User tmpUser : userMap.values()) {
 			if (tmpUser.getNickname().equals(nickName)) {
+				user = tmpUser;
+			}
+		}
+		return user;
+	}
+	
+	/***
+	 * 查询用户
+	 * @param nickName
+	 * @param pwd
+	 * @return
+	 */
+	public static User getUser(String nickName,String pwd) {
+		updateUserMap();
+		User user = null;
+		String pwdDb = Lang.md5(pwd);
+		for (User tmpUser : userMap.values()) {
+			if (tmpUser.getNickname().equals(nickName) && tmpUser.getPasswd().equals(pwdDb)) {
 				user = tmpUser;
 			}
 		}
