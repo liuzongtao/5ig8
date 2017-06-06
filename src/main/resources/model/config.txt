@@ -1,0 +1,18 @@
+jdbcUrl = jdbc:mysql://localhost/5igu8?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+user = devuser
+password =devuser
+devMode = true
+
+sendSms=false
+sendSmsWithEmail=true
+sendEmail=false
+
+emailAcc=
+emailKey=
+
+smsAcc=
+smsKey=
+
+igpAcc=
+igpPwd=
+
