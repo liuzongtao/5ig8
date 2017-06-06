@@ -43,8 +43,8 @@
 
 		// JS加载菜单导航
 		#for(x : rootList)
-		$('#${x.code}').tree({
-			url : '/showTree/${x.id}',
+		$('##(x.code)').tree({
+			url : '/showTree/#(x.id)',
 			animate : true,
 			onClick : nodeClick
 		});

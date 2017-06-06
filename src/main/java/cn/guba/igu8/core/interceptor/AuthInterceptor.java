@@ -1,5 +1,7 @@
 package cn.guba.igu8.core.interceptor;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.nutz.lang.Strings;
@@ -41,7 +43,7 @@ public class AuthInterceptor implements Interceptor {
 			} else {
 				String backUrl = controller.getSessionAttr(ControllerConstant.SESSION_NAME_BACKURL);
 				if (Strings.isBlank(backUrl)) {
-					backUrl = request.getRequestURI();
+					backUrl = getUrlAndPara(request);
 					controller.setSessionAttr(ControllerConstant.SESSION_NAME_BACKURL, backUrl);
 				}
 				controller.redirect("/user/toLogin");
@@ -49,6 +51,24 @@ public class AuthInterceptor implements Interceptor {
 		} else {
 			inv.invoke();
 		}
+	}
+
+	private String getUrlAndPara(HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		String uri = request.getRequestURI();
+		sb.append(uri).append("?");
+		Enumeration<String> names = request.getParameterNames();
+		int index = 0;
+		while (names.hasMoreElements()) {
+			String name = names.nextElement();
+			String value = request.getParameter(name);
+			if (index != 0) {
+				sb.append("&");
+			}
+			sb.append(name).append("=").append(value);
+			index++;
+		}
+		return sb.toString();
 	}
 
 }
