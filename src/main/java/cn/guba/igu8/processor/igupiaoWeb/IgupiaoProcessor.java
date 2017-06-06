@@ -12,6 +12,8 @@ import org.nutz.http.Cookie;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+import com.jfinal.kit.PropKit;
+
 import cn.guba.igu8.processor.igupiaoWeb.account.IgpAccount;
 import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
 import cn.guba.igu8.processor.igupiaoWeb.threads.IgpUpdateLiverMsgThread;
@@ -45,11 +47,11 @@ public class IgupiaoProcessor {
 	private void init(){
 		log.info("IgupiaoProcessor init ;" + new Date());
 		
-		IgpAccount user = new IgpAccount("18701641809", "aayueya123");
+		IgpAccount user = new IgpAccount(PropKit.get("igpAcc"), PropKit.get("igpPwd"));
 
 		Cookie cookie = new Cookie();
 		cookie.set("PHPSESSID",
-				"nlfgvh6a1pa93ol1uaq31pdld3; Hm_lvt_97a2c934daaed931f060269d1a9310de=1494835149; Hm_lpvt_97a2c934daaed931f060269d1a9310de=1494838876");
+				"hl27jtis8ebm4f68pt8ekjlk96; Hm_lvt_97a2c934daaed931f060269d1a9310de=1496714409; Hm_lpvt_97a2c934daaed931f060269d1a9310de=1496714447");
 
 		int uid = user.getUid(cookie);
 		//初始化老数据

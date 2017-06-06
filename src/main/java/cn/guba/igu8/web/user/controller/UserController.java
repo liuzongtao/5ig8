@@ -34,7 +34,7 @@ public class UserController extends Controller {
 		String pwd = getPara("pwd");
 		User user = UserService.getInstance().getUser(nickName, pwd);
 		if (user == null) {
-			redirect("user/login");
+			redirect("/user/login");
 		}
 		// 添加ip和uid的对应关系
 		HttpServletRequest request = getRequest();

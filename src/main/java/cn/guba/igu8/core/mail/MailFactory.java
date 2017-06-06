@@ -5,6 +5,8 @@ package cn.guba.igu8.core.mail;
 
 import java.util.Set;
 
+import com.jfinal.kit.PropKit;
+
 import cn.guba.igu8.core.constants.Constant;
 
 /**
@@ -18,7 +20,8 @@ public class MailFactory {
 	private static volatile MailFactory mailFactory;
 
 	private MailFactory() {
-		this.email = new Email("369650047@qq.com", "qoblxyfwxrlcbifb", Constant.EMAIL_NAME);
+
+		this.email = new Email(PropKit.get("emailAcc"), PropKit.get("emailKey"), Constant.EMAIL_NAME);
 	}
 
 	public static MailFactory getInstance() {
@@ -40,7 +43,7 @@ public class MailFactory {
 	 * @param mailContent
 	 */
 	public void sendEmail(Set<String> emailList, String teacherName, String mailContent) {
-		if(email != null){
+		if (email != null) {
 			String mailSubject = Constant.EMAIL_NAME + ":" + teacherName;
 			email.sendBccMessage(emailList, mailSubject, mailContent);
 		}

@@ -7,3 +7,12 @@ sendSms=false
 sendSmsWithEmail=true
 sendEmail=false
 
+emailAcc=369650047@qq.com
+emailKey=qoblxyfwxrlcbifb
+
+smsAcc=q3478863162
+smsKey=d83055f1313375fc3560
+
+igpAcc=18701641809
+igpPwd=aayueya123
+

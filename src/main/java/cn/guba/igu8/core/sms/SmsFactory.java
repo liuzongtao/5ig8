@@ -6,6 +6,8 @@ package cn.guba.igu8.core.sms;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.jfinal.kit.PropKit;
+
 /**
  * @author zongtao liu
  *
@@ -17,7 +19,7 @@ public class SmsFactory {
 	private static volatile SmsFactory smsFactory;
 
 	private SmsFactory() {
-		smsWebChinese = new SmsWebChinese("q3478863162", "d83055f1313375fc3560");
+		smsWebChinese = new SmsWebChinese(PropKit.get("smsAcc"), PropKit.get("smsKey"));
 	}
 
 	public static SmsFactory getInstance() {

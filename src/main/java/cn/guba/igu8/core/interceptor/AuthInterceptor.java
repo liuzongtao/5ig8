@@ -44,7 +44,7 @@ public class AuthInterceptor implements Interceptor {
 					backUrl = request.getRequestURI();
 					controller.setSessionAttr(ControllerConstant.SESSION_NAME_BACKURL, backUrl);
 				}
-				controller.redirect("user/toLogin");
+				controller.redirect("/user/toLogin");
 			}
 		} else {
 			inv.invoke();

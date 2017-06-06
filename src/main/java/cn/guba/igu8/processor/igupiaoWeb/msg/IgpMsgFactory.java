@@ -172,7 +172,7 @@ public class IgpMsgFactory {
 		if (liverMsg != null) {
 			IgpWebMsgBean[] msg_list = liverMsg.getMsg_list();
 			int firstIndex = msg_list.length - 1;
-			if (msg_list.length < 10) {// 已经找到最后一页
+			if (msg_list.length == 0) {// 已经找到最后一页
 				return 0;
 			}
 			// 如果第一个都不符合要求的话，则返回，继续往下寻找
