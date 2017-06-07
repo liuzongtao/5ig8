@@ -42,7 +42,7 @@ public class MailFactory {
 	 * @param mailContent
 	 */
 	public void sendEmail(Set<String> emailList, String teacherName, String mailContent) {
-		if (email != null) {
+		if (email != null && emailList.size() > 0) {
 			String mailSubject = Constant.EMAIL_NAME + ":" + teacherName;
 			email.sendBccMessage(emailList, mailSubject, mailContent);
 		}
