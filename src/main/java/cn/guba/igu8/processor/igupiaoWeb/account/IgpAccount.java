@@ -34,8 +34,9 @@ public class IgpAccount {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("account", account);
 		params.put("passwd", passwd);
+		params.put("backurl", "https://www.5igupiao.com/live/detail_new.php?id=91&act=");
 		Response res = HttpUtil.httpsPost(url, params, cookie);
-		// System.out.println(res.getContent());
+//		System.out.println(res.getContent());
 		return res.getCookie();
 	}
 

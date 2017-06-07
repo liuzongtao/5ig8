@@ -20,7 +20,6 @@ public class MailFactory {
 	private static volatile MailFactory mailFactory;
 
 	private MailFactory() {
-
 		this.email = new Email(PropKit.get("emailAcc"), PropKit.get("emailKey"), Constant.EMAIL_NAME);
 	}
 

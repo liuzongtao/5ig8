@@ -3,19 +3,18 @@
  */
 package cn.guba.igu8.core.init;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.lang.Lang;
 
 import cn.guba.igu8.db.dao.TeacherDao;
 import cn.guba.igu8.db.dao.UserDao;
-import cn.guba.igu8.db.dao.UserVipInfoDao;
 import cn.guba.igu8.db.dao.VipTypeDao;
 import cn.guba.igu8.db.mysqlModel.Teacher;
 import cn.guba.igu8.db.mysqlModel.User;
 import cn.guba.igu8.db.mysqlModel.Uservipinfo;
-import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpKind;
+import cn.guba.igu8.web.teacher.beans.EIgpTeacher;
+import cn.guba.igu8.web.vip.service.VipService;
 
 /**
  * @author zongtao liu
@@ -100,10 +99,53 @@ public class SysInit {
 			user.save();
 			long uid = user.getId();
 			// 插入vip信息
-			initVipInfo(uid);
+			insertIgpVipInfo(uid, EIgpTeacher.niuguqimeng.getValue());
 		}
 
 		return user.getId();
+	}
+
+	/**
+	 * 插入vip信息
+	 * 
+	 * @param uid
+	 * @param teacher
+	 * @param isSendSms
+	 */
+	public void insertVipInfo(long uid, Teacher teacher, boolean isSendSms) {
+		insertVipInfo(uid, teacher, VipService.getInstance().getSendVipEmailStr(), isSendSms);
+	}
+
+	/**
+	 * 插入vip信息
+	 * 
+	 * @param uid
+	 * @param teacher
+	 * @param sendEmail
+	 * @param isSendSms
+	 */
+	public void insertVipInfo(long uid, Teacher teacher, String sendEmail, boolean isSendSms) {
+		Uservipinfo vipInfo = new Uservipinfo();
+		vipInfo.setUid(uid);
+		vipInfo.setVipTypeId(teacher.getVipTypeId());
+		vipInfo.setVipEndTime(Long.MAX_VALUE);
+		vipInfo.setConcernedTeacherId(teacher.getId());
+		vipInfo.setSendEmail(sendEmail);
+		if (isSendSms) {
+			vipInfo.setSendSms(1);
+		}
+		vipInfo.save();
+	}
+
+	/**
+	 * 插入爱股票信息
+	 * 
+	 * @param uid
+	 * @param teacherPfId
+	 */
+	private void insertIgpVipInfo(long uid, int teacherPfId) {
+		Teacher igpTeacher = TeacherDao.getIgpTeacher(teacherPfId);
+		insertVipInfo(uid, igpTeacher, VipService.getInstance().getSendAllEmailStr(), true);
 	}
 
 	/**
@@ -114,26 +156,18 @@ public class SysInit {
 	private void initVipInfo(long uid) {
 		// 插入vip信息
 		List<Teacher> allTeacherList = TeacherDao.getAllTeacherList();
-		List<Uservipinfo> vipInfoList = new ArrayList<Uservipinfo>();
 		for (Teacher teacher : allTeacherList) {
-			Uservipinfo vipInfo = new Uservipinfo();
-			vipInfo.setUid(uid);
-			vipInfo.setVipTypeId(teacher.getVipTypeId());
-			vipInfo.setVipEndTime(Long.MAX_VALUE);
-			vipInfo.setConcernedTeacherId(teacher.getId());
-			vipInfo.setSendEmail(getSendEmailStr());
-			vipInfo.setSendSms(1);
-			vipInfoList.add(vipInfo);
+			boolean isSendSms = false;
+			String sendEmail = VipService.getInstance().getSendVipEmailStr();
+			if (teacher.getPfId() == EIgpTeacher.niuguqimeng.getValue()) {
+				isSendSms = true;
+				sendEmail = VipService.getInstance().getSendAllEmailStr();
+			}
+			if ( teacher.getPfId() == EIgpTeacher.niepanchongsheng.getValue()) {
+				sendEmail = VipService.getInstance().getSendAllEmailStr();
+			}
+			insertVipInfo(uid, teacher, sendEmail, isSendSms);
 		}
-		UserVipInfoDao.batchInsert(vipInfoList);
-	}
-
-	private String getSendEmailStr() {
-		StringBuilder sb = new StringBuilder();
-		for (EIgpKind kind : EIgpKind.values()) {
-			sb.append(kind.getValue()).append(",");
-		}
-		return sb.substring(0, sb.length() - 1);
 	}
 
 }

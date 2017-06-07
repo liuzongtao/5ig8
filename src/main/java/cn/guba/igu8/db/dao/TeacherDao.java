@@ -8,9 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
+
 import com.jfinal.plugin.activerecord.Db;
 
 import cn.guba.igu8.db.mysqlModel.Teacher;
+import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
 import cn.guba.igu8.web.teacher.beans.EIgpTeacher;
 import cn.guba.igu8.web.vip.beans.EVipType;
 
@@ -19,6 +23,8 @@ import cn.guba.igu8.web.vip.beans.EVipType;
  *
  */
 public class TeacherDao {
+
+	private static Log log = Logs.get();
 
 	private static Map<Long, Teacher> teacherMap = new HashMap<Long, Teacher>();
 
@@ -31,15 +37,33 @@ public class TeacherDao {
 				teacher.setPfId(igpTeacher.getValue());
 				teacher.setName(igpTeacher.getName());
 				teacher.setVipTypeId(Long.valueOf(EVipType.igupiao.getValue()));
+				// teacher.setBuyEndTime(Long.MAX_VALUE);
 				teacher.setBuyEndTime(igpTeacher.getBuyEndTime());
 				teacherList.add(teacher);
 			}
-			//批量插入
+			// 批量插入
 			batchInsert(teacherList);
 		}
+		// 初始化每个老师的vip会员uid
+		list = Teacher.dao.find("select * from teacher where vipTypeId=" + EVipType.igupiao.getValue());
+		if (list != null && list.size() > 0) {
+			long now = System.currentTimeMillis();
+			for (Teacher teacher : list) {
+				Integer pfId = teacher.getPfId();
+				if (teacher.getPfVipUid() == 0 && teacher.getBuyEndTime() > now) {
+					int pfVipUid = IgpMsgFactory.getInstance().getUidFromAll(pfId);
+					if (teacher.getPfVipUid() != pfVipUid) {
+						teacher.setPfVipUid(pfVipUid);
+						teacher.update();
+					}
+				}
+				log.infof(" init teacher , teacherPfId == %d, pfVipUid == %d", pfId, teacher.getPfVipUid());
+			}
+		}
+
 	}
-	
-	private static void batchInsert(List<Teacher> teacherList){
+
+	private static void batchInsert(List<Teacher> teacherList) {
 		Db.batchSave(teacherList, teacherList.size());
 	}
 
@@ -57,6 +81,24 @@ public class TeacherDao {
 			}
 		}
 		return teacherList;
+	}
+
+	/**
+	 * 获取igp老师
+	 * 
+	 * @param pfId
+	 * @return
+	 */
+	public static Teacher getIgpTeacher(int pfId) {
+		Teacher igpTeacher = null;
+		Map<Long, Teacher> teachers = getTeacherMap();
+		for (Teacher teacher : teachers.values()) {
+			if (teacher.getVipTypeId() == EVipType.igupiao.getValue() && teacher.getPfId() == pfId) {
+				igpTeacher = teacher;
+				break;
+			}
+		}
+		return igpTeacher;
 	}
 
 	/***
@@ -96,6 +138,11 @@ public class TeacherDao {
 			teacher = teachers.get(teacherId);
 		}
 		return teacher;
+	}
+
+	public static void saveTeacher(Teacher teacher) {
+		teacherMap.put(teacher.getId(), teacher);
+		teacher.update();
 	}
 
 }

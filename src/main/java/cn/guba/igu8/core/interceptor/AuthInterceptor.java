@@ -56,13 +56,15 @@ public class AuthInterceptor implements Interceptor {
 	private String getUrlAndPara(HttpServletRequest request) {
 		StringBuilder sb = new StringBuilder();
 		String uri = request.getRequestURI();
-		sb.append(uri).append("?");
+		sb.append(uri);
 		Enumeration<String> names = request.getParameterNames();
 		int index = 0;
 		while (names.hasMoreElements()) {
 			String name = names.nextElement();
 			String value = request.getParameter(name);
-			if (index != 0) {
+			if (index == 0) {
+				sb.append("?");
+			} else {
 				sb.append("&");
 			}
 			sb.append(name).append("=").append(value);

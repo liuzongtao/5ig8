@@ -263,7 +263,8 @@ public class Email {
 	}
 
 	public static void main(String[] args) {
-		Email email = new Email("liuzongtao-tao@163.com", "mesufy850815", Constant.EMAIL_NAME);
+		Email email = new Email("3478863162@qq.com", "iqmrxajszxfbciij", Constant.EMAIL_NAME);
+//		Email email = new Email("liuzongtao-tao@163.com", "mesufy850815", Constant.EMAIL_NAME);
 //		email.setAffix("e:/123.txt", "123.txt");
 		String content = "涅槃对于大势观，风控以及底部支撑，整个趋势已经用技术说明，没有太复杂的言语，简单实用。今天可以等待点位做一下个股反抽，但仅仅当做反抽，切勿重仓抄底。具体走势请翻看最近的直播记录。<br />天津港，支撑14.2，13。压力15.9，16.6。个人意见，盈亏自负。<br />今日操作";
 		Set< String> accountSet = new HashSet<String>();

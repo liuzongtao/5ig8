@@ -25,7 +25,9 @@ public class HttpUtil {
 
 	public static Response httpsPost(String url, Map<String, Object> params, Cookie cookie) {
 		Request req = Request.create(url, METHOD.POST);
-		req.setParams(params);
+		if(params != null){
+			req.setParams(params);
+		}
 		Response response = null;
 		try {
 			Sender sender = Sender.create(req);

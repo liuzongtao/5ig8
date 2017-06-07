@@ -5,6 +5,7 @@ package cn.guba.igu8.web.teacher.service;
 
 import cn.guba.igu8.db.dao.TeacherDao;
 import cn.guba.igu8.db.mysqlModel.Teacher;
+import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
 
 /**
  * @author zongtao liu
@@ -41,6 +42,21 @@ public class TeacherService {
 			name = teacher.getName();
 		}
 		return name;
+	}
+
+	/**
+	 * 初始化teacher
+	 * 
+	 * @param teacherId
+	 */
+	public void initTeacher4VipUser(long teacherId) {
+		Teacher teacher = TeacherDao.getTeacher(teacherId);
+		Integer pfId = teacher.getPfId();
+		int pfVipUid = IgpMsgFactory.getInstance().getUidFromAll(pfId);
+		if (teacher.getPfVipUid() != pfVipUid) {
+			teacher.setPfVipUid(pfVipUid);
+			TeacherDao.saveTeacher(teacher);
+		}
 	}
 
 }

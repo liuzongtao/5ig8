@@ -16,6 +16,7 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 public class _MappingKit {
 
 	public static void mapping(ActiveRecordPlugin arp) {
+		arp.addMapping("eova_menu", "id", EovaMenu.class);
 		arp.addMapping("igpcontent", "lid", Igpcontent.class);
 		arp.addMapping("rechargelog", "id", Rechargelog.class);
 		arp.addMapping("teacher", "id", Teacher.class);

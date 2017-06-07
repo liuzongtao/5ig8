@@ -12,7 +12,7 @@ public enum EIgpTeacher {
 	/***
 	 * 刀锋
 	 */
-	daofeng(2, "刀锋"),
+	daofeng(2, "刀锋",Long.MAX_VALUE),
 	/***
 	 * 天策看市
 	 */
@@ -20,7 +20,7 @@ public enum EIgpTeacher {
 	/***
 	 * 涅槃重生
 	 */
-	niepanchongsheng(57, "涅槃重生"),
+	niepanchongsheng(57, "涅槃重生",Long.MAX_VALUE),
 	/***
 	 * 狙击手
 	 */
@@ -56,7 +56,7 @@ public enum EIgpTeacher {
 	/***
 	 * 牛股启蒙
 	 */
-	niuguqimeng(91, "牛股启蒙"),
+	niuguqimeng(91, "牛股启蒙",Long.MAX_VALUE),
 	/***
 	 * 每日一股
 	 */

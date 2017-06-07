@@ -16,6 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `eova_menu`
+--
+
+DROP TABLE IF EXISTS `eova_menu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `eova_menu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) NOT NULL COMMENT '编码',
+  `name` varchar(100) NOT NULL COMMENT '名称',
+  `type` varchar(20) NOT NULL COMMENT '菜单类型',
+  `icon` varchar(255) DEFAULT NULL COMMENT '图标',
+  `order_num` int(11) DEFAULT '0' COMMENT '序号',
+  `parent_id` int(11) DEFAULT '0' COMMENT '父节点',
+  `is_collapse` tinyint(1) DEFAULT '0' COMMENT '是否折叠',
+  `biz_intercept` varchar(255) DEFAULT NULL COMMENT '自定义业务拦截器',
+  `url` varchar(255) DEFAULT NULL COMMENT '自定义URL',
+  `menuConfig` varchar(500) DEFAULT NULL COMMENT '菜单配置JSON',
+  `diy_js` varchar(255) DEFAULT NULL COMMENT '依赖JS文件',
+  `is_del` tinyint(1) DEFAULT '0' COMMENT '是否隐藏',
+  `filter` varchar(500) DEFAULT NULL COMMENT '初始数据过滤条件',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `igpcontent`
 --
 
@@ -110,6 +136,7 @@ CREATE TABLE `teacher` (
   `pfId` int(5) DEFAULT NULL,
   `name` varchar(32) DEFAULT NULL,
   `buyEndTime` bigint(13) DEFAULT '0',
+  `pfVipUid` int(11) DEFAULT '0',
   `vipTypeId` bigint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -195,4 +222,4 @@ CREATE TABLE `viptype` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-27 10:35:45
+-- Dump completed on 2017-06-07 14:32:59

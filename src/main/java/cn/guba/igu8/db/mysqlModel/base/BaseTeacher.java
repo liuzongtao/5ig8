@@ -45,6 +45,15 @@ public abstract class BaseTeacher<M extends BaseTeacher<M>> extends Model<M> imp
 		return get("buyEndTime");
 	}
 
+	public M setPfVipUid(java.lang.Integer pfVipUid) {
+		set("pfVipUid", pfVipUid);
+		return (M)this;
+	}
+
+	public java.lang.Integer getPfVipUid() {
+		return get("pfVipUid");
+	}
+
 	public M setVipTypeId(java.lang.Long vipTypeId) {
 		set("vipTypeId", vipTypeId);
 		return (M)this;
