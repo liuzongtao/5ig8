@@ -27,6 +27,7 @@ import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpWebLiverMsgBean;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpWebMsgBean;
 import cn.guba.igu8.processor.igupiaoWeb.threads.SendMessageThread;
 import cn.guba.igu8.processor.igupiaoWeb.threads.ThreadsManager;
+import cn.guba.igu8.web.teacher.beans.EIgpTeacher;
 
 /**
  * @author zongtao liu
@@ -68,14 +69,14 @@ public class IgpMsgFactory {
 				continue;
 			}
 			if (uid == 0) {
-				uid = teacher.getPfId();
+				uid = teacher.getPfVipUid();
 			}
-			int tid = teacher.getPfId();
+			int pfId = teacher.getPfId();
 			long tearcherId = teacher.getId();
-			IgpWebLiverMsgBean liverMsg = getLiverMsg(cookie, uid, tid);
+			IgpWebLiverMsgBean liverMsg = getLiverMsg(cookie, uid, pfId);
 			// 如果获取失败，再次获取一次
 			if (liverMsg == null) {
-				liverMsg = getLiverMsg(cookie, uid, tid);
+				liverMsg = getLiverMsg(cookie, uid, pfId);
 			}
 			if (liverMsg != null) {
 				IgpAceInfo aceInfo = null;
@@ -89,15 +90,28 @@ public class IgpMsgFactory {
 			}
 		}
 	}
-
-	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int tid) {
-		return getLiverMsg(cookie, uid, tid, 0);
+	
+	public static void main(String[] args) {
+		EIgpTeacher[] values = EIgpTeacher.values();
+		Cookie cookie = IgpMsgFactory.getInstance().getCookie();
+		for(EIgpTeacher teacher : values){
+			IgpWebMsgBean[] webMsgArr = IgpMsgFactory.getInstance().getWebMsgArr(cookie, 5, teacher.getValue(), 0l);
+			for(IgpWebMsgBean msg : webMsgArr){
+				if(msg.getKind().equals(EIgpKind.VIP.getValue()) && Strings.isNotBlank(msg.getContent_new())){
+					System.out.println(teacher.getName());
+				}
+			}
+		}
 	}
 
-	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int tid, long time) {
+	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int pfId) {
+		return getLiverMsg(cookie, uid, pfId, 0);
+	}
+
+	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int pfId, long time) {
 		String url = Constant.URL_IGP_MSG_LIVER;
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", tid);
+		params.put("id", pfId);
 		params.put("u_id", uid);
 		params.put("before", time);
 		params.put("source", "pc");

@@ -149,7 +149,8 @@ public class IgpMsgService {
 		Boolean isSendEmail = PropKit.getBoolean("sendEmail", false);
 		if (isSendEmail) {
 			Set<String> vipEmailSet = getVipEmails(teacherId, msg.getKind());
-			MailFactory.getInstance().sendEmail(vipEmailSet, teacher.getName() + getKindDescr(msg.getKind()),
+			MailFactory.getInstance().sendEmail(vipEmailSet,
+					teacher.getName() + getKindDescr(msg.getKind(), msg.getVip_group_info()),
 					getEmailContent(teacher, msg));
 		}
 		// 发送短消息消息
@@ -227,7 +228,7 @@ public class IgpMsgService {
 	 */
 	private String getEmailContent(Teacher teacher, IgpWebMsgBean msg) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(teacher.getName()).append(getKindDescr(msg.getKind())).append("<br />");
+		sb.append(teacher.getName()).append(getKindDescr(msg.getKind(), msg.getVip_group_info())).append("<br />");
 		sb.append(Util.dateSecondFormat(msg.getRec_time())).append("<br />");
 		sb.append(ContentsService.getInstance().getContentDetail(msg.getBrief(), msg.getKind(), msg.getContent(),
 				msg.getContent_new(), Json.toJson(msg.getStock_info(), JsonFormat.compact()), msg.getImage_thumb()))
@@ -236,9 +237,20 @@ public class IgpMsgService {
 		return sb.toString();
 	}
 
-	private String getKindDescr(String kind) {
+	/**
+	 * 获取vip描述
+	 * 
+	 * @param kind
+	 * @param vipGroupInfo
+	 * @return
+	 */
+	public String getKindDescr(String kind, String vipGroupInfo) {
 		if (kind.equals(EIgpKind.VIP.getValue())) {
-			return "【会员信息】";
+			if (Strings.isNotBlank(vipGroupInfo)) {
+				return "【会员信息：" + vipGroupInfo + "】";
+			} else {
+				return "【会员信息】";
+			}
 		} else {
 			return "【公开信息】";
 		}

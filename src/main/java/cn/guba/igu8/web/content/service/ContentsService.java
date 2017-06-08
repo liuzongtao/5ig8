@@ -18,6 +18,7 @@ import cn.guba.igu8.db.dao.TeacherDao;
 import cn.guba.igu8.db.mysqlModel.Igpcontent;
 import cn.guba.igu8.db.mysqlModel.Teacher;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpStockBean;
+import cn.guba.igu8.processor.igupiaoWeb.service.IgpMsgService;
 import cn.guba.igu8.web.content.beans.IgpWebDetailBean;
 
 /**
@@ -88,7 +89,7 @@ public class ContentsService {
 		}
 		detail.setName(teacher.getName());
 		detail.setTimeDesc(igpcontent.getRecTimeDesc());
-		detail.setKind(igpcontent.getKind());
+		detail.setKindDescr(IgpMsgService.getInstance().getKindDescr(igpcontent.getKind(), igpcontent.getVipGroupInfo()));
 		detail.setDetail(getContentDetail(igpcontent));
 		return detail;
 	}

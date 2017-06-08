@@ -15,7 +15,7 @@ public class IgpWebDetailBean {
 
 	private String detail;
 
-	private String kind;
+	private String kindDescr;
 
 	/**
 	 * @return the name
@@ -63,18 +63,18 @@ public class IgpWebDetailBean {
 	}
 
 	/**
-	 * @return the kind
+	 * @return the kindDescr
 	 */
-	public String getKind() {
-		return kind;
+	public String getKindDescr() {
+		return kindDescr;
 	}
 
 	/**
-	 * @param kind
-	 *            the kind to set
+	 * @param kindDescr
+	 *            the kindDescr to set
 	 */
-	public void setKind(String kind) {
-		this.kind = kind;
+	public void setKindDescr(String kindDescr) {
+		this.kindDescr = kindDescr;
 	}
 
 }

@@ -58,7 +58,7 @@ public class IgupiaoProcessor {
 		IgpMsgFactory.getInstance().initOldMsg(cookie, uid);
 
 		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-		executor.scheduleAtFixedRate(new IgpUpdateLiverMsgThread(cookie, uid), 0, 30, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(new IgpUpdateLiverMsgThread(uid), 0, 30, TimeUnit.SECONDS);
 	}
 
 	private void initNonUser() {
@@ -69,7 +69,7 @@ public class IgupiaoProcessor {
 		IgpMsgFactory.getInstance().initOldMsg(cookie, uid);
 
 		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-		executor.scheduleAtFixedRate(new IgpUpdateLiverMsgThread(cookie, uid), 0, 30, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(new IgpUpdateLiverMsgThread(uid), 0, 30, TimeUnit.SECONDS);
 	}
 
 }

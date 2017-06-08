@@ -13,12 +13,9 @@ import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
  */
 public class IgpUpdateLiverMsgThread implements Runnable {
 
-	private Cookie cookie;
-
 	private int uid;
 
-	public IgpUpdateLiverMsgThread(Cookie cookie, int uid) {
-		this.cookie = cookie;
+	public IgpUpdateLiverMsgThread(int uid) {
 		this.uid = uid;
 	}
 
@@ -29,6 +26,7 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 	 */
 	@Override
 	public void run() {
+		Cookie cookie = IgpMsgFactory.getInstance().getCookie();
 		IgpMsgFactory.getInstance().updateLiverMsg(cookie, uid);
 	}
 

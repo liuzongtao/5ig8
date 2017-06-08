@@ -12,13 +12,7 @@
 	#for(x : detailListPage.getList())
 		<div class="container_head">
 			<div class="name">#(x.name)</div>
-			<div class="time">#(x.timeDesc)
-			#if(x.kind == "vip")
-			【会员信息】
-			#else
-			【公开信息】
-			#end
-			</div>
+			<div class="time">#(x.timeDesc)&nbsp;&nbsp;#(x.kindDescr)</div>
 		</div>
 		<div class="container_content"><p>#(x.detail)</p></div>
 		#end

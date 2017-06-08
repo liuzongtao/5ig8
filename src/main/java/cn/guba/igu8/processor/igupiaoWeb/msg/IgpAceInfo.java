@@ -19,7 +19,7 @@ import cn.guba.igu8.web.teacher.service.TeacherService;
  *
  */
 public class IgpAceInfo {
-	
+
 	private static Log log = Logs.get();
 
 	private long teacherId;
@@ -39,12 +39,13 @@ public class IgpAceInfo {
 			IgpWebMsgBean igpWebMsgBean = msg_list[i];
 			long id = Long.valueOf(igpWebMsgBean.getId());
 			if (id > maxId) {
-				if(igpWebMsgBean.getKind().equals(EIgpKind.VIP.getValue()) && Strings.isBlank(igpWebMsgBean.getContent_new())){
+				if (igpWebMsgBean.getKind().equals(EIgpKind.VIP.getValue())
+						&& Strings.isBlank(igpWebMsgBean.getContent_new())) {
 					TeacherService.getInstance().initTeacher4VipUser(teacherId);
 					break;
 				}
-				log.info("new msg : teacherId = " + teacherId + "; kind = " + igpWebMsgBean.getKind()
-						+ " ; time = " + igpWebMsgBean.getRec_time_desc() + " ; id= " + id + "; maxId=" + maxId);
+				log.info("new msg : teacherId = " + teacherId + "; kind = " + igpWebMsgBean.getKind() + " ; time = "
+						+ igpWebMsgBean.getRec_time_desc() + " ; id= " + id + "; maxId=" + maxId);
 				// 插入数据库
 				IgpcontentDao.insertMsg(teacherId, igpWebMsgBean);
 				// 如果，发送短消息
