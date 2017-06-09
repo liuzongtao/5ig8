@@ -38,7 +38,7 @@ CREATE TABLE `eova_menu` (
   `is_del` tinyint(1) DEFAULT '0' COMMENT '是否隐藏',
   `filter` varchar(500) DEFAULT NULL COMMENT '初始数据过滤条件',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +193,8 @@ CREATE TABLE `uservipinfo` (
   `vipEndTime` bigint(13) DEFAULT NULL,
   `concernedTeacherId` bigint(32) DEFAULT NULL,
   `sendEmail` varchar(32) CHARACTER SET utf8mb4 DEFAULT '""',
-  `sendSms` int(2) DEFAULT '0',
+  `sendSms` tinyint(1) DEFAULT '0',
+  `showUrl` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -222,4 +223,4 @@ CREATE TABLE `viptype` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-06-07 14:32:59
+-- Dump completed on 2017-06-09 16:12:21
