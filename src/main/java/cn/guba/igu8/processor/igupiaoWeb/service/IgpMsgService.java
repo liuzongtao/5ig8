@@ -5,12 +5,12 @@ package cn.guba.igu8.processor.igupiaoWeb.service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.nutz.json.Json;
-import org.nutz.json.JsonFormat;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -68,7 +68,7 @@ public class IgpMsgService {
 			return phoneSet;
 		}
 		for (Uservipinfo vip : vipList) {
-			if (vip.getSendSms() > 0) {
+			if (vip.getSendSms()) {
 				long uid = vip.getUid();
 				User user = UserDao.getUser(uid);
 				if (user != null) {
@@ -102,7 +102,7 @@ public class IgpMsgService {
 			return userSet;
 		}
 		for (Uservipinfo vip : vipList) {
-			if (vip.getSendSms() > 0) {
+			if (vip.getSendSms()) {
 				long uid = vip.getUid();
 				User user = UserDao.getUser(uid);
 				if (user != null) {
@@ -113,22 +113,30 @@ public class IgpMsgService {
 		return userSet;
 	}
 
-	public Set<String> getVipEmails(long concernedTeacherId, String kind) {
-		Set<String> emailSet = new HashSet<String>();
+	public Map<Boolean, Set<String>> getVipEmails(long concernedTeacherId, String kind) {
+		Map<Boolean, Set<String>> emailMap = new HashMap<Boolean, Set<String>>();
 		List<Uservipinfo> vipList = UserVipInfoDao.getUservipinfos(concernedTeacherId);
 		if (vipList == null) {
-			return emailSet;
+			return emailMap;
 		}
 		for (Uservipinfo vip : vipList) {
 			if (Strings.isNotBlank(vip.getSendEmail()) && vip.getSendEmail().contains(kind)) {
 				long uid = vip.getUid();
 				User user = UserDao.getUser(uid);
 				if (user != null) {
+					Boolean showUrl = vip.getShowUrl();
+					Set<String> emailSet = null;
+					if (emailMap.containsKey(showUrl)) {
+						emailSet = emailMap.get(showUrl);
+					} else {
+						emailSet = new HashSet<String>();
+						emailMap.put(showUrl, emailSet);
+					}
 					emailSet.add(user.getEmail());
 				}
 			}
 		}
-		return emailSet;
+		return emailMap;
 	}
 
 	/**
@@ -148,10 +156,17 @@ public class IgpMsgService {
 		// 发送email
 		Boolean isSendEmail = PropKit.getBoolean("sendEmail", false);
 		if (isSendEmail) {
-			Set<String> vipEmailSet = getVipEmails(teacherId, msg.getKind());
-			MailFactory.getInstance().sendEmail(vipEmailSet,
-					teacher.getName() + getKindDescr(msg.getKind(), msg.getVip_group_info()),
-					getEmailContent(teacher, msg));
+			Map<Boolean, Set<String>> emailMap = getVipEmails(teacherId, msg.getKind());
+			if (emailMap.size() > 0) {
+				// 将需要显示url和不需要显示url的用户分开发送邮件
+				Set<Boolean> keySet = emailMap.keySet();
+				String emailTitle = teacher.getName() + getKindDescr(msg.getKind(), msg.getVip_group_info());
+				for (Boolean key : keySet) {
+					Set<String> emailSet = emailMap.get(key);
+					MailFactory.getInstance().sendEmail(emailSet, emailTitle, getEmailContent(teacher, msg, key));
+				}
+
+			}
 		}
 		// 发送短消息消息
 		Boolean isSendSms = PropKit.getBoolean("sendSms", false);
@@ -160,9 +175,21 @@ public class IgpMsgService {
 			Boolean sendSmsWithEmail = PropKit.getBoolean("sendSmsWithEmail", false);
 			if (sendSmsWithEmail) {
 				Set<User> users = getVipUsers4Sms(teacherId);
+				// 进行分类发送
+				Map<String, Set<Long>> smsContentMap = new HashMap<String, Set<Long>>();
 				for (User user : users) {
 					String smsContent = getSmsContent(teacher, msg, user.getEmail());
-					SmsFactory.getInstance().sendSms(user.getPhoneNumber(), smsContent);
+					Set<Long> phoneSet = null;
+					if (smsContentMap.containsKey(smsContent)) {
+						phoneSet = smsContentMap.get(smsContent);
+					} else {
+						phoneSet = new HashSet<Long>();
+						smsContentMap.put(smsContent, phoneSet);
+					}
+					phoneSet.add(user.getPhoneNumber());
+				}
+				for (String smsContent : smsContentMap.keySet()) {
+					SmsFactory.getInstance().sendSms(smsContentMap.get(smsContent), smsContent);
 				}
 			} else {
 				Set<Long> vipPhones = getVipPhones(teacherId);
@@ -182,7 +209,6 @@ public class IgpMsgService {
 		int endHour = 15;
 		Calendar instance = Calendar.getInstance();
 		int curHour = instance.get(Calendar.HOUR_OF_DAY);
-		System.out.println(curHour);
 		if (curHour >= beginHour && curHour < endHour) {
 			return true;
 		}
@@ -226,14 +252,15 @@ public class IgpMsgService {
 	 * @param msg
 	 * @return
 	 */
-	private String getEmailContent(Teacher teacher, IgpWebMsgBean msg) {
+	private String getEmailContent(Teacher teacher, IgpWebMsgBean msg, boolean showUrl) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(teacher.getName()).append(getKindDescr(msg.getKind(), msg.getVip_group_info())).append("<br />");
 		sb.append(Util.dateSecondFormat(msg.getRec_time())).append("<br />");
 		sb.append(ContentsService.getInstance().getContentDetail(msg.getBrief(), msg.getKind(), msg.getContent(),
-				msg.getContent_new(), Json.toJson(msg.getStock_info(), JsonFormat.compact()), msg.getImage_thumb()))
-				.append("<br />");
-		sb.append("更多信息：").append(Constant.URL_5IGU8_LIST + "?tid=" + teacher.getId());
+				msg.getContent_new(), msg.getImage_thumb())).append("<br />");
+		if (showUrl) {
+			sb.append("更多信息：").append(Constant.URL_5IGU8_LIST + "?tid=" + teacher.getId());
+		}
 		return sb.toString();
 	}
 

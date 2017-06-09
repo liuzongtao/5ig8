@@ -90,20 +90,15 @@ public class IgpMsgFactory {
 			}
 		}
 	}
-	
-	public static void main(String[] args) {
-		EIgpTeacher[] values = EIgpTeacher.values();
-		Cookie cookie = IgpMsgFactory.getInstance().getCookie();
-		for(EIgpTeacher teacher : values){
-			IgpWebMsgBean[] webMsgArr = IgpMsgFactory.getInstance().getWebMsgArr(cookie, 5, teacher.getValue(), 0l);
-			for(IgpWebMsgBean msg : webMsgArr){
-				if(msg.getKind().equals(EIgpKind.VIP.getValue()) && Strings.isNotBlank(msg.getContent_new())){
-					System.out.println(teacher.getName());
-				}
-			}
-		}
-	}
 
+	/**
+	 * 获取线上信息
+	 * 
+	 * @param cookie
+	 * @param uid
+	 * @param pfId
+	 * @return
+	 */
 	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int pfId) {
 		return getLiverMsg(cookie, uid, pfId, 0);
 	}
@@ -282,6 +277,39 @@ public class IgpMsgFactory {
 		return cookie;
 	}
 
+	/**
+	 * 获取某个老师的所有会员
+	 * 
+	 * @param teacherPfId
+	 * @return
+	 */
+	public List<Integer> getAllUsers(int teacherPfId) {
+		Cookie cookie = getCookie();
+		long vipInfoBeginIndex = getVipInfoBeginIndex(cookie, 0, teacherPfId);
+		List<Integer> userList = new ArrayList<Integer>();
+		for (int i = 1; i < 300000; i++) {
+			IgpWebMsgBean[] webMsgArr = getWebMsgArr(cookie, i, teacherPfId, vipInfoBeginIndex);
+			if (webMsgArr != null) {
+				for (IgpWebMsgBean webMsg : webMsgArr) {
+					if (webMsg.getKind().equals(EIgpKind.VIP.getValue())) {
+						if (Strings.isNotBlank(webMsg.getContent_new())) {
+							userList.add(i);
+						}
+						break;
+					}
+				}
+			}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.println("===i===" + i + " ; size = " + userList.size());
+		}
+		log.debugf("teacherPfId == %d,user size == %d", teacherPfId, userList.size());
+		return userList;
+	}
+
 	/***
 	 * 从所有用户中获取vip的用户
 	 * 
@@ -292,6 +320,10 @@ public class IgpMsgFactory {
 		Cookie cookie = getCookie();
 		int uid = 0;
 		long vipInfoBeginIndex = getVipInfoBeginIndex(cookie, uid, teacherPfId);
+		if (vipInfoBeginIndex < 0) {
+			log.infof("don't has user == %d,vipInfoBeginIndex == %d", teacherPfId, vipInfoBeginIndex);
+			return uid;
+		}
 		for (int i = 1; i < 300000; i++) {
 			IgpWebMsgBean[] webMsgArr = getWebMsgArr(cookie, i, teacherPfId, vipInfoBeginIndex);
 			if (webMsgArr != null) {
@@ -306,6 +338,11 @@ public class IgpMsgFactory {
 				if (uid > 0) {
 					break;
 				}
+			}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			log.debugf("teacherPfId == %d,uid == %d", teacherPfId, i);
 		}
@@ -322,29 +359,45 @@ public class IgpMsgFactory {
 	 * @return
 	 */
 	private long getVipInfoBeginIndex(Cookie cookie, int uid, int teacherPfId) {
-		long vipInfoBeginIndex = 0;
-		IgpWebMsgBean[] webMsgArr = getWebMsgArr(cookie, uid, teacherPfId, vipInfoBeginIndex);
-		while (webMsgArr.length > 0 && !checkVipFromWebMsg(webMsgArr)) {
-			vipInfoBeginIndex = Long.valueOf(webMsgArr[webMsgArr.length - 1].getId());
-			webMsgArr = getWebMsgArr(cookie, uid, teacherPfId, vipInfoBeginIndex);
-		}
-		return vipInfoBeginIndex;
-	}
-
-	/**
-	 * 检验是否存在vip股票信息
-	 * 
-	 * @param webMsgArr
-	 * @return
-	 */
-	private boolean checkVipFromWebMsg(IgpWebMsgBean[] webMsgArr) {
-		boolean result = false;
-		for (IgpWebMsgBean webMsg : webMsgArr) {
-			if (webMsg.getKind().equals(EIgpKind.VIP.getValue())) {
-				result = true;
+		// 获取有vip的列表的开始id
+		long index = 0l;
+		boolean isFind = false;
+		while (!isFind) {
+			IgpWebMsgBean[] webMsgArr = IgpMsgFactory.getInstance().getWebMsgArr(cookie, 0, teacherPfId, index);
+			if (webMsgArr != null && webMsgArr.length > 0) {
+				for (IgpWebMsgBean msg : webMsgArr) {
+					if (msg.getKind().equals(EIgpKind.VIP.getValue())) {
+						isFind = true;
+						break;
+					}
+				}
+				if (!isFind) {
+					index = Long.valueOf(webMsgArr[webMsgArr.length - 1].getId());
+				}
+			} else {// 已经到最后一个了
+				break;
 			}
 		}
-		return result;
+		if (!isFind) {
+			index = -1;
+		}
+		return index;
+	}
+
+	public static void main(String[] args) {
+		EIgpTeacher[] values = EIgpTeacher.values();
+		for (EIgpTeacher teacher : values) {
+			// int uid =
+			// IgpMsgFactory.getInstance().getUidFromAll(teacher.getValue());
+			// System.out.println(teacher.getName() + " == " + uid);
+			// List<Integer> allUsers =
+			// IgpMsgFactory.getInstance().getAllUsers(teacher.getValue());
+			// System.out.println(teacher.getName() + " == size == " +
+			// allUsers.size());
+		}
+
+		List<Integer> allUsers = IgpMsgFactory.getInstance().getAllUsers(2);
+		System.out.println(EIgpTeacher.daofeng.getValue() + " == size == " + allUsers.size());
 	}
 
 }

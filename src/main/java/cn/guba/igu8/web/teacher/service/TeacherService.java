@@ -55,7 +55,7 @@ public class TeacherService {
 		int pfVipUid = IgpMsgFactory.getInstance().getUidFromAll(pfId);
 		if (teacher.getPfVipUid() != pfVipUid) {
 			teacher.setPfVipUid(pfVipUid);
-			TeacherDao.saveTeacher(teacher);
+			TeacherDao.updateTeacher(teacher);
 		}
 	}
 

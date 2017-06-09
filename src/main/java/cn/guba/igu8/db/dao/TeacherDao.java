@@ -140,7 +140,7 @@ public class TeacherDao {
 		return teacher;
 	}
 
-	public static void saveTeacher(Teacher teacher) {
+	public static void updateTeacher(Teacher teacher) {
 		teacherMap.put(teacher.getId(), teacher);
 		teacher.update();
 	}

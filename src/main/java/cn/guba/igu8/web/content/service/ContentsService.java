@@ -96,11 +96,11 @@ public class ContentsService {
 
 	public String getContentDetail(Igpcontent igpcontent) {
 		return getContentDetail(igpcontent.getBrief(), igpcontent.getKind(), igpcontent.getContent(),
-				igpcontent.getContentNew(), igpcontent.getStockInfo(),
+				igpcontent.getContentNew(), 
 				Json.fromJsonAsArray(String.class, igpcontent.getImageThumb()));
 	}
 
-	public String getContentDetail(String brief, String kind, String content, String contentNew, String stockInfo,
+	public String getContentDetail(String brief, String kind, String content, String contentNew, 
 			String[] imageArr) {
 		StringBuilder sb = new StringBuilder();
 		if (Strings.isNotBlank(brief)) {
@@ -109,17 +109,12 @@ public class ContentsService {
 		if (Strings.isNotBlank(contentNew)) {
 			sb.append(contentNew).append("<br />");
 		}
-		String stockInfoStr = getStockInfoStr(stockInfo);
-		if (Strings.isNotBlank(stockInfoStr)) {
-			sb.append(stockInfoStr);
-		}
 		if (imageArr.length > 0) {
 			sb.append("<br />");
 			for (String image : imageArr) {
 				sb.append("<img src='" + image + "'>&nbsp;");
 			}
 		}
-
 		return sb.toString().replaceAll("<br /><br />", "<br />");
 	}
 

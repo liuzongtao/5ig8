@@ -35,6 +35,7 @@ public class SmsFactory {
 
 	/***
 	 * 发送短消息
+	 * 
 	 * @param phoneSet
 	 * @param content
 	 */
@@ -49,7 +50,7 @@ public class SmsFactory {
 			smsWebChinese.sendSms(plusPhoneNumers, content);
 		}
 	}
-	
+
 	public void sendSms(Long phone, String content) {
 		if (smsWebChinese != null) {
 			smsWebChinese.sendSms(String.valueOf(phone), content);
@@ -58,11 +59,15 @@ public class SmsFactory {
 
 	/***
 	 * 获取电话字符串
+	 * 
 	 * @param phoneSet
 	 * @param length
 	 * @return
 	 */
 	private String getPhoneStr(Set<Long> phoneSet, int length) {
+		if (phoneSet == null || phoneSet.size() == 0) {
+			return "";
+		}
 		StringBuilder sb = new StringBuilder();
 		int curIndex = 0;
 		Set<Long> needRemove = new HashSet<Long>();
@@ -75,8 +80,9 @@ public class SmsFactory {
 			curIndex++;
 		}
 		phoneSet.removeAll(needRemove);
-		sb.deleteCharAt(sb.length() - 1);
-
+		if (sb.length() > 0) {
+			sb.deleteCharAt(sb.length() - 1);
+		}
 		return sb.toString();
 	}
 

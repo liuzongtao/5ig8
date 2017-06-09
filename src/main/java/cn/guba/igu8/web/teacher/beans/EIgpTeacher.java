@@ -12,7 +12,7 @@ public enum EIgpTeacher {
 	/***
 	 * 刀锋
 	 */
-	daofeng(2, "刀锋",Long.MAX_VALUE),
+	daofeng(2, "刀锋", Long.MAX_VALUE),
 	/***
 	 * 天策看市
 	 */
@@ -20,7 +20,7 @@ public enum EIgpTeacher {
 	/***
 	 * 涅槃重生
 	 */
-	niepanchongsheng(57, "涅槃重生",Long.MAX_VALUE),
+	niepanchongsheng(57, "涅槃重生", Long.MAX_VALUE),
 	/***
 	 * 狙击手
 	 */
@@ -56,7 +56,7 @@ public enum EIgpTeacher {
 	/***
 	 * 牛股启蒙
 	 */
-	niuguqimeng(91, "牛股启蒙",Long.MAX_VALUE),
+	niuguqimeng(91, "牛股启蒙", Long.MAX_VALUE),
 	/***
 	 * 每日一股
 	 */
@@ -85,6 +85,22 @@ public enum EIgpTeacher {
 	 * 盘手看盘
 	 */
 	panshoukanpan(33, "盘手看盘"),
+	/***
+	 * 执著信仰
+	 */
+	zhizhuoxinyang(538, "执著信仰"),
+	/***
+	 * 风痕居
+	 */
+	fenghenju(235, "风痕居"),
+	/***
+	 * 老龙头
+	 */
+	laolongtou(486, "老龙头"),
+	/***
+	 * 花路伯爵
+	 */
+	hualubojue(244, "花路伯爵"),
 
 	;
 	private int value;

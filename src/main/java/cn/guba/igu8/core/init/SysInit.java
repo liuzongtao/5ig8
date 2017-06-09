@@ -132,7 +132,7 @@ public class SysInit {
 		vipInfo.setConcernedTeacherId(teacher.getId());
 		vipInfo.setSendEmail(sendEmail);
 		if (isSendSms) {
-			vipInfo.setSendSms(1);
+			vipInfo.setSendSms(true);
 		}
 		vipInfo.save();
 	}

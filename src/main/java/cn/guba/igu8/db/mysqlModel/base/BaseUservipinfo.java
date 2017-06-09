@@ -63,13 +63,22 @@ public abstract class BaseUservipinfo<M extends BaseUservipinfo<M>> extends Mode
 		return get("sendEmail");
 	}
 
-	public M setSendSms(java.lang.Integer sendSms) {
+	public M setSendSms(java.lang.Boolean sendSms) {
 		set("sendSms", sendSms);
 		return (M)this;
 	}
 
-	public java.lang.Integer getSendSms() {
+	public java.lang.Boolean getSendSms() {
 		return get("sendSms");
+	}
+
+	public M setShowUrl(java.lang.Boolean showUrl) {
+		set("showUrl", showUrl);
+		return (M)this;
+	}
+
+	public java.lang.Boolean getShowUrl() {
+		return get("showUrl");
 	}
 
 }
