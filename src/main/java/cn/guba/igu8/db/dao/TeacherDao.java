@@ -30,9 +30,10 @@ public class TeacherDao {
 
 	public static void initInsert() {
 		List<Teacher> list = Teacher.dao.find("select * from teacher where vipTypeId=" + EVipType.igupiao.getValue());
-		if (list == null || list.size() == 0) {
-			List<Teacher> teacherList = new ArrayList<Teacher>();
-			for (EIgpTeacher igpTeacher : EIgpTeacher.values()) {
+		List<Teacher> teacherList = new ArrayList<Teacher>();
+		for (EIgpTeacher igpTeacher : EIgpTeacher.values()) {
+			boolean has = has(list, igpTeacher.getValue());
+			if (!has) {
 				Teacher teacher = new Teacher();
 				teacher.setPfId(igpTeacher.getValue());
 				teacher.setName(igpTeacher.getName());
@@ -41,7 +42,9 @@ public class TeacherDao {
 				teacher.setBuyEndTime(igpTeacher.getBuyEndTime());
 				teacherList.add(teacher);
 			}
-			// 批量插入
+		}
+		// 批量插入
+		if (teacherList.size() > 0) {
 			batchInsert(teacherList);
 		}
 		// 初始化每个老师的vip会员uid
@@ -51,16 +54,40 @@ public class TeacherDao {
 			for (Teacher teacher : list) {
 				Integer pfId = teacher.getPfId();
 				if (teacher.getPfVipUid() == 0 && teacher.getBuyEndTime() > now) {
-					int pfVipUid = IgpMsgFactory.getInstance().getUidFromAll(pfId);
-					if (teacher.getPfVipUid() != pfVipUid) {
-						teacher.setPfVipUid(pfVipUid);
-						teacher.update();
+					boolean isVipUser = IgpMsgFactory.getInstance().isVipUser(pfId, teacher.getPfVipUid());
+					if (!isVipUser) {
+						int pfVipUid = IgpMsgFactory.getInstance().getUidFromAll(pfId);
+						if (teacher.getPfVipUid() != pfVipUid) {
+							teacher.setPfVipUid(pfVipUid);
+							teacher.update();
+						}
 					}
 				}
 				log.infof(" init teacher , teacherPfId == %d, pfVipUid == %d", pfId, teacher.getPfVipUid());
 			}
 		}
 
+	}
+
+	/***
+	 * 判断是否存在
+	 * 
+	 * @param list
+	 * @param pfId
+	 * @return
+	 */
+	private static boolean has(List<Teacher> list, int pfId) {
+		boolean result = false;
+		if (list == null || list.size() == 0) {
+			return result;
+		}
+		for (Teacher teacher : list) {
+			if (teacher.getPfId() == pfId) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 
 	private static void batchInsert(List<Teacher> teacherList) {

@@ -349,6 +349,32 @@ public class IgpMsgFactory {
 		log.infof("getUidFromAll teacherPfId == %d,uid == %d", teacherPfId, uid);
 		return uid;
 	}
+	
+	public boolean isVipUser(int teacherPfId,int uid) {
+		boolean isVipUser = false;
+		if(uid == 0){
+			return false;
+		}
+		Cookie cookie = getCookie();
+		long vipInfoBeginIndex = getVipInfoBeginIndex(cookie, uid, teacherPfId);
+		if (vipInfoBeginIndex < 0) {
+			log.infof("don't has user == %d,vipInfoBeginIndex == %d", teacherPfId, vipInfoBeginIndex);
+			return false;
+		}
+		IgpWebMsgBean[] webMsgArr = getWebMsgArr(cookie, uid, teacherPfId, vipInfoBeginIndex);
+		if (webMsgArr != null) {
+			for (IgpWebMsgBean webMsg : webMsgArr) {
+				if (webMsg.getKind().equals(EIgpKind.VIP.getValue())) {
+					if (Strings.isNotBlank(webMsg.getContent_new())) {
+						isVipUser = true;
+					}
+					break;
+				}
+			}
+		}
+		log.infof("isVipUser teacherPfId == %d,uid == %d,isVipUser == %b", teacherPfId, uid,isVipUser);
+		return isVipUser;
+	}
 
 	/***
 	 * 获取有vip信息开始id

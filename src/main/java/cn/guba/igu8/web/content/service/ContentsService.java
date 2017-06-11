@@ -17,6 +17,7 @@ import cn.guba.igu8.db.dao.IgpcontentDao;
 import cn.guba.igu8.db.dao.TeacherDao;
 import cn.guba.igu8.db.mysqlModel.Igpcontent;
 import cn.guba.igu8.db.mysqlModel.Teacher;
+import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpKind;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpStockBean;
 import cn.guba.igu8.processor.igupiaoWeb.service.IgpMsgService;
 import cn.guba.igu8.web.content.beans.IgpWebDetailBean;
@@ -105,6 +106,9 @@ public class ContentsService {
 		StringBuilder sb = new StringBuilder();
 		if (Strings.isNotBlank(brief)) {
 			sb.append(brief).append("<br />");
+		}
+		if (kind != null && kind.equals(EIgpKind.CHARGE.getValue())){
+			sb.append(content).append("<br />");
 		}
 		if (Strings.isNotBlank(contentNew)) {
 			sb.append(contentNew).append("<br />");

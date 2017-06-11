@@ -205,9 +205,17 @@ public class IgpMsgService {
 	 * @return
 	 */
 	private boolean isMarketOpen() {
+		Calendar instance = Calendar.getInstance();
+		// 判断是否是工作日
+		int curday = instance.get(Calendar.DAY_OF_WEEK);
+		int beginday = 2;
+		int endday = 6;
+		if (curday >= beginday && curday <= endday) {
+			return true;
+		}
+		// 判断是否是开市时间
 		int beginHour = 9;
 		int endHour = 15;
-		Calendar instance = Calendar.getInstance();
 		int curHour = instance.get(Calendar.HOUR_OF_DAY);
 		if (curHour >= beginHour && curHour < endHour) {
 			return true;
