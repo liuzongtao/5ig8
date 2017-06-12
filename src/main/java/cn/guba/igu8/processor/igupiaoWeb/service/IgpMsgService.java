@@ -210,8 +210,8 @@ public class IgpMsgService {
 		int curday = instance.get(Calendar.DAY_OF_WEEK);
 		int beginday = 2;
 		int endday = 6;
-		if (curday >= beginday && curday <= endday) {
-			return true;
+		if (curday < beginday && curday > endday) {
+			return false;
 		}
 		// 判断是否是开市时间
 		int beginHour = 9;
@@ -265,7 +265,7 @@ public class IgpMsgService {
 		sb.append(teacher.getName()).append(getKindDescr(msg.getKind(), msg.getVip_group_info())).append("<br />");
 		sb.append(Util.dateSecondFormat(msg.getRec_time())).append("<br />");
 		sb.append(ContentsService.getInstance().getContentDetail(msg.getBrief(), msg.getKind(), msg.getContent(),
-				msg.getContent_new(), msg.getImage_thumb())).append("<br />");
+				msg.getContent_new(), msg.getImage())).append("<br />");
 		if (showUrl) {
 			sb.append("更多信息：").append(Constant.URL_5IGU8_LIST + "?tid=" + teacher.getId());
 		}

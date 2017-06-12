@@ -349,10 +349,10 @@ public class IgpMsgFactory {
 		log.infof("getUidFromAll teacherPfId == %d,uid == %d", teacherPfId, uid);
 		return uid;
 	}
-	
-	public boolean isVipUser(int teacherPfId,int uid) {
+
+	public boolean isVipUser(int teacherPfId, int uid) {
 		boolean isVipUser = false;
-		if(uid == 0){
+		if (uid == 0) {
 			return false;
 		}
 		Cookie cookie = getCookie();
@@ -372,7 +372,7 @@ public class IgpMsgFactory {
 				}
 			}
 		}
-		log.infof("isVipUser teacherPfId == %d,uid == %d,isVipUser == %b", teacherPfId, uid,isVipUser);
+		log.infof("isVipUser teacherPfId == %d,uid == %d,isVipUser == %b", teacherPfId, uid, isVipUser);
 		return isVipUser;
 	}
 

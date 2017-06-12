@@ -98,7 +98,7 @@ public class ContentsService {
 	public String getContentDetail(Igpcontent igpcontent) {
 		return getContentDetail(igpcontent.getBrief(), igpcontent.getKind(), igpcontent.getContent(),
 				igpcontent.getContentNew(), 
-				Json.fromJsonAsArray(String.class, igpcontent.getImageThumb()));
+				Json.fromJsonAsArray(String.class, igpcontent.getImage()));
 	}
 
 	public String getContentDetail(String brief, String kind, String content, String contentNew, 
@@ -116,7 +116,7 @@ public class ContentsService {
 		if (imageArr.length > 0) {
 			sb.append("<br />");
 			for (String image : imageArr) {
-				sb.append("<img src='" + image + "'>&nbsp;");
+				sb.append("<img src='" + image + "'><br />");
 			}
 		}
 		return sb.toString().replaceAll("<br /><br />", "<br />");
