@@ -54,7 +54,7 @@ CREATE TABLE `igpcontent` (
   `id` bigint(16) NOT NULL,
   `kind` varchar(10) DEFAULT NULL,
   `title` varchar(64) DEFAULT NULL,
-  `brief` varchar(1024) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `brief` varchar(2048) CHARACTER SET utf8mb4 DEFAULT NULL,
   `price` float(8,2) DEFAULT NULL,
   `vip_price` float(8,2) DEFAULT NULL,
   `content` text CHARACTER SET utf8mb4,
@@ -80,7 +80,7 @@ CREATE TABLE `igpcontent` (
   `menus_id` varchar(64) DEFAULT NULL,
   `v_id` varchar(64) DEFAULT NULL,
   `touid` varchar(64) DEFAULT NULL,
-  `stock_info` varchar(5120) DEFAULT NULL,
+  `stock_info` text CHARACTER SET utf8mb4,
   `thunimg` varchar(128) DEFAULT NULL,
   `o_c_id` varchar(32) DEFAULT NULL,
   `label_kind` varchar(128) DEFAULT NULL,
@@ -223,4 +223,4 @@ CREATE TABLE `viptype` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-06-09 16:12:21
+-- Dump completed on 2017-06-13 12:04:53

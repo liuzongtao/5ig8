@@ -26,8 +26,12 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 	 */
 	@Override
 	public void run() {
-		Cookie cookie = IgpMsgFactory.getInstance().getCookie();
-		IgpMsgFactory.getInstance().updateLiverMsg(cookie, uid);
+		try {
+			Cookie cookie = IgpMsgFactory.getInstance().getCookie();
+			IgpMsgFactory.getInstance().updateLiverMsg(cookie, uid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

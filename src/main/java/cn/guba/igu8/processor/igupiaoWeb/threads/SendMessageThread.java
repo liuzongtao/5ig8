@@ -37,8 +37,10 @@ public class SendMessageThread extends Thread {
 	@Override
 	public void run() {
 		// 如果，发送短消息
-		IgpMsgService.getInstance().sendMsg(teacherId, igpWebMsgBean, sendSms);
-
+		try {
+			IgpMsgService.getInstance().sendMsg(teacherId, igpWebMsgBean, sendSms);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-
 }

@@ -3,6 +3,8 @@ user = devuser
 password =devuser
 devMode = true
 
+contentSource=detail
+
 sendSms=false
 sendSmsWithEmail=true
 sendEmail=false

@@ -29,7 +29,10 @@ public class Constant {
 
 	public static final String URL_IGP_USER_STATUS = URL_IGP_BASE + "home/login/status.html?rd=24475.36465432024";
 
-	public static final String URL_IGP_MSG_LIVER = URL_IGP_BASE + "api/liver_msg.php?act=liver_center";
+	public static final String URL_IGP_MSG_LIVER = URL_IGP_BASE + "api/liver_msg.php?act=liver_center&source=pc";
+//	public static final String URL_IGP_MSG_LIVER = URL_IGP_BASE + "api/liver_msg.php?act=liver_center";
+	
+	public static final String URL_IGP_MSG_LIVER_DETAIL = URL_IGP_BASE + "api/live.php?act=load_detail&id=%d&oid=%s&soc&source=pc";
 	
 	
 	public static final String URL_5IGU8_DETAIL = "https://47.92.157.16/ccc";
