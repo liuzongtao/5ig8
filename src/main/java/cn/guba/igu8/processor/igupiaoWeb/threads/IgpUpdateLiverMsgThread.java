@@ -13,6 +13,8 @@ import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
  */
 public class IgpUpdateLiverMsgThread implements Runnable {
 
+	public static volatile boolean isWorking = false;
+
 	private int uid;
 
 	public IgpUpdateLiverMsgThread(int uid) {
@@ -26,11 +28,15 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 	 */
 	@Override
 	public void run() {
-		try {
-			Cookie cookie = IgpMsgFactory.getInstance().getCookie();
-			IgpMsgFactory.getInstance().updateLiverMsg(cookie, uid);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!isWorking) {
+			isWorking = true;
+			try {
+				Cookie cookie = IgpMsgFactory.getInstance().getCookie();
+				IgpMsgFactory.getInstance().updateLiverMsg(cookie, uid);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			isWorking = false;
 		}
 	}
 

@@ -216,4 +216,9 @@ public class IgpcontentDao {
 				"from igpcontent where teacherId= " + teacherId + " order by id desc");
 	}
 
+	public static Page<Igpcontent> paginateByTeacher4Vip(long teacherId, int pageNumber, int pageSize) {
+		return Igpcontent.dao.paginate(pageNumber, pageSize, "select *", "from igpcontent where kind='"
+				+ EIgpKind.VIP.getValue() + "' and teacherId=" + teacherId + " order by id desc");
+	}
+
 }

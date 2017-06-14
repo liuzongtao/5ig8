@@ -36,6 +36,20 @@ public class ContentsController extends Controller {
 		setAttr("detailListPage", detailListPage);
 		setAttr("teacherName", teacherName);
 		setAttr("tid", teacherId);
+		setAttr("uri", "/cc/list");
+		render("list.html");
+	}
+
+	public void viplist() {
+		Long teacherId = getParaToLong("tid", 13l);
+		int pageNumber = getParaToInt("p", 1);
+		Page<IgpWebDetailBean> detailListPage = ContentsService.getInstance().getDetailPageList4Vip(teacherId,
+				pageNumber);
+		String teacherName = TeacherService.getInstance().getTeacherName(teacherId);
+		setAttr("detailListPage", detailListPage);
+		setAttr("teacherName", teacherName);
+		setAttr("tid", teacherId);
+		setAttr("uri", "/cc/viplist");
 		render("list.html");
 	}
 

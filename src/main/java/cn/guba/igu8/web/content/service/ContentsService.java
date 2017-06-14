@@ -74,6 +74,24 @@ public class ContentsService {
 		return new Page<IgpWebDetailBean>(detailList, igpcontents.getPageNumber(), igpcontents.getPageSize(),
 				igpcontents.getTotalPage(), igpcontents.getTotalRow());
 	}
+	
+	/***
+	 * 为获取所有的vip信息
+	 * @param teacherId
+	 * @param pageNumber
+	 * @return
+	 */
+	public Page<IgpWebDetailBean> getDetailPageList4Vip(long teacherId, int pageNumber) {
+		int pageSize = 6;
+		Page<Igpcontent> igpcontents = IgpcontentDao.paginateByTeacher4Vip(teacherId, pageNumber, pageSize);
+		List<IgpWebDetailBean> detailList = new ArrayList<IgpWebDetailBean>();
+		for (Igpcontent igpcontent : igpcontents.getList()) {
+			IgpWebDetailBean tmpIgpWebDetailBean = getIgpWebDetailBean(teacherId, igpcontent);
+			detailList.add(tmpIgpWebDetailBean);
+		}
+		return new Page<IgpWebDetailBean>(detailList, igpcontents.getPageNumber(), igpcontents.getPageSize(),
+				igpcontents.getTotalPage(), igpcontents.getTotalRow());
+	}
 
 	/****
 	 * 生成前端需求

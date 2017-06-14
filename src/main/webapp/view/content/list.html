@@ -16,7 +16,7 @@
 		</div>
 		<div class="container_content"><p>#(x.detail)</p></div>
 		#end
-		#@paginate(detailListPage.pageNumber, detailListPage.totalPage, "/cc/list?tid="+tid+"&p=")
+		#@paginate(detailListPage.pageNumber, detailListPage.totalPage, "#(uri)?tid="+tid+"&p=")
 	</div>
 	
 	

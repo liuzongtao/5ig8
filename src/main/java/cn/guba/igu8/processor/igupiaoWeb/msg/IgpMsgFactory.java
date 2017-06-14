@@ -25,6 +25,7 @@ import cn.guba.igu8.core.utils.HttpUtil;
 import cn.guba.igu8.db.dao.IgpcontentDao;
 import cn.guba.igu8.db.dao.TeacherDao;
 import cn.guba.igu8.db.mysqlModel.Teacher;
+import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpContentSource;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpKind;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpDetailBean;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpDetailMsgBean;
@@ -126,8 +127,8 @@ public class IgpMsgFactory {
 					contentSource = PropKit.get("contentSource");
 				} catch (Exception e) {
 				}
-				if (contentSource.equals("detail")) {
-					getContentFromDetail(liverMsg, cookie,pfId);
+				if (Strings.equals(contentSource, EIgpContentSource.DETAIL.getValue())) {
+					getContentFromDetail(liverMsg, cookie, pfId);
 				}
 			}
 		} catch (Exception e) {
@@ -137,6 +138,13 @@ public class IgpMsgFactory {
 		return liverMsg;
 	}
 
+	/**
+	 * 从详细信息页面获取内容
+	 * 
+	 * @param liverMsg
+	 * @param cookie
+	 * @param pfId
+	 */
 	private void getContentFromDetail(IgpWebLiverMsgBean liverMsg, Cookie cookie, int pfId) {
 		if (liverMsg == null) {
 			return;
@@ -346,8 +354,8 @@ public class IgpMsgFactory {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if(i % 50 == 0){
-				System.out.println("===i===" + i + " ; userList = " + Json.toJson(userList,JsonFormat.compact()));
+			if (i % 50 == 0) {
+				System.out.println("===i===" + i + " ; userList = " + Json.toJson(userList, JsonFormat.compact()));
 			}
 		}
 		log.debugf("teacherPfId == %d,user size == %d", teacherPfId, userList.size());
@@ -460,18 +468,21 @@ public class IgpMsgFactory {
 		// IgpMsgFactory.getInstance().getWebMsgArr(cookie, 5, 2, 0);
 		// System.out.println(Json.toJson(webMsgArr));
 
-//		 int uidFromAll = IgpMsgFactory.getInstance().getUidFromAll(EIgpTeacher.daofeng.getValue());
-//		 System.out.println(uidFromAll);
+		// int uidFromAll =
+		// IgpMsgFactory.getInstance().getUidFromAll(EIgpTeacher.daofeng.getValue());
+		// System.out.println(uidFromAll);
 
-		 List<Integer> allUsers = IgpMsgFactory.getInstance().getAllUsers(2);
-		 System.out.println(EIgpTeacher.daofeng.getValue() + " == size == " + allUsers.size());
+		List<Integer> allUsers = IgpMsgFactory.getInstance().getAllUsers(2);
+		System.out.println(EIgpTeacher.daofeng.getValue() + " == size == " + allUsers.size());
 
-//		String url = "https://www.5igupiao.com/api/live.php?act=load_detail&id=91&oid=742411&soc&source=pc";
-//		Response response = HttpUtil.httpsPost(url, null, cookie);
-//		IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class, response.getContent());
-//		IgpDetailBean[] show_detail = fromJson.getShow_detail();
-//		String content = show_detail[0].getContent();
-//		System.out.println(content);
+		// String url =
+		// "https://www.5igupiao.com/api/live.php?act=load_detail&id=91&oid=742411&soc&source=pc";
+		// Response response = HttpUtil.httpsPost(url, null, cookie);
+		// IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class,
+		// response.getContent());
+		// IgpDetailBean[] show_detail = fromJson.getShow_detail();
+		// String content = show_detail[0].getContent();
+		// System.out.println(content);
 	}
 
 }
