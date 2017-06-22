@@ -27,12 +27,12 @@ public abstract class BaseUservipinfo<M extends BaseUservipinfo<M>> extends Mode
 		return get("uid");
 	}
 
-	public M setVipTypeId(java.lang.Long vipTypeId) {
+	public M setVipTypeId(java.lang.Integer vipTypeId) {
 		set("vipTypeId", vipTypeId);
 		return (M)this;
 	}
 
-	public java.lang.Long getVipTypeId() {
+	public java.lang.Integer getVipTypeId() {
 		return get("vipTypeId");
 	}
 

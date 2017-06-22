@@ -21,6 +21,7 @@ import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpKind;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpStockBean;
 import cn.guba.igu8.processor.igupiaoWeb.service.IgpMsgService;
 import cn.guba.igu8.web.content.beans.IgpWebDetailBean;
+import cn.guba.igu8.web.content.beans.KindViewBean;
 
 /**
  * @author zongtao liu
@@ -74,9 +75,10 @@ public class ContentsService {
 		return new Page<IgpWebDetailBean>(detailList, igpcontents.getPageNumber(), igpcontents.getPageSize(),
 				igpcontents.getTotalPage(), igpcontents.getTotalRow());
 	}
-	
+
 	/***
 	 * 为获取所有的vip信息
+	 * 
 	 * @param teacherId
 	 * @param pageNumber
 	 * @return
@@ -108,24 +110,23 @@ public class ContentsService {
 		}
 		detail.setName(teacher.getName());
 		detail.setTimeDesc(igpcontent.getRecTimeDesc());
-		detail.setKindDescr(IgpMsgService.getInstance().getKindDescr(igpcontent.getKind(), igpcontent.getVipGroupInfo()));
+		detail.setKindDescr(
+				IgpMsgService.getInstance().getKindDescr(igpcontent.getKind(), igpcontent.getVipGroupInfo()));
 		detail.setDetail(getContentDetail(igpcontent));
 		return detail;
 	}
 
 	public String getContentDetail(Igpcontent igpcontent) {
 		return getContentDetail(igpcontent.getBrief(), igpcontent.getKind(), igpcontent.getContent(),
-				igpcontent.getContentNew(), 
-				Json.fromJsonAsArray(String.class, igpcontent.getImage()));
+				igpcontent.getContentNew(), Json.fromJsonAsArray(String.class, igpcontent.getImage()));
 	}
 
-	public String getContentDetail(String brief, String kind, String content, String contentNew, 
-			String[] imageArr) {
+	public String getContentDetail(String brief, String kind, String content, String contentNew, String[] imageArr) {
 		StringBuilder sb = new StringBuilder();
 		if (Strings.isNotBlank(brief)) {
 			sb.append(brief).append("<br />");
 		}
-		if (kind != null && kind.equals(EIgpKind.CHARGE.getValue())){
+		if (kind != null && kind.equals(EIgpKind.CHARGE.getValue())) {
 			sb.append(content).append("<br />");
 		}
 		if (Strings.isNotBlank(contentNew)) {
@@ -166,6 +167,17 @@ public class ContentsService {
 			}
 		}
 		return sb.toString();
+	}
+
+	public List<KindViewBean> getKindList() {
+		List<KindViewBean> list = new ArrayList<KindViewBean>();
+		for (EIgpKind kind : EIgpKind.values()) {
+			KindViewBean bean = new KindViewBean();
+			bean.setKind(kind.getValue());
+			bean.setDescr(kind.getDescr());
+			list.add(bean);
+		}
+		return list;
 	}
 
 }

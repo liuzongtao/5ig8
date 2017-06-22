@@ -5,8 +5,6 @@ package cn.guba.igu8.core.init;
 
 import java.util.List;
 
-import org.nutz.lang.Lang;
-
 import cn.guba.igu8.db.dao.TeacherDao;
 import cn.guba.igu8.db.dao.UserDao;
 import cn.guba.igu8.db.dao.VipTypeDao;
@@ -14,6 +12,8 @@ import cn.guba.igu8.db.mysqlModel.Teacher;
 import cn.guba.igu8.db.mysqlModel.User;
 import cn.guba.igu8.db.mysqlModel.Uservipinfo;
 import cn.guba.igu8.web.teacher.beans.EIgpTeacher;
+import cn.guba.igu8.web.teacher.service.TeacherService;
+import cn.guba.igu8.web.user.beans.ERoleType;
 import cn.guba.igu8.web.vip.service.VipService;
 
 /**
@@ -48,7 +48,7 @@ public class SysInit {
 	 */
 	private void initDb() {
 		VipTypeDao.initInsert();
-		TeacherDao.initInsert();
+		TeacherService.getInstance().initTeacher();
 	}
 
 	private void initUser() {
@@ -67,11 +67,12 @@ public class SysInit {
 		if (user == null) {
 			user = new User();
 			user.setNickname(nickName);
-			user.setPasswd(Lang.md5(nickName + "@2017"));
+			user.setPasswd(nickName + "@2017");
 			user.setCreatTime(System.currentTimeMillis());
 			user.setPhoneNumber(18701641809l);
 			user.setEmail("369650047@qq.com");
-			user.save();
+			user.setRoleType(ERoleType.ADMIN.getValue());
+			UserDao.saveUser(user);
 			long uid = user.getId();
 			// 插入vip信息
 			initVipInfo(uid);
@@ -91,12 +92,13 @@ public class SysInit {
 		if (user == null) {
 			user = new User();
 			user.setNickname(nickName);
-			user.setPasswd(Lang.md5(nickName + "@2017"));
+			user.setPasswd(nickName + "@2017");
 			user.setCreatTime(System.currentTimeMillis());
 			user.setPhoneNumber(18810569982l);
 			user.setEmail("123660735@qq.com");
 			user.setInviterUid(adminUid);
-			user.save();
+			user.setRoleType(ERoleType.ADMIN.getValue());
+			UserDao.saveUser(user);
 			long uid = user.getId();
 			// 插入vip信息
 			insertIgpVipInfo(uid, EIgpTeacher.niuguqimeng.getValue());
@@ -163,7 +165,7 @@ public class SysInit {
 				isSendSms = true;
 				sendEmail = VipService.getInstance().getSendAllEmailStr();
 			}
-			if ( teacher.getPfId() == EIgpTeacher.niepanchongsheng.getValue()) {
+			if (teacher.getPfId() == EIgpTeacher.niepanchongsheng.getValue()) {
 				sendEmail = VipService.getInstance().getSendAllEmailStr();
 			}
 			insertVipInfo(uid, teacher, sendEmail, isSendSms);

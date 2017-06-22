@@ -37,7 +37,7 @@ public class TeacherDao {
 				Teacher teacher = new Teacher();
 				teacher.setPfId(igpTeacher.getValue());
 				teacher.setName(igpTeacher.getName());
-				teacher.setVipTypeId(Long.valueOf(EVipType.igupiao.getValue()));
+				teacher.setVipTypeId(EVipType.igupiao.getValue());
 				// teacher.setBuyEndTime(Long.MAX_VALUE);
 				teacher.setBuyEndTime(igpTeacher.getBuyEndTime());
 				teacherList.add(teacher);
@@ -99,11 +99,21 @@ public class TeacherDao {
 	 * 
 	 * @return
 	 */
-	public static List<Teacher> getIgpTeacherList() {
+	public static List<Teacher> getIgpTeachers() {
+		return getTeachers(EVipType.igupiao.getValue());
+	}
+
+	/**
+	 * 根据平台类型获取老师
+	 * 
+	 * @param typeId
+	 * @return
+	 */
+	public static List<Teacher> getTeachers(int typeId) {
 		Map<Long, Teacher> teachers = getTeacherMap();
 		List<Teacher> teacherList = new ArrayList<Teacher>();
 		for (Teacher teacher : teachers.values()) {
-			if (teacher.getVipTypeId() == EVipType.igupiao.getValue()) {
+			if (typeId == 0 || teacher.getVipTypeId() == typeId) {
 				teacherList.add(teacher);
 			}
 		}

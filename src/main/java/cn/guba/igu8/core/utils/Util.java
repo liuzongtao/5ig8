@@ -16,11 +16,15 @@ public class Util {
 	
 	private static SimpleDateFormat timeSdf = new SimpleDateFormat("HH时mm分");
 
-	public static String dateSecondFormat(long date) {
-		return sdf.format(new Date(date * 1000));
+	public static String dateSecondFormat(long dateSencond) {
+		return dateformat(dateSencond * 1000);
 	}
 	
-	public static String timeFormat(long date) {
-		return timeSdf.format(new Date(date * 1000));
+	public static String timeFormat(long dateSencond) {
+		return timeSdf.format(new Date(dateSencond * 1000));
+	}
+	
+	public static String dateformat(long date) {
+		return sdf.format(new Date(date));
 	}
 }

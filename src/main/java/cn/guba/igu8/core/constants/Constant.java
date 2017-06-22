@@ -39,5 +39,7 @@ public class Constant {
 //	public static final String URL_5IGU8_DETAIL = "https://www.5ig8.cn/ccc";
 	public static final String URL_5IGU8_LIST = "http://47.92.157.16/cc/list";
 	
+	public static final String USER_PWD_INIT = "5Igu8@2017";
+	
 
 }

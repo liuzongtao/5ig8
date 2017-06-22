@@ -68,7 +68,7 @@ public class IgpMsgFactory {
 	 * @param uid
 	 */
 	public void updateLiverMsg(Cookie cookie, int uid) {
-		List<Teacher> igpTeacherList = TeacherDao.getIgpTeacherList();
+		List<Teacher> igpTeacherList = TeacherDao.getIgpTeachers();
 		long now = System.currentTimeMillis();
 		for (Teacher teacher : igpTeacherList) {
 			if (now > teacher.getBuyEndTime()) {
@@ -181,7 +181,7 @@ public class IgpMsgFactory {
 	 * @param uid
 	 */
 	public void initOldMsg(Cookie cookie, int uid) {
-		List<Teacher> igpTeacherList = TeacherDao.getIgpTeacherList();
+		List<Teacher> igpTeacherList = TeacherDao.getIgpTeachers();
 		long now = System.currentTimeMillis();
 		for (Teacher teacher : igpTeacherList) {
 			if (teacher.getBuyEndTime() == null || now > teacher.getBuyEndTime()) {

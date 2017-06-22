@@ -28,5 +28,16 @@ public enum EVipType {
 	public String getDescr() {
 		return descr;
 	}
+	
+	public static EVipType getEVipType(int value){
+		EVipType result = null;
+		for(EVipType type : values()){
+			if(type.getValue() == value){
+				result = type;
+				break;
+			}
+		}
+		return result;
+	}
 
 }

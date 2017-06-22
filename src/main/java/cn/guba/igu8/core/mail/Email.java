@@ -148,6 +148,7 @@ public class Email {
 	public boolean sendMessage(String receiveAccount, String receiveAccountName, String mailSubject, String mailContent,
 			Set<String> bccAccountList) {
 		boolean result = false;
+		Transport transport = null;
 		try {
 			// 1.1. 创建一封邮件
 			MimeMessage message = new MimeMessage(session);
@@ -203,7 +204,7 @@ public class Email {
 			message.saveChanges();
 
 			// 2. 根据 Session 获取邮件传输对象
-			Transport transport = session.getTransport();
+			transport = session.getTransport();
 
 			// 3. 使用 邮箱账号 和 密码 连接邮件服务器, 这里认证的邮箱必须与 message 中的发件人邮箱一致, 否则报错
 			//
@@ -225,11 +226,19 @@ public class Email {
 			// 获取到的是在创建邮件对象时添加的所有收件人, 抄送人, 密送人
 			transport.sendMessage(message, message.getAllRecipients());
 
-			// 5. 关闭连接
-			transport.close();
+			
 			result = true;
 		} catch (UnsupportedEncodingException | MessagingException e) {
 			e.printStackTrace();
+		} finally{
+			if(transport != null){
+				// 5. 关闭连接
+				try {
+					transport.close();
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return result;
 	}

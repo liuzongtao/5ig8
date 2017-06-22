@@ -38,7 +38,7 @@ CREATE TABLE `eova_menu` (
   `is_del` tinyint(1) DEFAULT '0' COMMENT '是否隐藏',
   `filter` varchar(500) DEFAULT NULL COMMENT '初始数据过滤条件',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,7 +137,7 @@ CREATE TABLE `teacher` (
   `name` varchar(32) DEFAULT NULL,
   `buyEndTime` bigint(13) DEFAULT '0',
   `pfVipUid` int(11) DEFAULT '0',
-  `vipTypeId` bigint(4) NOT NULL,
+  `vipTypeId` int(3) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -157,6 +157,7 @@ CREATE TABLE `user` (
   `phoneNumber` bigint(13) DEFAULT NULL,
   `email` varchar(64) CHARACTER SET utf8mb4 DEFAULT NULL,
   `inviterUid` bigint(32) DEFAULT NULL,
+  `roleType` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -189,7 +190,7 @@ DROP TABLE IF EXISTS `uservipinfo`;
 CREATE TABLE `uservipinfo` (
   `id` bigint(32) NOT NULL AUTO_INCREMENT,
   `uid` bigint(32) NOT NULL,
-  `vipTypeId` bigint(32) DEFAULT NULL,
+  `vipTypeId` int(3) DEFAULT NULL,
   `vipEndTime` bigint(13) DEFAULT NULL,
   `concernedTeacherId` bigint(32) DEFAULT NULL,
   `sendEmail` varchar(32) CHARACTER SET utf8mb4 DEFAULT '""',
@@ -223,4 +224,7 @@ CREATE TABLE `viptype` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-06-13 12:04:53
+-- Dump completed on 2017-06-22 18:21:17
+
+
+INSERT INTO `eova_menu` VALUES (1,'user','用户管理','dir','icon-bricks',1,0,0,NULL,NULL,NULL,NULL,0,NULL),(2,'sys','系统管理','dir','icon-cog',2,0,0,NULL,NULL,NULL,NULL,0,NULL),(3,'biz','综合信息','dir','icon-plugin',3,0,0,NULL,NULL,NULL,NULL,0,NULL),(20,'user_list','用户列表','diy','icon-applicationsidetree',1,1,0,'','/user/list','',NULL,0,NULL),(21,'user_add','添加用户','diy','icon-layout',2,1,0,NULL,'/user/toAdd','',NULL,0,NULL),(22,'user_pwd','修改密码','diy','icon-databasetable',3,1,0,'','/user/toUpdatePwd','',NULL,0,NULL),(51,'sys_log','系统日志','diy','icon-tablemultiple',1,2,0,NULL,NULL,'',NULL,0,NULL);

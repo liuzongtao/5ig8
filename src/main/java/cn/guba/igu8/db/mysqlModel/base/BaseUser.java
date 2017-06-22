@@ -72,4 +72,13 @@ public abstract class BaseUser<M extends BaseUser<M>> extends Model<M> implement
 		return get("inviterUid");
 	}
 
+	public M setRoleType(java.lang.Integer roleType) {
+		set("roleType", roleType);
+		return (M)this;
+	}
+
+	public java.lang.Integer getRoleType() {
+		return get("roleType");
+	}
+
 }

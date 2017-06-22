@@ -42,4 +42,13 @@ public class EovaMenuDao {
 		return EovaMenu.dao.find("select * from eova_menu where parent_id=" + parentId + " order by order_num");
 	}
 
+	public static EovaMenu getEovaMenu(int id) {
+		return EovaMenu.dao.findById(id);
+	}
+
+	public static boolean addEovaMenu(EovaMenu eovaMenu) {
+		eovaMenuMap.put(eovaMenu.getId(), eovaMenu);
+		return eovaMenu.save();
+	}
+
 }

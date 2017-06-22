@@ -5,6 +5,8 @@
 	/***
 	* windows
 	* mysqldump --opt -d 5igu8 -udevuser -pdevuser --default-character-set=utf8mb4 |sed "s/AUTO_INCREMENT=[0-9]*//g" >5igu8.sql
+	* 
+	* mysqldump -t 5igu8 -udevuser -pdevuser --default-character-set=utf8mb4 eova_menu >> 5igu8.sql
 	*
 	* linux
 	* mysqldump --opt -d 5igu8 -udevuser -pdevuser --default-character-set=utf8mb4 |sed 's/AUTO_INCREMENT=[0-9]*//g' >5igu8.sql
