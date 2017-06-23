@@ -265,7 +265,7 @@ public class IgpMsgService {
 		sb.append(teacher.getName()).append(getKindDescr(msg.getKind(), msg.getVip_group_info())).append("<br />");
 		sb.append(Util.dateSecondFormat(msg.getRec_time())).append("<br />");
 		sb.append(ContentsService.getInstance().getContentDetail(msg.getBrief(), msg.getKind(), msg.getContent(),
-				msg.getContent_new(), msg.getImage())).append("<br />");
+				msg.getContent_new(), msg.getImage(),msg.getImage_thumb())).append("<br />");
 		if (showUrl) {
 			sb.append("更多信息：").append(Constant.URL_5IGU8_LIST + "?tid=" + teacher.getId());
 		}

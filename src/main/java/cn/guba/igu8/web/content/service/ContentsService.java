@@ -118,10 +118,23 @@ public class ContentsService {
 
 	public String getContentDetail(Igpcontent igpcontent) {
 		return getContentDetail(igpcontent.getBrief(), igpcontent.getKind(), igpcontent.getContent(),
-				igpcontent.getContentNew(), Json.fromJsonAsArray(String.class, igpcontent.getImage()));
+				igpcontent.getContentNew(), Json.fromJsonAsArray(String.class, igpcontent.getImage()),
+				Json.fromJsonAsArray(String.class, igpcontent.getImageThumb()));
 	}
 
-	public String getContentDetail(String brief, String kind, String content, String contentNew, String[] imageArr) {
+	/**
+	 * 获取详细内容
+	 * 
+	 * @param brief
+	 * @param kind
+	 * @param content
+	 * @param contentNew
+	 * @param imageArr
+	 * @param imageThumbArr
+	 * @return
+	 */
+	public String getContentDetail(String brief, String kind, String content, String contentNew, String[] imageArr,
+			String[] imageThumbArr) {
 		StringBuilder sb = new StringBuilder();
 		if (Strings.isNotBlank(brief)) {
 			sb.append(brief).append("<br />");
@@ -132,13 +145,27 @@ public class ContentsService {
 		if (Strings.isNotBlank(contentNew)) {
 			sb.append(contentNew).append("<br />");
 		}
-		if (imageArr.length > 0) {
+		String[] showImageArr = getShowImageArr(imageArr, imageThumbArr);
+		if (showImageArr.length > 0) {
 			sb.append("<br />");
-			for (String image : imageArr) {
+			for (String image : showImageArr) {
 				sb.append("<img src='" + image + "'><br />");
 			}
 		}
 		return sb.toString().replaceAll("<br /><br />", "<br />");
+	}
+
+	/**
+	 * 获取该显示的图像数组
+	 * @param imageArr
+	 * @param imageThumbArr
+	 * @return
+	 */
+	private String[] getShowImageArr(String[] imageArr, String[] imageThumbArr) {
+		if (imageArr.length > 0) {
+			return imageArr;
+		}
+		return imageThumbArr;
 	}
 
 	/***
