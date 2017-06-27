@@ -16,6 +16,7 @@ import cn.guba.igu8.core.init.SysInit;
 import cn.guba.igu8.core.interceptor.AuthInterceptor;
 import cn.guba.igu8.db.mysqlModel._MappingKit;
 import cn.guba.igu8.processor.igupiaoWeb.IgupiaoProcessor;
+import cn.guba.igu8.processor.igupiaoWeb.service.IgpMsgService;
 import cn.guba.igu8.web.content.controller.CommenedContentController;
 import cn.guba.igu8.web.content.controller.ContentsController;
 import cn.guba.igu8.web.index.controller.IndexController;
@@ -57,7 +58,7 @@ public class MyConfig extends JFinalConfig {
 	@Override
 	public void configRoute(Routes me) {
 		me.setBaseViewPath("/view");
-		me.add("/", IndexController.class,"index");
+		me.add("/", IndexController.class, "index");
 		me.add("/ccc", CommenedContentController.class, "content");
 		me.add("/cc", ContentsController.class, "content");
 		me.add("/user", UserController.class);
@@ -134,8 +135,11 @@ public class MyConfig extends JFinalConfig {
 		super.afterJFinalStart();
 		// 系统初始化
 		SysInit.getInstance().init();
+		// 初始化消息服务
+		IgpMsgService.getInstance();
 		// 爱股票信息系统初始化
 		IgupiaoProcessor.getInstance();
+
 	}
 
 }

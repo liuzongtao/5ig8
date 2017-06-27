@@ -26,6 +26,7 @@ import com.jfinal.kit.PropKit;
 
 import cn.guba.igu8.core.constants.Constant;
 import cn.guba.igu8.core.mail.MailFactory;
+import cn.guba.igu8.core.mail.SMTPMXLookup;
 import cn.guba.igu8.core.sms.SmsFactory;
 import cn.guba.igu8.core.utils.ExcelUtil;
 import cn.guba.igu8.core.utils.Util;
@@ -74,12 +75,13 @@ public class IgpMsgService {
 	 * 初始化
 	 */
 	private void init() {
-		String fileName = "user4Ad.xlsx";
+		String fileName = "packaged/user4Ad.xlsx";
 		File file = Files.findFile(fileName);
 		if (!file.exists() || !file.isFile()) {
 			return;
 		}
 		String sheetName = getCurWeekName();
+		log.info("file is " + file.getAbsolutePath() + " ; sheetName = " + sheetName);
 		List<User4AdInfo> excelObjList = ExcelUtil.getExcelObjList(file, sheetName, User4AdInfo.class);
 		long now = System.currentTimeMillis();
 		adUserMap.clear();
@@ -87,14 +89,22 @@ public class IgpMsgService {
 			long endTime = tmpUser4AdInfo.getEndTime();
 			if (endTime > now) {
 				Long key = tmpUser4AdInfo.getTeacherId();
-				List<User4AdInfo> list = null;
-				if (adUserMap.containsKey(key)) {
-					list = adUserMap.get(key);
-				} else {
-					list = new ArrayList<User4AdInfo>();
-					adUserMap.put(key, list);
+				String email = tmpUser4AdInfo.getEmail();
+				try {
+					boolean addressValid = SMTPMXLookup.isAddressValid(email);
+					if (addressValid) {
+						List<User4AdInfo> list = null;
+						if (adUserMap.containsKey(key)) {
+							list = adUserMap.get(key);
+						} else {
+							list = new ArrayList<User4AdInfo>();
+							adUserMap.put(key, list);
+						}
+						list.add(tmpUser4AdInfo);
+					}
+				} catch (Exception e) {
+					log.error(email + " is error ;" + e.getMessage());
 				}
-				list.add(tmpUser4AdInfo);
 			}
 		}
 	}

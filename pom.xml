@@ -38,7 +38,7 @@
 						<resource>
 							<directory>src/main/resources/packaged</directory>
 							<targetPath>WEB-INF/classes</targetPath>
-							<filtering>true</filtering>
+							<filtering>false</filtering>
 						</resource>
 					</webResources>
 					<warSourceDirectory>src/main/webapp</warSourceDirectory>
