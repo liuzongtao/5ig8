@@ -3,6 +3,8 @@
  */
 package cn.guba.igu8.processor.igupiaoWeb.service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,7 +12,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import org.nutz.lang.Files;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -20,6 +27,7 @@ import com.jfinal.kit.PropKit;
 import cn.guba.igu8.core.constants.Constant;
 import cn.guba.igu8.core.mail.MailFactory;
 import cn.guba.igu8.core.sms.SmsFactory;
+import cn.guba.igu8.core.utils.ExcelUtil;
 import cn.guba.igu8.core.utils.Util;
 import cn.guba.igu8.db.dao.TeacherDao;
 import cn.guba.igu8.db.dao.UserDao;
@@ -27,6 +35,7 @@ import cn.guba.igu8.db.dao.UserVipInfoDao;
 import cn.guba.igu8.db.mysqlModel.Teacher;
 import cn.guba.igu8.db.mysqlModel.User;
 import cn.guba.igu8.db.mysqlModel.Uservipinfo;
+import cn.guba.igu8.processor.igupiaoWeb.beans.User4AdInfo;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpKind;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpWebMsgBean;
 import cn.guba.igu8.web.content.service.ContentsService;
@@ -37,11 +46,17 @@ import cn.guba.igu8.web.content.service.ContentsService;
  */
 public class IgpMsgService {
 
+	private static Map<Long, List<User4AdInfo>> adUserMap = new ConcurrentHashMap<Long, List<User4AdInfo>>();
+
 	private static Log log = Logs.get();
 
 	private static volatile IgpMsgService igpMsgService;
 
 	private IgpMsgService() {
+		init();
+		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+		executor.scheduleAtFixedRate(new UpadateAdUsersThread(), getInitialDelay() / 1000, 7 * 24 * 60 * 60,
+				TimeUnit.SECONDS);
 	}
 
 	public static IgpMsgService getInstance() {
@@ -53,6 +68,63 @@ public class IgpMsgService {
 			}
 		}
 		return igpMsgService;
+	}
+
+	/**
+	 * 初始化
+	 */
+	private void init() {
+		String fileName = "user4Ad.xlsx";
+		File file = Files.findFile(fileName);
+		if (!file.exists() || !file.isFile()) {
+			return;
+		}
+		String sheetName = getCurWeekName();
+		List<User4AdInfo> excelObjList = ExcelUtil.getExcelObjList(file, sheetName, User4AdInfo.class);
+		long now = System.currentTimeMillis();
+		adUserMap.clear();
+		for (User4AdInfo tmpUser4AdInfo : excelObjList) {
+			long endTime = tmpUser4AdInfo.getEndTime();
+			if (endTime > now) {
+				Long key = tmpUser4AdInfo.getTeacherId();
+				List<User4AdInfo> list = null;
+				if (adUserMap.containsKey(key)) {
+					list = adUserMap.get(key);
+				} else {
+					list = new ArrayList<User4AdInfo>();
+					adUserMap.put(key, list);
+				}
+				list.add(tmpUser4AdInfo);
+			}
+		}
+	}
+
+	/**
+	 * 获取初始的延迟时间
+	 * 
+	 * @return
+	 */
+	private long getInitialDelay() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_WEEK, 1);
+		cal.set(Calendar.HOUR_OF_DAY, 12);
+		cal.add(Calendar.DATE, 7);
+		return cal.getTimeInMillis() - System.currentTimeMillis();
+	}
+
+	/**
+	 * 获取当前周的名字
+	 * 
+	 * @return
+	 */
+	private String getCurWeekName() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_WEEK, 1);
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		String name = String.valueOf(year * 10000 + month * 100 + day);
+		return name;
 	}
 
 	/***
@@ -113,6 +185,13 @@ public class IgpMsgService {
 		return userSet;
 	}
 
+	/**
+	 * 获取邮件列表
+	 * 
+	 * @param concernedTeacherId
+	 * @param kind
+	 * @return
+	 */
 	public Map<Boolean, Set<String>> getVipEmails(long concernedTeacherId, String kind) {
 		Map<Boolean, Set<String>> emailMap = new HashMap<Boolean, Set<String>>();
 		List<Uservipinfo> vipList = UserVipInfoDao.getUservipinfos(concernedTeacherId);
@@ -136,7 +215,43 @@ public class IgpMsgService {
 				}
 			}
 		}
+		// 加入广告邮件
+		Set<String> adEmails = getAdEmails(concernedTeacherId, kind);
+		if (adEmails != null && adEmails.size() > 0) {
+			Set<String> emailSet = emailMap.get(false);
+			if (emailSet == null) {
+				emailSet = new HashSet<String>();
+				emailMap.put(false, emailSet);
+			}
+			emailSet.addAll(adEmails);
+		}
+
 		return emailMap;
+	}
+
+	/**
+	 * 获取广告邮件列表
+	 * 
+	 * @param concernedTeacherId
+	 * @param kind
+	 * @return
+	 */
+	private Set<String> getAdEmails(long concernedTeacherId, String kind) {
+		int size = adUserMap.size();
+		if (size == 0) {
+			return null;
+		}
+		Set<String> mailSet = new HashSet<String>();
+		if (adUserMap.containsKey(concernedTeacherId)) {
+			List<User4AdInfo> list = adUserMap.get(concernedTeacherId);
+			long now = System.currentTimeMillis();
+			for (User4AdInfo tmpUser4AdInfo : list) {
+				if (tmpUser4AdInfo.getEndTime() > now && tmpUser4AdInfo.getKinds().contains(kind)) {
+					mailSet.add(tmpUser4AdInfo.getEmail());
+				}
+			}
+		}
+		return mailSet;
 	}
 
 	/**
@@ -265,7 +380,7 @@ public class IgpMsgService {
 		sb.append(teacher.getName()).append(getKindDescr(msg.getKind(), msg.getVip_group_info())).append("<br />");
 		sb.append(Util.dateSecondFormat(msg.getRec_time())).append("<br />");
 		sb.append(ContentsService.getInstance().getContentDetail(msg.getBrief(), msg.getKind(), msg.getContent(),
-				msg.getContent_new(), msg.getImage(),msg.getImage_thumb())).append("<br />");
+				msg.getContent_new(), msg.getImage(), msg.getImage_thumb())).append("<br />");
 		if (showUrl) {
 			sb.append("更多信息：").append(Constant.URL_5IGU8_LIST + "?tid=" + teacher.getId());
 		}
@@ -288,6 +403,19 @@ public class IgpMsgService {
 			}
 		} else {
 			return "【公开信息】";
+		}
+	}
+
+	private class UpadateAdUsersThread extends Thread {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Thread#run()
+		 */
+		@Override
+		public void run() {
+			init();
 		}
 	}
 

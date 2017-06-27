@@ -3,6 +3,7 @@
  */
 package cn.guba.igu8.core.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -26,5 +27,10 @@ public class Util {
 	
 	public static String dateformat(long date) {
 		return sdf.format(new Date(date));
+	}
+	
+	public static Date parseDate(String dateStr,String formate) throws ParseException {
+		SimpleDateFormat mySdf = new SimpleDateFormat(formate);
+		return mySdf.parse(dateStr);
 	}
 }
