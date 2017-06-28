@@ -63,17 +63,18 @@ public class MailFactory {
 	public boolean sendEmail(Set<String> emailAddrSet, String teacherName, String mailContent) {
 		boolean result = false;
 		if (myEmailList != null && myEmailList.size() > 0 && emailAddrSet.size() > 0) {
-			Email email = myEmailList.get(curIndex);
-			curIndex = (curIndex + 1) % myEmailList.size();
 			List<String> emailAddrList = new ArrayList<String>(emailAddrSet);
 			int limitSize = 20;
 			int tmpIndex = 0;
 			Set<String> tmpEmailAddrSet = getLimit(emailAddrList, tmpIndex, limitSize);
 			while (tmpEmailAddrSet != null && tmpEmailAddrSet.size() > 0) {
+				Email email = myEmailList.get(curIndex);
+				curIndex = (curIndex + 1) % myEmailList.size();
 				String mailSubject = Constant.EMAIL_NAME + ":" + teacherName;
 				result = email.sendBccMessage(emailAddrSet, mailSubject, mailContent);
 				if (!result) {
-					break;
+					// 如果失败，再次发送一遍
+					email.sendBccMessage(emailAddrSet, mailSubject, mailContent);
 				}
 				tmpIndex += tmpEmailAddrSet.size();
 				tmpEmailAddrSet = getLimit(emailAddrList, tmpIndex, limitSize);

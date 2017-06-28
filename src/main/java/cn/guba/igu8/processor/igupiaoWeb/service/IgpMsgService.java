@@ -17,11 +17,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.nutz.lang.Files;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+import com.jfinal.kit.PathKit;
 import com.jfinal.kit.PropKit;
 
 import cn.guba.igu8.core.constants.Constant;
@@ -75,9 +75,10 @@ public class IgpMsgService {
 	 * 初始化
 	 */
 	private void init() {
-		String fileName = "packaged/user4Ad.xlsx";
-		File file = Files.findFile(fileName);
+		String fileName = PathKit.getRootClassPath() + File.separator + "user4Ad.xlsx";
+		File file = new File(fileName);
 		if (!file.exists() || !file.isFile()) {
+			log.error(fileName + " is not exist or not a file");
 			return;
 		}
 		String sheetName = getCurWeekName();
@@ -85,28 +86,49 @@ public class IgpMsgService {
 		List<User4AdInfo> excelObjList = ExcelUtil.getExcelObjList(file, sheetName, User4AdInfo.class);
 		long now = System.currentTimeMillis();
 		adUserMap.clear();
+		Set<String> correctSet = new HashSet<String>();
 		for (User4AdInfo tmpUser4AdInfo : excelObjList) {
 			long endTime = tmpUser4AdInfo.getEndTime();
 			if (endTime > now) {
 				Long key = tmpUser4AdInfo.getTeacherId();
 				String email = tmpUser4AdInfo.getEmail();
-				try {
-					boolean addressValid = SMTPMXLookup.isAddressValid(email);
-					if (addressValid) {
-						List<User4AdInfo> list = null;
-						if (adUserMap.containsKey(key)) {
-							list = adUserMap.get(key);
-						} else {
-							list = new ArrayList<User4AdInfo>();
-							adUserMap.put(key, list);
-						}
-						list.add(tmpUser4AdInfo);
+				boolean addressValid = isCorrectEmail(correctSet, email);
+				if (addressValid) {
+					List<User4AdInfo> list = null;
+					if (adUserMap.containsKey(key)) {
+						list = adUserMap.get(key);
+					} else {
+						list = new ArrayList<User4AdInfo>();
+						adUserMap.put(key, list);
 					}
-				} catch (Exception e) {
-					log.error(email + " is error ;" + e.getMessage());
+					list.add(tmpUser4AdInfo);
 				}
 			}
 		}
+	}
+
+	/**
+	 * 检验是否是合法的email
+	 * 
+	 * @param correctSet
+	 * @param email
+	 * @return
+	 */
+	private boolean isCorrectEmail(Set<String> correctSet, String email) {
+		Boolean ischeckEmail = PropKit.getBoolean("ischeckEmail");
+		if (!ischeckEmail) {
+			return true;
+		}
+		if (correctSet.contains(email)) {
+			return true;
+		}
+		boolean addressValid = SMTPMXLookup.isAddressValid(email);
+		if (addressValid) {
+			correctSet.add(email);
+		} else {
+			log.error(email + " is valid !");
+		}
+		return addressValid;
 	}
 
 	/**
@@ -427,6 +449,39 @@ public class IgpMsgService {
 		public void run() {
 			init();
 		}
+	}
+	
+	public static void main(String[] args) {
+		String fileName = PathKit.getRootClassPath() + File.separator + "user4Ad.xlsx";
+		File file = new File(fileName);
+		if (!file.exists() || !file.isFile()) {
+			log.error(fileName + " is not exist or not a file");
+			return;
+		}
+		List<String> sheetNames = ExcelUtil.getSheetNames(file);
+		Set<String> correctSet = new HashSet<String>();
+		for(String sheetName : sheetNames){
+			System.out.println(" == " + sheetName + " == " );
+			Set<String> errorSet = new HashSet<String>();
+			List<User4AdInfo> excelObjList = ExcelUtil.getExcelObjList(file, sheetName, User4AdInfo.class);
+			for(User4AdInfo tmpUser4AdInfo : excelObjList){
+				String email = tmpUser4AdInfo.getEmail();
+				if (correctSet.contains(email)) {
+					continue;
+				}
+				boolean addressValid = SMTPMXLookup.isAddressValid(email);
+				if (addressValid) {
+					correctSet.add(email);
+				} else {
+					if(errorSet.contains(email)){
+						System.out.println(sheetName + " == " + email );
+					}
+					errorSet.add(email);
+				}
+			}
+			
+		}
+		
 	}
 
 }

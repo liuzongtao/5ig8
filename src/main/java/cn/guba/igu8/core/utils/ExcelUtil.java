@@ -1,6 +1,7 @@
 package cn.guba.igu8.core.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -126,8 +127,7 @@ public class ExcelUtil {
 		}
 		return rList;
 	}
-	
-	
+
 	public static List<String> getSheetNames(File file) {
 		List<String> list = new ArrayList<String>();
 		if (file == null) {
@@ -145,7 +145,7 @@ public class ExcelUtil {
 					workbook = new HSSFWorkbook(stream);
 				}
 				int sheetNum = workbook.getNumberOfSheets();
-				for(int i = 0 ; i < sheetNum ; i++){
+				for (int i = 0; i < sheetNum; i++) {
 					list.add(workbook.getSheetName(i));
 				}
 			} catch (Exception e) {
@@ -155,7 +155,6 @@ public class ExcelUtil {
 		}
 		return list;
 	}
-	
 
 	/***
 	 * 根据 sheet的index获取 对象列表
@@ -215,7 +214,7 @@ public class ExcelUtil {
 	 */
 	private static <T> List<T> getObjectFromSheet(Sheet sheet, Class<T> clazz) throws Exception {
 		List<T> rList = new ArrayList<T>();
-		if(sheet == null){
+		if (sheet == null) {
 			return rList;
 		}
 		int rowCount = sheet.getPhysicalNumberOfRows();
@@ -241,7 +240,7 @@ public class ExcelUtil {
 			}
 			for (int j = 0; j < colunmCount; j++) {
 				Cell tmpCell = tmpRow.getCell(j);
-				if(tmpCell == null){
+				if (tmpCell == null) {
 					continue;
 				}
 				String tmpCellValue = getCellValue(tmpCell);
@@ -260,6 +259,78 @@ public class ExcelUtil {
 			rList.add(instance);
 		}
 		return rList;
+	}
+
+	/**
+	 * 写入excel中
+	 * 
+	 * @param filePath
+	 * @param sheetName
+	 * @param objList
+	 */
+	public static <T> void writeExcel(String filePath, String sheetName, List<T> objList) {
+		File file = new File(filePath);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (file.exists()) {
+			Workbook workbook = null;
+			InputStream stream = Streams.fileIn(file);
+			try {
+				if (file.getName().contains(".xlsx")) {
+					workbook = new XSSFWorkbook(stream);
+				} else {
+					workbook = new HSSFWorkbook(stream);
+				}
+				Sheet sheet = workbook.getSheet(sheetName);
+				if (sheet == null) {
+					sheet = workbook.createSheet();
+				}
+				writeToSheet(sheet, objList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			Streams.safeClose(stream);
+		}
+	}
+
+	/**
+	 * 列表写入sheet中
+	 * 
+	 * @param sheet
+	 * @param objList
+	 * @throws Exception
+	 */
+	private static <T> void writeToSheet(Sheet sheet, List<T> objList) throws Exception {
+		if (objList == null || objList.size() == 0) {
+			return;
+		}
+		int rowCount = sheet.getPhysicalNumberOfRows();
+		T t = objList.get(0);
+		Class<?> clazz = t.getClass();
+		if (rowCount == 0) {
+			Row row0 = sheet.createRow(0);
+			Field[] declaredFields = clazz.getDeclaredFields();
+			int index = 0;
+			for (Field field : declaredFields) {
+				Cell tmpCell = row0.createCell(index);
+				tmpCell.setCellValue(field.getName());
+			}
+			rowCount++;
+		}
+		for (T obj : objList) {
+			Row row = sheet.createRow(rowCount++);
+			Field[] declaredFields = clazz.getDeclaredFields();
+			int index = 0;
+			for (Field field : declaredFields) {
+				Cell tmpCell = row.createCell(index);
+				tmpCell.setCellValue(String.valueOf(Mirror.me(clazz).getValue(obj, field)));
+			}
+		}
 	}
 
 }

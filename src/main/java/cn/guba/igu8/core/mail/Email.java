@@ -226,7 +226,6 @@ public class Email {
 			// 获取到的是在创建邮件对象时添加的所有收件人, 抄送人, 密送人
 			transport.sendMessage(message, message.getAllRecipients());
 
-			
 			result = true;
 		} catch (UnsupportedEncodingException | MessagingException e) {
 			e.printStackTrace();

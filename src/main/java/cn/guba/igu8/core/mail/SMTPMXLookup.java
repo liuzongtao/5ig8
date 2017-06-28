@@ -20,11 +20,17 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
+
 /**
  * @author zongtao liu
  *
  */
 public class SMTPMXLookup {
+
+	private static Log log = Logs.get();
+
 	private static int hear(BufferedReader in) throws IOException {
 		String line = null;
 		int res = 0;
@@ -122,19 +128,19 @@ public class SMTPMXLookup {
 				BufferedWriter wtr = new BufferedWriter(new OutputStreamWriter(skt.getOutputStream()));
 
 				res = hear(rdr);
-				if (res != 220){
+				if (res != 220) {
 					throw new Exception("Invalid header");
 				}
 				say(wtr, "EHLO rgagnon.com");
 
 				res = hear(rdr);
-				if (res != 250){
+				if (res != 250) {
 					throw new Exception("Not ESMTP");
 				}
 				// validate the sender address  
 				say(wtr, "MAIL FROM: <tim@orbaker.com>");
 				res = hear(rdr);
-				if (res != 250){
+				if (res != 250) {
 					throw new Exception("Sender rejected");
 				}
 				say(wtr, "RCPT TO: <" + address + ">");
@@ -145,7 +151,7 @@ public class SMTPMXLookup {
 				hear(rdr);
 				say(wtr, "QUIT");
 				hear(rdr);
-				if (res != 250){
+				if (res != 250) {
 					throw new Exception("Address is not valid!");
 				}
 				valid = true;
@@ -154,7 +160,7 @@ public class SMTPMXLookup {
 				skt.close();
 			} catch (Exception ex) {
 				// Do nothing but try next host
-				ex.printStackTrace();
+				//log.error(mxList.get(mx) + " == " + address + " : " + ex.getMessage());
 			} finally {
 				if (valid)
 					return true;
@@ -162,11 +168,12 @@ public class SMTPMXLookup {
 		}
 		return false;
 	}
-	
+
 	public static void main(String[] args) {
-		String[]  testData = {"real@rgagnon.com", "you@acquisto.net", "fail.me@nowhere.spam", "arkham@bigmeanogre.net", "nosuchaddress@yahoo.com"};
-		for(int ctr = 0 ; ctr < testData.length ; ctr++){
-			System.out.println(testData[ ctr ] + " is valid? " + isAddressValid( testData[ ctr ] ));
+		String[] testData = { "369650047@qq.com", "you@acquisto.net", "fail.me@nowhere.spam", "arkham@bigmeanogre.net",
+				"nosuchaddress@yahoo.com" };
+		for (int ctr = 0; ctr < testData.length; ctr++) {
+			System.out.println(testData[ctr] + " is valid? " + isAddressValid(testData[ctr]));
 		}
 	}
 }
