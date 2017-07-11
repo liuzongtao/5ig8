@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
@@ -21,7 +22,7 @@ import cn.guba.igu8.db.mysqlModel.Uservipinfo;
  */
 public class UserVipInfoDao {
 
-	private static Map<Long, List<Uservipinfo>> mapInfo = new ConcurrentHashMap<Long, List<Uservipinfo>>();
+	private static Map<Long, CopyOnWriteArrayList<Uservipinfo>> mapInfo = new ConcurrentHashMap<Long, CopyOnWriteArrayList<Uservipinfo>>();
 
 	private static void init() {
 		if (mapInfo.size() > 0) {
@@ -33,11 +34,11 @@ public class UserVipInfoDao {
 		}
 		for (Uservipinfo info : list) {
 			long teacherId = info.getConcernedTeacherId();
-			List<Uservipinfo> tmpList = null;
+			CopyOnWriteArrayList<Uservipinfo> tmpList = null;
 			if (mapInfo.containsKey(teacherId)) {
 				tmpList = mapInfo.get(teacherId);
 			} else {
-				tmpList = new ArrayList<Uservipinfo>();
+				tmpList = new CopyOnWriteArrayList<Uservipinfo>();
 				mapInfo.put(teacherId, tmpList);
 			}
 			tmpList.add(info);
@@ -85,7 +86,7 @@ public class UserVipInfoDao {
 	public static List<Uservipinfo> getVipList(long uid) {
 		init();
 		List<Uservipinfo> vipList = new ArrayList<Uservipinfo>();
-		Collection<List<Uservipinfo>> values = mapInfo.values();
+		Collection<CopyOnWriteArrayList<Uservipinfo>> values = mapInfo.values();
 		long now = System.currentTimeMillis();
 		for (List<Uservipinfo> value : values) {
 			List<Uservipinfo> tmpList = new ArrayList<Uservipinfo>();
@@ -104,7 +105,7 @@ public class UserVipInfoDao {
 
 	public static void delByUid(long uid) {
 		// 先从内容中清除
-		Collection<List<Uservipinfo>> values = mapInfo.values();
+		Collection<CopyOnWriteArrayList<Uservipinfo>> values = mapInfo.values();
 		long now = System.currentTimeMillis();
 
 		for (List<Uservipinfo> value : values) {
@@ -125,7 +126,7 @@ public class UserVipInfoDao {
 
 	public static void delById(long id) {
 		Uservipinfo uservipinfo = null;
-		for (Entry<Long, List<Uservipinfo>> entry : mapInfo.entrySet()) {
+		for (Entry<Long, CopyOnWriteArrayList<Uservipinfo>> entry : mapInfo.entrySet()) {
 			List<Uservipinfo> values = entry.getValue();
 			for (Uservipinfo tmpentry : values) {
 				if (tmpentry.getId() == id) {
@@ -151,7 +152,7 @@ public class UserVipInfoDao {
 	public static Uservipinfo getById(long id) {
 		init();
 		Uservipinfo uservipinfo = null;
-		for (Entry<Long, List<Uservipinfo>> entry : mapInfo.entrySet()) {
+		for (Entry<Long, CopyOnWriteArrayList<Uservipinfo>> entry : mapInfo.entrySet()) {
 			for (Uservipinfo tmpentry : entry.getValue()) {
 				if (tmpentry.getId() == id) {
 					uservipinfo = tmpentry;
@@ -168,11 +169,11 @@ public class UserVipInfoDao {
 	public static boolean add(Uservipinfo uservipinfo) {
 		init();
 		long teacherId = uservipinfo.getConcernedTeacherId();
-		List<Uservipinfo> tmpList = null;
+		CopyOnWriteArrayList<Uservipinfo> tmpList = null;
 		if (mapInfo.containsKey(teacherId)) {
 			tmpList = mapInfo.get(teacherId);
 		} else {
-			tmpList = new ArrayList<Uservipinfo>();
+			tmpList = new CopyOnWriteArrayList<Uservipinfo>();
 			mapInfo.put(teacherId, tmpList);
 		}
 		tmpList.add(uservipinfo);
@@ -184,7 +185,7 @@ public class UserVipInfoDao {
 		long id = uservipinfo.getId();
 		Uservipinfo oldUservipinfo = null;
 		long oldTeacherId = 0;
-		for (Entry<Long, List<Uservipinfo>> entry : mapInfo.entrySet()) {
+		for (Entry<Long, CopyOnWriteArrayList<Uservipinfo>> entry : mapInfo.entrySet()) {
 			for (Uservipinfo tmpentry : entry.getValue()) {
 				if (tmpentry.getId() == id) {
 					oldUservipinfo = tmpentry;
@@ -204,9 +205,9 @@ public class UserVipInfoDao {
 		if (oldTeacherId != newTeacherId) {// 需要修改缓存中位置
 			List<Uservipinfo> oldList = mapInfo.get(oldTeacherId);
 			oldList.remove(oldUservipinfo);
-			List<Uservipinfo> newList = mapInfo.get(newTeacherId);
+			CopyOnWriteArrayList<Uservipinfo> newList = mapInfo.get(newTeacherId);
 			if (newList == null) {
-				newList = new ArrayList<Uservipinfo>();
+				newList = new CopyOnWriteArrayList<Uservipinfo>();
 				mapInfo.put(newTeacherId, newList);
 			}
 			newList.add(uservipinfo);

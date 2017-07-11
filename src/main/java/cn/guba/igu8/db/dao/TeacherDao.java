@@ -4,9 +4,9 @@
 package cn.guba.igu8.db.dao;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -26,7 +26,7 @@ public class TeacherDao {
 
 	private static Log log = Logs.get();
 
-	private static Map<Long, Teacher> teacherMap = new HashMap<Long, Teacher>();
+	private static Map<Long, Teacher> teacherMap = new ConcurrentHashMap<Long, Teacher>();
 
 	public static void initInsert() {
 		List<Teacher> list = Teacher.dao.find("select * from teacher where vipTypeId=" + EVipType.igupiao.getValue());
@@ -152,10 +152,14 @@ public class TeacherDao {
 
 	private static Map<Long, Teacher> getTeacherMap() {
 		if (teacherMap.size() == 0) {
-			List<Teacher> teacherList = Teacher.dao.find("select * from teacher");
-			if (teacherList != null) {
-				for (Teacher teacher : teacherList) {
-					teacherMap.put(teacher.getId(), teacher);
+			synchronized (TeacherDao.class) {
+				if (teacherMap.size() == 0) {
+					List<Teacher> teacherList = Teacher.dao.find("select * from teacher");
+					if (teacherList != null) {
+						for (Teacher teacher : teacherList) {
+							teacherMap.put(teacher.getId(), teacher);
+						}
+					}
 				}
 			}
 		}

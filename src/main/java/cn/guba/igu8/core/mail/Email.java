@@ -3,7 +3,6 @@
  */
 package cn.guba.igu8.core.mail;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Properties;
@@ -12,9 +11,11 @@ import java.util.Set;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -22,7 +23,11 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.repo.Base64;
 
 import cn.guba.igu8.core.constants.Constant;
@@ -33,8 +38,12 @@ import cn.guba.igu8.core.constants.Constant;
  */
 public class Email {
 
+	private static Log log = Logs.get();
+
 	private static final String SMPT_HOST_QQ = "smtp.qq.com";
 	private static final String SMPT_HOST_163 = "smtp.163.com";
+	
+	private volatile long lastSendTime = 0;
 
 	/***
 	 * 账号
@@ -122,7 +131,7 @@ public class Email {
 
 		// 2. 根据配置创建会话对象, 用于和邮件服务器交互
 		this.session = Session.getDefaultInstance(props);
-//		session.setDebug(true);
+		// session.setDebug(true);
 	}
 
 	/***
@@ -138,6 +147,7 @@ public class Email {
 
 	/***
 	 * 发送邮件
+	 * 
 	 * @param receiveAccount
 	 * @param receiveAccountName
 	 * @param mailSubject
@@ -147,11 +157,23 @@ public class Email {
 	 */
 	public boolean sendMessage(String receiveAccount, String receiveAccountName, String mailSubject, String mailContent,
 			Set<String> bccAccountList) {
+		long now = System.currentTimeMillis();
+		long intervalTime = 3 * 1000;
+		if(now - lastSendTime < intervalTime){
+			try {
+				Thread.sleep(lastSendTime + intervalTime - now);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		intervalTime = now;
 		boolean result = false;
 		Transport transport = null;
+		// 1.1. 创建一封邮件
+		MimeMessage message = null;
 		try {
 			// 1.1. 创建一封邮件
-			MimeMessage message = new MimeMessage(session);
+			message = new MimeMessage(session);
 			// 1.2. From: 发件人
 			if (Strings.isBlank(accountName)) {
 				message.setFrom(new InternetAddress(account));
@@ -227,10 +249,24 @@ public class Email {
 			transport.sendMessage(message, message.getAllRecipients());
 
 			result = true;
-		} catch (UnsupportedEncodingException | MessagingException e) {
+		} catch (SendFailedException e) {
+			log.error(e.getMessage());
+			Address[] invalidAddresses = e.getInvalidAddresses();
+			log.error("invalidAddresses is " + Json.toJson(invalidAddresses, JsonFormat.compact()));
+			Address[] validUnsentAddresses = e.getValidUnsentAddresses();
+			Set<String> unsentSet = new HashSet<String>();
+			for (Address validUnsentAddress : validUnsentAddresses) {
+				unsentSet.add(validUnsentAddress.toString());
+			}
+			log.error("unsentSet is " + Json.toJson(unsentSet, JsonFormat.compact()));
+			if(invalidAddresses != null){//当invalidAddresses为空时，说明邮箱系统出了问题，不在进行发送邮件
+				result = sendMessage(receiveAccount, receiveAccountName, mailSubject, mailContent, unsentSet);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
 			e.printStackTrace();
-		} finally{
-			if(transport != null){
+		} finally {
+			if (transport != null) {
 				// 5. 关闭连接
 				try {
 					transport.close();
@@ -248,6 +284,7 @@ public class Email {
 
 	/***
 	 * 发送邮件
+	 * 
 	 * @param receiveAccount
 	 * @param mailSubject
 	 * @param mailContent
@@ -261,6 +298,7 @@ public class Email {
 
 	/***
 	 * 发送给自己，密送给其他人
+	 * 
 	 * @param bccAccountList
 	 * @param mailSubject
 	 * @param mailContent
@@ -271,17 +309,19 @@ public class Email {
 	}
 
 	public static void main(String[] args) {
-//		Email email = new Email("3478863162@qq.com", "iqmrxajszxfbciij", Constant.EMAIL_NAME);
+		// Email email = new Email("3478863162@qq.com", "iqmrxajszxfbciij",
+		// Constant.EMAIL_NAME);
 		Email email = new Email("369650047@qq.com", "knjbympaaihzbiha", Constant.EMAIL_NAME);
-//		Email email = new Email("liuzongtao-tao@163.com", "mesufy850815", Constant.EMAIL_NAME);
-//		email.setAffix("e:/123.txt", "123.txt");
+		// Email email = new Email("liuzongtao-tao@163.com", "mesufy850815",
+		// Constant.EMAIL_NAME);
+		// email.setAffix("e:/123.txt", "123.txt");
 		String content = "涅槃对于大势观，风控以及底部支撑，整个趋势已经用技术说明，没有太复杂的言语，简单实用。今天可以等待点位做一下个股反抽，但仅仅当做反抽，切勿重仓抄底。具体走势请翻看最近的直播记录。<br />天津港，支撑14.2，13。压力15.9，16.6。个人意见，盈亏自负。<br />今日操作";
-		Set< String> accountSet = new HashSet<String>();
+		Set<String> accountSet = new HashSet<String>();
 		accountSet.add("369650047@qq.com");
 		accountSet.add("3478863162@qq.com");
-		
-//		email.sendMessage("liuzongtao-tao@163.com", "爱股吧会员信息：张老师", content);
-		email.sendBccMessage(accountSet,Constant.EMAIL_NAME +  "：张老师", content);
+
+		// email.sendMessage("liuzongtao-tao@163.com", "爱股吧会员信息：张老师", content);
+		email.sendBccMessage(accountSet, Constant.EMAIL_NAME + "：张老师", content);
 	}
 
 }

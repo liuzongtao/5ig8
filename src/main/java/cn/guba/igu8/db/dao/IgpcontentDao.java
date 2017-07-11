@@ -114,7 +114,7 @@ public class IgpcontentDao {
 		List<Igpcontent> contentList = new ArrayList<Igpcontent>();
 		for (IgpWebMsgBean msg : list) {
 			Igpcontent content = getIgpcontent(teacherId, msg);
-			log.info(Json.toJson(content, JsonFormat.compact()));
+			log.debug(Json.toJson(content, JsonFormat.compact()));
 			contentList.add(content);
 		}
 		Db.batchSave(contentList, contentList.size());

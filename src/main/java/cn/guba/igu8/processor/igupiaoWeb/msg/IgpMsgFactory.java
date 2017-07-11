@@ -4,7 +4,6 @@
 package cn.guba.igu8.processor.igupiaoWeb.msg;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +67,9 @@ public class IgpMsgFactory {
 	 * @param uid
 	 */
 	public void updateLiverMsg(Cookie cookie, int uid) {
+		log.debug("uid = " + uid + " ; cookie = " + Json.toJson(cookie, JsonFormat.compact()));
 		List<Teacher> igpTeacherList = TeacherDao.getIgpTeachers();
+		log.debug("uid = " + uid + " ; igpTeacherList = " + Json.toJson(igpTeacherList));
 		long now = System.currentTimeMillis();
 		for (Teacher teacher : igpTeacherList) {
 			if (now > teacher.getBuyEndTime()) {
@@ -84,7 +85,9 @@ public class IgpMsgFactory {
 			if (liverMsg == null) {
 				liverMsg = getLiverMsg(cookie, uid, pfId);
 			}
+			log.debug("teacher = " + teacher.getName());
 			if (liverMsg != null) {
+				log.debug("teacher = " + teacher.getName() + " ; liverMsg is " + liverMsg.getRslt());
 				IgpAceInfo aceInfo = null;
 				if (aceInfoMap.containsKey(tearcherId)) {
 					aceInfo = aceInfoMap.get(tearcherId);
@@ -132,7 +135,7 @@ public class IgpMsgFactory {
 				}
 			}
 		} catch (Exception e) {
-			log.error("***********" + new Date() + "***********");
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 		return liverMsg;
@@ -158,7 +161,7 @@ public class IgpMsgFactory {
 				try {
 					String tmpUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, pfId, msg.getId());
 					Response response = HttpUtil.httpsPost(tmpUrl, null, cookie);
-					if (response != null && Strings.isNotBlank(response.getContent())) {
+					if (response != null && response.isOK() && Strings.isNotBlank(response.getContent())) {
 						IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class, response.getContent());
 						IgpDetailBean[] show_detail = fromJson.getShow_detail();
 						if (show_detail != null && show_detail.length > 0) {
@@ -281,7 +284,8 @@ public class IgpMsgFactory {
 					// 如果，发送短消息
 					ThreadsManager.getInstance().addThread(new SendMessageThread(teacherId, igpWebMsgBean, false));
 					msgList.add(igpWebMsgBean);
-					log.info("find can insert !");
+					log.info("insert oldMsg : teacherId = " + teacherId + " ; " + igpWebMsgBean.getKind() + " ; "
+							+ igpWebMsgBean.getBrief());
 				}
 			}
 			if (msgList.size() > 0) {
@@ -355,7 +359,7 @@ public class IgpMsgFactory {
 				e.printStackTrace();
 			}
 			if (i % 50 == 0) {
-				System.out.println("===i===" + i + " ; userList = " + Json.toJson(userList, JsonFormat.compact()));
+				log.debug("===i===" + i + " ; userList = " + Json.toJson(userList, JsonFormat.compact()));
 			}
 		}
 		log.debugf("teacherPfId == %d,user size == %d", teacherPfId, userList.size());
@@ -463,7 +467,7 @@ public class IgpMsgFactory {
 	}
 
 	public static void main(String[] args) {
-		Cookie cookie = IgpMsgFactory.getInstance().getCookie();
+		//Cookie cookie = IgpMsgFactory.getInstance().getCookie();
 		// IgpWebMsgBean[] webMsgArr =
 		// IgpMsgFactory.getInstance().getWebMsgArr(cookie, 5, 2, 0);
 		// System.out.println(Json.toJson(webMsgArr));

@@ -60,7 +60,7 @@ public class MailFactory {
 	 * @param teacherName
 	 * @param mailContent
 	 */
-	public boolean sendEmail(Set<String> emailAddrSet, String teacherName, String mailContent) {
+	public synchronized boolean sendEmail(Set<String> emailAddrSet, String teacherName, String mailContent) {
 		boolean result = false;
 		if (myEmailList != null && myEmailList.size() > 0 && emailAddrSet.size() > 0) {
 			List<String> emailAddrList = new ArrayList<String>(emailAddrSet);
@@ -71,10 +71,10 @@ public class MailFactory {
 				Email email = myEmailList.get(curIndex);
 				curIndex = (curIndex + 1) % myEmailList.size();
 				String mailSubject = Constant.EMAIL_NAME + ":" + teacherName;
-				result = email.sendBccMessage(emailAddrSet, mailSubject, mailContent);
+				result = email.sendBccMessage(tmpEmailAddrSet, mailSubject, mailContent);
 				if (!result) {
 					// 如果失败，再次发送一遍
-					email.sendBccMessage(emailAddrSet, mailSubject, mailContent);
+					email.sendBccMessage(tmpEmailAddrSet, mailSubject, mailContent);
 				}
 				tmpIndex += tmpEmailAddrSet.size();
 				tmpEmailAddrSet = getLimit(emailAddrList, tmpIndex, limitSize);

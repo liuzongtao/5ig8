@@ -4,15 +4,14 @@
 package cn.guba.igu8.processor.igupiaoWeb.service;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +46,7 @@ import cn.guba.igu8.web.content.service.ContentsService;
  */
 public class IgpMsgService {
 
-	private static Map<Long, List<User4AdInfo>> adUserMap = new ConcurrentHashMap<Long, List<User4AdInfo>>();
+	private static Map<Long, CopyOnWriteArrayList<User4AdInfo>> adUserMap = new ConcurrentHashMap<Long, CopyOnWriteArrayList<User4AdInfo>>();
 
 	private static Log log = Logs.get();
 
@@ -75,6 +74,13 @@ public class IgpMsgService {
 	 * 初始化
 	 */
 	private void init() {
+		Boolean isSendAd = PropKit.getBoolean("isSendAd");
+		if (isSendAd) {
+			initAdUser();
+		}
+	}
+
+	private void initAdUser() {
 		String fileName = PathKit.getRootClassPath() + File.separator + "user4Ad.xlsx";
 		File file = new File(fileName);
 		if (!file.exists() || !file.isFile()) {
@@ -94,11 +100,11 @@ public class IgpMsgService {
 				String email = tmpUser4AdInfo.getEmail();
 				boolean addressValid = isCorrectEmail(correctSet, email);
 				if (addressValid) {
-					List<User4AdInfo> list = null;
+					CopyOnWriteArrayList<User4AdInfo> list = null;
 					if (adUserMap.containsKey(key)) {
 						list = adUserMap.get(key);
 					} else {
-						list = new ArrayList<User4AdInfo>();
+						list = new CopyOnWriteArrayList<User4AdInfo>();
 						adUserMap.put(key, list);
 					}
 					list.add(tmpUser4AdInfo);
@@ -294,12 +300,10 @@ public class IgpMsgService {
 	 * @param sendSms
 	 */
 	public void sendMsg(long teacherId, IgpWebMsgBean msg, boolean sendSms) {
-
 		// 生成消息内容
 		Teacher teacher = TeacherDao.getTeacher(teacherId);
-		log.info(teacher.getName() + " === " + msg.getRec_time_desc() + " == thread == " + Thread.currentThread()
-				+ " == " + new Date());
-
+		log.debug(teacher.getName() + " === " + msg.getRec_time_desc() + " == begin == thread == "
+				+ Thread.currentThread());
 		// 发送email
 		Boolean isSendEmail = PropKit.getBoolean("sendEmail", false);
 		if (isSendEmail) {
@@ -312,9 +316,9 @@ public class IgpMsgService {
 					Set<String> emailSet = emailMap.get(key);
 					MailFactory.getInstance().sendEmail(emailSet, emailTitle, getEmailContent(teacher, msg, key));
 				}
-
 			}
 		}
+		log.debug(teacher.getName() + " === " + msg.getRec_time_desc() + " ==  sendemail is over == ");
 		// 发送短消息消息
 		Boolean isSendSms = PropKit.getBoolean("sendSms", false);
 		if (sendSms && isSendSms && msg.getKind().equals(EIgpKind.VIP.getValue()) && isMarketOpen()) {
@@ -344,6 +348,9 @@ public class IgpMsgService {
 				SmsFactory.getInstance().sendSms(vipPhones, smsContent);
 			}
 		}
+
+		log.debug(teacher.getName() + " === " + msg.getRec_time_desc() + " == end == thread == "
+				+ Thread.currentThread());
 	}
 
 	/***
@@ -450,7 +457,7 @@ public class IgpMsgService {
 			init();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		String fileName = PathKit.getRootClassPath() + File.separator + "user4Ad.xlsx";
 		File file = new File(fileName);
@@ -460,11 +467,11 @@ public class IgpMsgService {
 		}
 		List<String> sheetNames = ExcelUtil.getSheetNames(file);
 		Set<String> correctSet = new HashSet<String>();
-		for(String sheetName : sheetNames){
-			System.out.println(" == " + sheetName + " == " );
+		for (String sheetName : sheetNames) {
+			System.out.println(" == " + sheetName + " == ");
 			Set<String> errorSet = new HashSet<String>();
 			List<User4AdInfo> excelObjList = ExcelUtil.getExcelObjList(file, sheetName, User4AdInfo.class);
-			for(User4AdInfo tmpUser4AdInfo : excelObjList){
+			for (User4AdInfo tmpUser4AdInfo : excelObjList) {
 				String email = tmpUser4AdInfo.getEmail();
 				if (correctSet.contains(email)) {
 					continue;
@@ -473,15 +480,15 @@ public class IgpMsgService {
 				if (addressValid) {
 					correctSet.add(email);
 				} else {
-					if(errorSet.contains(email)){
-						System.out.println(sheetName + " == " + email );
+					if (errorSet.contains(email)) {
+						System.out.println(sheetName + " == " + email);
 					}
 					errorSet.add(email);
 				}
 			}
-			
+
 		}
-		
+
 	}
 
 }

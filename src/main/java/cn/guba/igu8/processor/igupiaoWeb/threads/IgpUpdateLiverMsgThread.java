@@ -4,6 +4,8 @@
 package cn.guba.igu8.processor.igupiaoWeb.threads;
 
 import org.nutz.http.Cookie;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
 
@@ -12,6 +14,8 @@ import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
  *
  */
 public class IgpUpdateLiverMsgThread implements Runnable {
+
+	private static Log log = Logs.get();
 
 	public static volatile boolean isWorking = false;
 
@@ -28,6 +32,7 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 	 */
 	@Override
 	public void run() {
+		log.debug("isWorking == " + isWorking);
 		if (!isWorking) {
 			isWorking = true;
 			try {
@@ -36,6 +41,7 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			log.debug("updateLiverMsg is over ! isWorking == " + isWorking);
 			isWorking = false;
 		}
 	}
