@@ -17,6 +17,7 @@ import org.nutz.log.Logs;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 
+import cn.guba.igu8.core.constants.Constant;
 import cn.guba.igu8.core.utils.HttpUtil;
 import cn.guba.igu8.core.utils.Util;
 import cn.guba.igu8.db.mysqlModel.Igpcontent;
@@ -135,7 +136,7 @@ public class IgpcontentDao {
 
 	private static String getChargeContent(int id, String oid) {
 		String detail = "";
-		String chargeUrl = String.format("https://www.5igupiao.com/api/live.php?act=load_detail&id=%d&oid=%s&soc", id,
+		String chargeUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, id,
 				oid);
 		Response response = HttpUtil.get(chargeUrl);
 		if (response != null) {

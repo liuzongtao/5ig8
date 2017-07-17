@@ -5,8 +5,10 @@ package cn.guba.igu8.processor.igupiaoWeb.msg;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.http.Cookie;
@@ -32,7 +34,6 @@ import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpWebLiverMsgBean;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpWebMsgBean;
 import cn.guba.igu8.processor.igupiaoWeb.threads.SendMessageThread;
 import cn.guba.igu8.processor.igupiaoWeb.threads.ThreadsManager;
-import cn.guba.igu8.web.teacher.beans.EIgpTeacher;
 
 /**
  * @author zongtao liu
@@ -95,7 +96,7 @@ public class IgpMsgFactory {
 					aceInfo = new IgpAceInfo(tearcherId);
 					aceInfoMap.put(tearcherId, aceInfo);
 				}
-				aceInfo.addMsg(liverMsg.getMsg_list());
+				aceInfo.addMsg(liverMsg);
 			}
 		}
 	}
@@ -156,23 +157,51 @@ public class IgpMsgFactory {
 		if (msg_list == null || msg_list.length == 0) {
 			return;
 		}
+		// 补充普通信息
+		Set<Long> idSet = new HashSet<Long>();
 		for (IgpWebMsgBean msg : msg_list) {
-			if (msg.getKind().equals(EIgpKind.VIP.getValue()) && Strings.isBlank(msg.getContent())) {
-				try {
-					String tmpUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, pfId, msg.getId());
-					Response response = HttpUtil.httpsPost(tmpUrl, null, cookie);
-					if (response != null && response.isOK() && Strings.isNotBlank(response.getContent())) {
-						IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class, response.getContent());
-						IgpDetailBean[] show_detail = fromJson.getShow_detail();
-						if (show_detail != null && show_detail.length > 0) {
-							String content = show_detail[0].getContent();
-							msg.setContent(content);
-							msg.setContent_new(content);
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
+			idSet.add(Long.valueOf(msg.getId()));
+			supplementMsg(cookie, pfId, msg);
+		}
+
+		// 补充置顶帖
+		if (liverMsg.getTop_msg_list() != null && liverMsg.getTop_msg_list().length > 0) {
+			long minId = Long.valueOf(msg_list[msg_list.length - 1].getId());
+			for (IgpWebMsgBean msg : liverMsg.getTop_msg_list()) {
+				long id = Long.valueOf(msg.getId());
+				if (id < minId || idSet.contains(id)) {
+					continue;
+				} else {
+					supplementMsg(cookie, pfId, msg);
 				}
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * 补全消息
+	 * 
+	 * @param cookie
+	 * @param pfId
+	 * @param msg
+	 */
+	private void supplementMsg(Cookie cookie, int pfId, IgpWebMsgBean msg) {
+		if (Strings.isBlank(msg.getContent())) {
+			try {
+				String tmpUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, pfId, msg.getId());
+				Response response = HttpUtil.httpsPost(tmpUrl, null, cookie);
+				if (response != null && response.isOK() && Strings.isNotBlank(response.getContent())) {
+					IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class, response.getContent());
+					IgpDetailBean[] show_detail = fromJson.getShow_detail();
+					if (show_detail != null && show_detail.length > 0) {
+						String content = show_detail[0].getContent();
+						msg.setContent(content);
+						msg.setContent_new(content);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -273,9 +302,23 @@ public class IgpMsgFactory {
 	 */
 	private long updateMsgByTeacher(Cookie cookie, int uid, int teacherPfId, long lastTime, long teacherId) {
 		long maxId = IgpcontentDao.getMaxId(teacherId);
-		IgpWebMsgBean[] msg_list = getWebMsgArr(cookie, uid, teacherPfId, lastTime);
+		IgpWebLiverMsgBean liverMsg = getLiverMsg(cookie, uid, teacherPfId, lastTime);
+		List<IgpWebMsgBean> msgList = new ArrayList<IgpWebMsgBean>();
+		if(lastTime == 0){//处理置顶帖
+			IgpWebMsgBean[] top_msg_list = liverMsg.getTop_msg_list();
+			if (top_msg_list != null && top_msg_list.length > 0) {
+				for(IgpWebMsgBean msg : top_msg_list){
+					long tmpId = Long.valueOf(msg.getId());
+					if (tmpId > maxId) {
+						// 如果，发送短消息
+						ThreadsManager.getInstance().addThread(new SendMessageThread(teacherId, msg, false));
+						msgList.add(msg);
+					}
+				}
+			}
+		}
+		IgpWebMsgBean[] msg_list = liverMsg.getMsg_list();
 		if (msg_list != null && msg_list.length > 0) {
-			List<IgpWebMsgBean> msgList = new ArrayList<IgpWebMsgBean>();
 			int firstIndex = msg_list.length - 1;
 			for (int i = firstIndex; i >= 0; i--) {
 				IgpWebMsgBean igpWebMsgBean = msg_list[i];
@@ -288,9 +331,10 @@ public class IgpMsgFactory {
 							+ igpWebMsgBean.getBrief());
 				}
 			}
-			if (msgList.size() > 0) {
-				IgpcontentDao.batchInserMsg(teacherId, msgList);
-			}
+			
+		}
+		if (msgList.size() > 0) {
+			IgpcontentDao.batchInserMsg(teacherId, msgList);
 		}
 		return 0;
 	}
@@ -467,17 +511,18 @@ public class IgpMsgFactory {
 	}
 
 	public static void main(String[] args) {
-		//Cookie cookie = IgpMsgFactory.getInstance().getCookie();
+		Cookie cookie = IgpMsgFactory.getInstance().getCookie();
 		// IgpWebMsgBean[] webMsgArr =
-		// IgpMsgFactory.getInstance().getWebMsgArr(cookie, 5, 2, 0);
+		// IgpMsgFactory.getInstance().getWebMsgArr(cookie, 5, 538, 0);
 		// System.out.println(Json.toJson(webMsgArr));
 
 		// int uidFromAll =
 		// IgpMsgFactory.getInstance().getUidFromAll(EIgpTeacher.daofeng.getValue());
 		// System.out.println(uidFromAll);
 
-		List<Integer> allUsers = IgpMsgFactory.getInstance().getAllUsers(2);
-		System.out.println(EIgpTeacher.daofeng.getValue() + " == size == " + allUsers.size());
+		// List<Integer> allUsers = IgpMsgFactory.getInstance().getAllUsers(2);
+		// System.out.println(EIgpTeacher.daofeng.getValue() + " == size == " +
+		// allUsers.size());
 
 		// String url =
 		// "https://www.5igupiao.com/api/live.php?act=load_detail&id=91&oid=742411&soc&source=pc";
@@ -487,6 +532,20 @@ public class IgpMsgFactory {
 		// IgpDetailBean[] show_detail = fromJson.getShow_detail();
 		// String content = show_detail[0].getContent();
 		// System.out.println(content);
+
+//		try {
+//			String tmpUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, 538, 759340);
+//			Response response = HttpUtil.httpsPost(tmpUrl, null, cookie);
+//			if (response != null && response.isOK() && Strings.isNotBlank(response.getContent())) {
+//				IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class, response.getContent());
+//				System.out.println(Json.toJson(fromJson));
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+		int uidFromAll = IgpMsgFactory.getInstance().getUidFromAll(585);
+		System.out.println(uidFromAll);
 	}
 
 }

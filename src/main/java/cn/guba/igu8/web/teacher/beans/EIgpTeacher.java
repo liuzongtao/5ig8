@@ -101,7 +101,10 @@ public enum EIgpTeacher {
 	 * 花路伯爵
 	 */
 	hualubojue(244, "花路伯爵"),
-
+	/**
+	 * 抱拙居士
+	 */
+	baozhuojushi(585, "抱拙居士", Long.MAX_VALUE),
 	;
 	private int value;
 

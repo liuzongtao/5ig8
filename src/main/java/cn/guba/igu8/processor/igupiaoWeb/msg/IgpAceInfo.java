@@ -12,6 +12,7 @@ import com.jfinal.kit.PropKit;
 import cn.guba.igu8.db.dao.IgpcontentDao;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpContentSource;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpKind;
+import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpWebLiverMsgBean;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpWebMsgBean;
 import cn.guba.igu8.processor.igupiaoWeb.service.IgpMsgService;
 import cn.guba.igu8.web.teacher.service.TeacherService;
@@ -32,21 +33,38 @@ public class IgpAceInfo {
 		this.teacherId = teacherId;
 	}
 
-	public void addMsg(IgpWebMsgBean[] msg_list) {
+	public void addMsg(IgpWebLiverMsgBean liverMsg) {
 		log.debug("addMsg == begin == teacherId = " + teacherId + " ; maxId = " + maxId);
-		if(msg_list == null || msg_list.length == 0){
+		IgpWebMsgBean[] msg_list = liverMsg.getMsg_list();
+		if (msg_list == null || msg_list.length == 0) {
 			log.debug("msg_list is null or legth is 0");
-			return ;
+			return;
 		}
 		if (maxId == 0) {
 			maxId = IgpcontentDao.getMaxId(teacherId);
 		}
+		// 添加指定消息
+		long curMaxId = 0;
+		if (liverMsg.getTop_msg_list() != null && liverMsg.getTop_msg_list().length > 0) {
+			curMaxId = addMsgForArr(liverMsg.getTop_msg_list(), false);
+		}
+		// 添加普通消息
+		addMsgForArr(msg_list, true);
+		// 更新最大id
+		if (curMaxId > maxId) {
+			maxId = curMaxId;
+		}
+		log.debug("addMsg == end == teacherId = " + teacherId + " ; maxId = " + maxId);
+	}
+
+	private long addMsgForArr(IgpWebMsgBean[] msg_list, boolean isUpMaxId) {
+		long curMaxId = 0;
 		int size = msg_list.length;
 		for (int i = size - 1; i >= 0; i--) {
 			IgpWebMsgBean igpWebMsgBean = msg_list[i];
 			long id = Long.valueOf(igpWebMsgBean.getId());
 			if (id > maxId) {
-				//判断系统启动时，是通过内容解析获得，还是模拟登陆获得 信息
+				// 判断系统启动时，是通过内容解析获得，还是模拟登陆获得 信息
 				if (Strings.equals(PropKit.get("contentSource"), EIgpContentSource.VIPUSER.getValue())) {
 					if (igpWebMsgBean.getKind().equals(EIgpKind.VIP.getValue())
 							&& Strings.isBlank(igpWebMsgBean.getContent_new())) {
@@ -59,12 +77,16 @@ public class IgpAceInfo {
 				// 插入数据库
 				IgpcontentDao.insertMsg(teacherId, igpWebMsgBean);
 				// 如果，发送短消息
-//				ThreadsManager.getInstance().addThread(new SendMessageThread(teacherId, igpWebMsgBean));
+				// ThreadsManager.getInstance().addThread(new
+				// SendMessageThread(teacherId, igpWebMsgBean));
 				IgpMsgService.getInstance().sendMsg(teacherId, igpWebMsgBean, true);
-				maxId = id;
+				if (isUpMaxId) {
+					maxId = id;
+				}
+				curMaxId = id;
 			}
 		}
-		log.debug("addMsg == end == teacherId = " + teacherId + " ; maxId = " + maxId);
+		return curMaxId;
 	}
 
 }
