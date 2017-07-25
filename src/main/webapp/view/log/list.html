@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head>
+<title>充值日志列表</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" /> 
+<link href="/css/content/detail.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div style="float: left;width: 100%;">
+<form action="/log/list4Recharge">
+<input name="uid" value="#(uid)" id="uid" type="text" />
+<button type="submit" >查询</button>
+</form>
+</div>
+	<div class="table_box">
+	<table class="list">
+		<tbody>
+			<tr>
+				<th width="4%">id</th>
+				<th width="4%">uid</th>
+				<th width="6%">昵称</th>
+				<th width="12%">创建时间</th>
+				<th width="10%">电话</th>
+				<th width="12%">邮箱</th>
+				<th width="6%">邀请昵称</th>
+				<th width="12%">当前时间</th>
+				<th width="6%">会员老师</th>
+				<th width="8%">邮件信息类型</th>
+				<th width="12%">会员结束时间</th>
+				<th width="4%">费用</th>
+			</tr>
+			
+			#for(x : rechargelogsPage.getList())
+			<tr style="text-align:center;">
+				<td>#(x.id)</td>
+				<td>#(x.uid)</td>
+				<td>#(x.nickname)</td>
+				<td>#(x.createTimeStr)</td>
+				<td>#(x.phoneNumber)</td>
+				<td>#(x.email)</td>
+				<td>#(x.inviterNickname)</td>
+				<td>#(x.timeStr)</td>
+				<td>#(x.teacherName)</td>
+				<td>#(x.emailTypes)</td>
+				<td>#(x.vipEndTimeStr)</td>
+				<td>#(x.costMoney)</td>
+			</tr>
+			#end
+		</tbody>
+	</table>
+	#@paginate(rechargelogsPage.pageNumber, rechargelogsPage.totalPage, "/log/list4Recharge?uid=" + uid + "&p=")
+</div>
+	
+</body>
+</html>

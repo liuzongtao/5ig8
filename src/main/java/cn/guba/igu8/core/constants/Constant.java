@@ -41,5 +41,12 @@ public class Constant {
 	
 	public static final String USER_PWD_INIT = "5Igu8@2017";
 	
+	public static final String MAIL_TEMP_UPDATE_SUBJECT = "【通知】会员信息更新";
+	public static final String MAIL_TEMP_UPDATE = "尊敬的会员：<br /> &nbsp;&nbsp;您关注的会员老师：%s，会员结束时间为%s。<br /> &nbsp;&nbsp;如有疑问请联系客服人员。";
+	public static final String MAIL_TEMP_END = "尊敬的会员：<br /> &nbsp;&nbsp;您关注的会员老师：%s，会员服务将于%s结束。如果想继续使用，请及时续费！<br /> &nbsp;&nbsp;如有疑问请联系客服人员。";
+	public static final String MAIL_TEMP_END_SUBJECT = "【通知】会员信息即将结束";
+	
+	
+	
 
 }

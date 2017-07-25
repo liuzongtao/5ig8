@@ -13,6 +13,8 @@ import cn.guba.igu8.core.utils.Util;
 import cn.guba.igu8.db.dao.UserVipInfoDao;
 import cn.guba.igu8.db.mysqlModel.Uservipinfo;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpKind;
+import cn.guba.igu8.web.mail.service.MailService;
+import cn.guba.igu8.web.recharge.service.RechargeService;
 import cn.guba.igu8.web.teacher.service.TeacherService;
 import cn.guba.igu8.web.vip.beans.EVipType;
 import cn.guba.igu8.web.vip.beans.UserVipViewBean;
@@ -159,7 +161,7 @@ public class VipService {
 	 * @param viewInfo
 	 * @param emailTypeArr
 	 */
-	public void addVipInfo(UserVipViewBean viewInfo, String[] emailTypeArr) {
+	public void addVipInfo(UserVipViewBean viewInfo, String[] emailTypeArr, int vipfee) {
 		Uservipinfo vipInfo = new Uservipinfo();
 		vipInfo.setUid(viewInfo.getUid());
 		vipInfo.setVipTypeId(viewInfo.getVipPfType());
@@ -171,6 +173,10 @@ public class VipService {
 		vipInfo.setSendSms(viewInfo.getIsSendSms() == 1 ? true : false);
 		vipInfo.setShowUrl(viewInfo.getIsShowUrl() == 1 ? true : false);
 		UserVipInfoDao.add(vipInfo);
+		// 增加日志
+		RechargeService.getInstance().saveRechargeLog(vipInfo, 0, vipfee);
+		// 发送邮件通知
+		MailService.getInstance().sendNoticeEmail(viewInfo.getUid(), viewInfo.getTeacherId(), endTime);
 	}
 
 	/**
@@ -179,12 +185,13 @@ public class VipService {
 	 * @param viewInfo
 	 * @param emailTypeArr
 	 */
-	public void updateVipInfo(UserVipViewBean viewInfo, String[] emailTypeArr) {
+	public void updateVipInfo(UserVipViewBean viewInfo, String[] emailTypeArr, int vipfee) {
 		long id = viewInfo.getId();
 		Uservipinfo uservipinfo = UserVipInfoDao.getById(id);
 		uservipinfo.setVipTypeId(viewInfo.getVipPfType());
 		long newTeacherId = viewInfo.getTeacherId();
 		long endTime = addTime(uservipinfo.getVipEndTime(), viewInfo.getPeriodNum(), viewInfo.getPeriodType());
+		long oldVipEndTime = uservipinfo.getVipEndTime();
 		uservipinfo.setVipEndTime(endTime);
 		uservipinfo.setConcernedTeacherId(newTeacherId);
 		String sendEmail = getSendEmail(emailTypeArr);
@@ -192,6 +199,10 @@ public class VipService {
 		uservipinfo.setSendSms(viewInfo.getIsSendSms() == 1 ? true : false);
 		uservipinfo.setShowUrl(viewInfo.getIsShowUrl() == 1 ? true : false);
 		UserVipInfoDao.update(uservipinfo);
+		// 增加日志
+		RechargeService.getInstance().saveRechargeLog(uservipinfo, oldVipEndTime, vipfee);
+		// 发送邮件通知
+		MailService.getInstance().sendNoticeEmail(viewInfo.getUid(), viewInfo.getTeacherId(), endTime);
 	}
 
 	/**

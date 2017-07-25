@@ -20,6 +20,7 @@ import cn.guba.igu8.processor.igupiaoWeb.service.IgpMsgService;
 import cn.guba.igu8.web.content.controller.CommenedContentController;
 import cn.guba.igu8.web.content.controller.ContentsController;
 import cn.guba.igu8.web.index.controller.IndexController;
+import cn.guba.igu8.web.log.controller.LogController;
 import cn.guba.igu8.web.user.controller.UserController;
 import cn.guba.igu8.web.vip.controller.VipController;
 
@@ -63,6 +64,7 @@ public class MyConfig extends JFinalConfig {
 		me.add("/cc", ContentsController.class, "content");
 		me.add("/user", UserController.class);
 		me.add("/vip", VipController.class);
+		me.add("/log", LogController.class);
 	}
 
 	/*

@@ -111,17 +111,23 @@ CREATE TABLE `rechargelog` (
   `id` bigint(32) NOT NULL AUTO_INCREMENT,
   `uid` bigint(32) NOT NULL,
   `nickname` varchar(26) DEFAULT NULL,
+  `inviterUid` bigint(32) DEFAULT NULL,
+  `inviterNickname` varchar(26) DEFAULT NULL,
   `creatTime` bigint(13) DEFAULT NULL,
   `phoneNumber` bigint(13) DEFAULT NULL,
   `curTime` bigint(13) DEFAULT NULL,
   `oldVipEndTime` bigint(13) DEFAULT NULL,
   `newVipEndTime` bigint(13) DEFAULT NULL,
+  `concernedTeacherId` bigint(24) DEFAULT NULL,
+  `emailTypes` varchar(30) DEFAULT NULL,
+  `isSendSms` tinyint(1) DEFAULT NULL,
+  `isShowUrl` tinyint(1) DEFAULT NULL,
   `disCountInfosStr` varchar(1024) DEFAULT NULL,
   `vipTypeId` bigint(32) DEFAULT NULL,
   `vipTypeDescr` varchar(128) DEFAULT NULL,
   `costMoney` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,4 +233,4 @@ CREATE TABLE `viptype` (
 -- Dump completed on 2017-06-22 18:21:17
 
 
-INSERT INTO `eova_menu` VALUES (1,'user','用户管理','dir','icon-bricks',1,0,0,NULL,NULL,NULL,NULL,0,NULL),(2,'sys','系统管理','dir','icon-cog',2,0,0,NULL,NULL,NULL,NULL,0,NULL),(3,'biz','综合信息','dir','icon-plugin',3,0,0,NULL,NULL,NULL,NULL,0,NULL),(20,'user_list','用户列表','diy','icon-applicationsidetree',1,1,0,'','/user/list','',NULL,0,NULL),(21,'user_add','添加用户','diy','icon-layout',2,1,0,NULL,'/user/toAdd','',NULL,0,NULL),(22,'user_pwd','修改密码','diy','icon-databasetable',3,1,0,'','/user/toUpdatePwd','',NULL,0,NULL),(51,'sys_log','系统日志','diy','icon-tablemultiple',1,2,0,NULL,NULL,'',NULL,0,NULL);
+INSERT INTO `eova_menu` VALUES (1,'user','用户管理','dir','icon-bricks',1,0,0,NULL,NULL,NULL,NULL,0,NULL),(2,'sys','系统管理','dir','icon-cog',2,0,0,NULL,NULL,NULL,NULL,0,NULL),(3,'biz','综合信息','dir','icon-plugin',3,0,0,NULL,NULL,NULL,NULL,0,NULL),(20,'user_list','用户列表','diy','icon-applicationsidetree',1,1,0,'','/user/list','',NULL,0,NULL),(21,'user_add','添加用户','diy','icon-layout',2,1,0,NULL,'/user/toAdd','',NULL,0,NULL),(22,'user_pwd','修改密码','diy','icon-databasetable',3,1,0,'','/user/toUpdatePwd','',NULL,0,NULL),(51,'sys_log','系统日志','diy','icon-tablemultiple',1,2,0,NULL,'/log/list4Recharge','',NULL,0,NULL);

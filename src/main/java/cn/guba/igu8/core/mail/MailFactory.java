@@ -105,4 +105,9 @@ public class MailFactory {
 		}
 		return new HashSet<String>(list.subList(curIndex, endIndex));
 	}
+	
+	public void sendEmail(String emailAddr,String mailSubject,String content){
+		Email email = myEmailList.get(curIndex);
+		email.sendMessage(emailAddr, mailSubject, content);
+	}
 }

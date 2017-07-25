@@ -65,11 +65,12 @@ public class VipController extends Controller {
 	public void save() {
 		UserVipViewBean userVipViewBean = getBean(UserVipViewBean.class);
 		String[] emailTypeArr = getParaValues("emailTypeArr");
+		int vipfee = getParaToInt("vipfee", 0);
 		long id = userVipViewBean.getId();
 		if (id == 0) {
-			VipService.getInstance().addVipInfo(userVipViewBean, emailTypeArr);
+			VipService.getInstance().addVipInfo(userVipViewBean, emailTypeArr, vipfee);
 		} else {
-			VipService.getInstance().updateVipInfo(userVipViewBean, emailTypeArr);
+			VipService.getInstance().updateVipInfo(userVipViewBean, emailTypeArr, vipfee);
 		}
 		redirect("/vip/list/" + userVipViewBean.getUid());
 	}

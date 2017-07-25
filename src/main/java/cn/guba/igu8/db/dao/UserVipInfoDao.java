@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -33,6 +34,9 @@ public class UserVipInfoDao {
 			return;
 		}
 		for (Uservipinfo info : list) {
+			if(info.getVipEndTime() < System.currentTimeMillis()){
+				continue;
+			}
 			long teacherId = info.getConcernedTeacherId();
 			CopyOnWriteArrayList<Uservipinfo> tmpList = null;
 			if (mapInfo.containsKey(teacherId)) {
@@ -59,11 +63,20 @@ public class UserVipInfoDao {
 			ArrayList<Uservipinfo> removeList = new ArrayList<Uservipinfo>();
 			for (Uservipinfo tmpUservipinfo : list) {
 				if (tmpUservipinfo.getVipEndTime() < now) {
-					tmpUservipinfo.delete();
 					removeList.add(tmpUservipinfo);
 				}
 			}
 			list.removeAll(removeList);
+		}
+		return list;
+	}
+	
+	public static List<Uservipinfo> getAllUservipinfo() {
+		init();
+		List<Uservipinfo> list = new ArrayList<Uservipinfo>();
+		Set<Long> keySet = mapInfo.keySet();
+		for(Long teacherId : keySet ){
+			list.addAll(mapInfo.get(teacherId));
 		}
 		return list;
 	}
@@ -92,7 +105,6 @@ public class UserVipInfoDao {
 			List<Uservipinfo> tmpList = new ArrayList<Uservipinfo>();
 			for (Uservipinfo vipInfo : value) {
 				if (vipInfo.getVipEndTime() < now) {
-					vipInfo.delete();
 					tmpList.add(vipInfo);
 				} else if (vipInfo.getUid() == uid) {
 					vipList.add(vipInfo);
@@ -112,7 +124,6 @@ public class UserVipInfoDao {
 			List<Uservipinfo> tmpList = new ArrayList<Uservipinfo>();
 			for (Uservipinfo vipInfo : value) {
 				if (vipInfo.getVipEndTime() < now) {
-					vipInfo.delete();
 					tmpList.add(vipInfo);
 				} else if (vipInfo.getUid() == uid) {
 					tmpList.add(vipInfo);
@@ -126,6 +137,7 @@ public class UserVipInfoDao {
 
 	public static void delById(long id) {
 		Uservipinfo uservipinfo = null;
+		boolean hasDel = false;
 		for (Entry<Long, CopyOnWriteArrayList<Uservipinfo>> entry : mapInfo.entrySet()) {
 			List<Uservipinfo> values = entry.getValue();
 			for (Uservipinfo tmpentry : values) {
@@ -139,8 +151,13 @@ public class UserVipInfoDao {
 				values.remove(uservipinfo);
 				// 从数据中清除
 				uservipinfo.delete();
+				hasDel = true;
 				break;
 			}
+		}
+		//如果没有在缓存中，直接删除数据库
+		if(!hasDel){
+			Uservipinfo.dao.deleteById(id);
 		}
 	}
 

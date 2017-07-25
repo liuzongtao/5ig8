@@ -36,6 +36,24 @@ public abstract class BaseRechargelog<M extends BaseRechargelog<M>> extends Mode
 		return get("nickname");
 	}
 
+	public M setInviterUid(java.lang.Long inviterUid) {
+		set("inviterUid", inviterUid);
+		return (M)this;
+	}
+
+	public java.lang.Long getInviterUid() {
+		return get("inviterUid");
+	}
+
+	public M setInviterNickname(java.lang.String inviterNickname) {
+		set("inviterNickname", inviterNickname);
+		return (M)this;
+	}
+
+	public java.lang.String getInviterNickname() {
+		return get("inviterNickname");
+	}
+
 	public M setCreatTime(java.lang.Long creatTime) {
 		set("creatTime", creatTime);
 		return (M)this;
@@ -43,6 +61,15 @@ public abstract class BaseRechargelog<M extends BaseRechargelog<M>> extends Mode
 
 	public java.lang.Long getCreatTime() {
 		return get("creatTime");
+	}
+
+	public M setEmail(java.lang.String email) {
+		set("email", email);
+		return (M)this;
+	}
+
+	public java.lang.String getEmail() {
+		return get("email");
 	}
 
 	public M setPhoneNumber(java.lang.Long phoneNumber) {
@@ -79,6 +106,42 @@ public abstract class BaseRechargelog<M extends BaseRechargelog<M>> extends Mode
 
 	public java.lang.Long getNewVipEndTime() {
 		return get("newVipEndTime");
+	}
+
+	public M setConcernedTeacherId(java.lang.Long concernedTeacherId) {
+		set("concernedTeacherId", concernedTeacherId);
+		return (M)this;
+	}
+
+	public java.lang.Long getConcernedTeacherId() {
+		return get("concernedTeacherId");
+	}
+
+	public M setEmailTypes(java.lang.String emailTypes) {
+		set("emailTypes", emailTypes);
+		return (M)this;
+	}
+
+	public java.lang.String getEmailTypes() {
+		return get("emailTypes");
+	}
+
+	public M setIsSendSms(java.lang.Boolean isSendSms) {
+		set("isSendSms", isSendSms);
+		return (M)this;
+	}
+
+	public java.lang.Boolean getIsSendSms() {
+		return get("isSendSms");
+	}
+
+	public M setIsShowUrl(java.lang.Boolean isShowUrl) {
+		set("isShowUrl", isShowUrl);
+		return (M)this;
+	}
+
+	public java.lang.Boolean getIsShowUrl() {
+		return get("isShowUrl");
 	}
 
 	public M setDisCountInfosStr(java.lang.String disCountInfosStr) {

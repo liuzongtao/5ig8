@@ -3,6 +3,7 @@
  */
 package cn.guba.igu8.processor.igupiaoWeb;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -14,9 +15,11 @@ import org.nutz.log.Logs;
 
 import com.jfinal.kit.PropKit;
 
+import cn.guba.igu8.core.utils.Util;
 import cn.guba.igu8.processor.igupiaoWeb.account.IgpAccount;
 import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
 import cn.guba.igu8.processor.igupiaoWeb.threads.IgpUpdateLiverMsgThread;
+import cn.guba.igu8.processor.igupiaoWeb.threads.VipCheckThread;
 
 /**
  * @author zongtao liu
@@ -57,8 +60,9 @@ public class IgupiaoProcessor {
 		// 初始化老数据
 		IgpMsgFactory.getInstance().initOldMsg(cookie, uid);
 
-		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-		executor.scheduleAtFixedRate(new IgpUpdateLiverMsgThread(uid), 0, 30, TimeUnit.SECONDS);
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+		long period = 24 * 60 * 60 * 1000l;
+		executor.scheduleAtFixedRate(new VipCheckThread(), Util.getSurplusTime(8), period, TimeUnit.MILLISECONDS);
 	}
 
 	private void initNonUser() {
@@ -68,8 +72,12 @@ public class IgupiaoProcessor {
 		// 初始化老数据
 		IgpMsgFactory.getInstance().initOldMsg(cookie, uid);
 
-		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 		executor.scheduleAtFixedRate(new IgpUpdateLiverMsgThread(uid), 0, 30, TimeUnit.SECONDS);
+		long period = 24 * 60 * 60 * 1000l;
+		executor.scheduleAtFixedRate(new VipCheckThread(), Util.getSurplusTime(8), period, TimeUnit.MILLISECONDS);
 	}
+	
+	
 
 }
