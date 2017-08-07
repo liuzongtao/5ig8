@@ -32,13 +32,14 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 	 */
 	@Override
 	public void run() {
-		log.debug("isWorking == " + isWorking);
+		log.info("isWorking == " + isWorking);
 		if (!isWorking) {
 			isWorking = true;
 			try {
 				Cookie cookie = IgpMsgFactory.getInstance().getCookie();
 				IgpMsgFactory.getInstance().updateLiverMsg(cookie, uid);
 			} catch (Exception e) {
+				log.error(e.getMessage());
 				e.printStackTrace();
 			}
 			log.debug("updateLiverMsg is over ! isWorking == " + isWorking);

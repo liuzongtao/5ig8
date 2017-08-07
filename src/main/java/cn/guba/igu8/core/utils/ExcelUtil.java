@@ -3,6 +3,7 @@ package cn.guba.igu8.core.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -270,31 +271,80 @@ public class ExcelUtil {
 	 */
 	public static <T> void writeExcel(String filePath, String sheetName, List<T> objList) {
 		File file = new File(filePath);
+		if (file.exists()) {
+			writeOldExcel(filePath, sheetName, objList);
+		}else{
+			createExcel(filePath, sheetName, objList);
+		}
+	}
+	
+	private static <T> void writeOldExcel(String filePath, String sheetName, List<T> objList) {
+		File file = new File(filePath);
 		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
+			return ;
+		}
+		Workbook workbook = null;
+		InputStream fileIn = Streams.fileIn(file);
+		OutputStream fileOut = null;
+		try {
+			if (file.getName().contains(".xlsx")) {
+				workbook = new XSSFWorkbook(fileIn);
+			} else {
+				workbook = new HSSFWorkbook(fileIn);
+			}
+			Sheet sheet = workbook.getSheet(sheetName);
+			if (sheet == null) {
+				sheet = workbook.createSheet(sheetName);
+			}
+			writeToSheet(sheet, objList);
+			fileOut = Streams.fileOut(file);
+			workbook.write(fileOut);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			Streams.safeClose(fileIn);
+			Streams.safeClose(fileOut);
+			if(workbook != null){
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
+	}
+	
+	private static <T> void createExcel(String filePath, String sheetName, List<T> objList) {
+		File file = new File(filePath);
 		if (file.exists()) {
-			Workbook workbook = null;
-			InputStream stream = Streams.fileIn(file);
-			try {
-				if (file.getName().contains(".xlsx")) {
-					workbook = new XSSFWorkbook(stream);
-				} else {
-					workbook = new HSSFWorkbook(stream);
-				}
-				Sheet sheet = workbook.getSheet(sheetName);
-				if (sheet == null) {
-					sheet = workbook.createSheet();
-				}
-				writeToSheet(sheet, objList);
-			} catch (Exception e) {
-				e.printStackTrace();
+			return ;
+		}
+		Workbook workbook = null;
+		OutputStream fileOut = null;
+		try {
+			if (file.getName().contains(".xlsx")) {
+				workbook = new XSSFWorkbook();
+			} else {
+				workbook = new HSSFWorkbook();
 			}
-			Streams.safeClose(stream);
+			Sheet sheet = workbook.getSheet(sheetName);
+			if (sheet == null) {
+				sheet = workbook.createSheet(sheetName);
+			}
+			writeToSheet(sheet, objList);
+			fileOut = Streams.fileOut(file);
+			workbook.write(fileOut);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			Streams.safeClose(fileOut);
+			if(workbook != null){
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -319,6 +369,7 @@ public class ExcelUtil {
 			for (Field field : declaredFields) {
 				Cell tmpCell = row0.createCell(index);
 				tmpCell.setCellValue(field.getName());
+				index++;
 			}
 			rowCount++;
 		}
@@ -329,6 +380,7 @@ public class ExcelUtil {
 			for (Field field : declaredFields) {
 				Cell tmpCell = row.createCell(index);
 				tmpCell.setCellValue(String.valueOf(Mirror.me(clazz).getValue(obj, field)));
+				index++;
 			}
 		}
 	}
