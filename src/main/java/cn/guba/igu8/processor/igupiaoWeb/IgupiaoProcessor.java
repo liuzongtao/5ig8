@@ -74,8 +74,10 @@ public class IgupiaoProcessor {
 
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 		executor.scheduleAtFixedRate(new IgpUpdateLiverMsgThread(uid), 0, 30, TimeUnit.SECONDS);
+		log.info("IgupiaoProcessor init IgpUpdateLiverMsgThread is over ;" + new Date());
 		long period = 24 * 60 * 60 * 1000l;
 		executor.scheduleAtFixedRate(new VipCheckThread(), Util.getSurplusTime(8), period, TimeUnit.MILLISECONDS);
+		log.info("IgupiaoProcessor init VipCheckThread is over ;" + new Date());
 	}
 	
 	

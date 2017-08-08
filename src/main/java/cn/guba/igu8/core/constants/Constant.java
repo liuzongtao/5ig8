@@ -35,9 +35,11 @@ public class Constant {
 	public static final String URL_IGP_MSG_LIVER_DETAIL = URL_IGP_BASE + "api/live.php?act=load_detail&id=%d&oid=%s&soc&source=pc";
 	
 	
-	public static final String URL_5IGU8_DETAIL = "https://47.92.157.16/ccc";
-//	public static final String URL_5IGU8_DETAIL = "https://www.5ig8.cn/ccc";
-	public static final String URL_5IGU8_LIST = "http://47.92.157.16/cc/list";
+	
+	public static final String URL_5IGU8_BASE = "https://www.5ig8.cn";
+//	public static final String URL_5IGU8_BASE = "https://47.92.157.16";
+	public static final String URL_5IGU8_DETAIL = URL_5IGU8_BASE + "/ccc";
+	public static final String URL_5IGU8_LIST = URL_5IGU8_BASE + "/cc/list";
 	
 	public static final String USER_PWD_INIT = "5Igu8@2017";
 	

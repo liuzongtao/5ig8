@@ -139,6 +139,7 @@ public class IgpMsgFactory {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
+		log.debug("uid == " + uid + " ; liverMsg == " + Json.toJson(liverMsg, JsonFormat.compact()));
 		return liverMsg;
 	}
 
@@ -214,12 +215,14 @@ public class IgpMsgFactory {
 	 */
 	public void initOldMsg(Cookie cookie, int uid) {
 		List<Teacher> igpTeacherList = TeacherDao.getIgpTeachers();
+		log.debug(Json.toJson(igpTeacherList, JsonFormat.compact()));
 		long now = System.currentTimeMillis();
 		for (Teacher teacher : igpTeacherList) {
 			if (teacher.getBuyEndTime() == null || now > teacher.getBuyEndTime()) {
 				continue;
 			}
 			try {
+				log.debug(teacher.getName() + " ; getBuyEndTime == " + teacher.getBuyEndTime());
 				if (uid == 0) {
 					uid = teacher.getPfVipUid();
 				}
@@ -241,6 +244,7 @@ public class IgpMsgFactory {
 	private void updateMsgByTeacher(Cookie cookie, int uid, int teacherPfId, long teacherId)
 			throws InterruptedException {
 		long lastTime = findOldest(cookie, uid, teacherPfId, 0, teacherId);
+		log.debug("teacherPfId == " + teacherPfId + " ; lastTime == " + lastTime);
 		List<Long> timeList = new ArrayList<Long>();
 		if (lastTime >= 0) {
 			timeList.add(0l);
@@ -270,6 +274,7 @@ public class IgpMsgFactory {
 		long maxId = IgpcontentDao.getMaxId(teacherId);
 		IgpWebMsgBean[] msg_list = getWebMsgArr(cookie, uid, teacherPfId, lastTime);
 		if (msg_list != null) {
+			log.debug("msg_list size == " + msg_list.length);
 			if (msg_list.length == 0) {// 已经找到最后一页
 				return 0;
 			}
@@ -302,12 +307,13 @@ public class IgpMsgFactory {
 	 */
 	private long updateMsgByTeacher(Cookie cookie, int uid, int teacherPfId, long lastTime, long teacherId) {
 		long maxId = IgpcontentDao.getMaxId(teacherId);
+		log.debug("teacherId == " + teacherId);
 		IgpWebLiverMsgBean liverMsg = getLiverMsg(cookie, uid, teacherPfId, lastTime);
 		List<IgpWebMsgBean> msgList = new ArrayList<IgpWebMsgBean>();
-		if(lastTime == 0){//处理置顶帖
+		if (lastTime == 0) {// 处理置顶帖
 			IgpWebMsgBean[] top_msg_list = liverMsg.getTop_msg_list();
 			if (top_msg_list != null && top_msg_list.length > 0) {
-				for(IgpWebMsgBean msg : top_msg_list){
+				for (IgpWebMsgBean msg : top_msg_list) {
 					long tmpId = Long.valueOf(msg.getId());
 					if (tmpId > maxId) {
 						// 如果，发送短消息
@@ -331,7 +337,7 @@ public class IgpMsgFactory {
 							+ igpWebMsgBean.getBrief());
 				}
 			}
-			
+
 		}
 		if (msgList.size() > 0) {
 			IgpcontentDao.batchInserMsg(teacherId, msgList);
@@ -533,17 +539,20 @@ public class IgpMsgFactory {
 		// String content = show_detail[0].getContent();
 		// System.out.println(content);
 
-//		try {
-//			String tmpUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, 538, 759340);
-//			Response response = HttpUtil.httpsPost(tmpUrl, null, cookie);
-//			if (response != null && response.isOK() && Strings.isNotBlank(response.getContent())) {
-//				IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class, response.getContent());
-//				System.out.println(Json.toJson(fromJson));
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		
+		// try {
+		// String tmpUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, 538,
+		// 759340);
+		// Response response = HttpUtil.httpsPost(tmpUrl, null, cookie);
+		// if (response != null && response.isOK() &&
+		// Strings.isNotBlank(response.getContent())) {
+		// IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class,
+		// response.getContent());
+		// System.out.println(Json.toJson(fromJson));
+		// }
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+
 		int uidFromAll = IgpMsgFactory.getInstance().getUidFromAll(585);
 		System.out.println(uidFromAll);
 	}
