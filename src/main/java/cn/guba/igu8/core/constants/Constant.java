@@ -36,8 +36,8 @@ public class Constant {
 	
 	
 	
-	public static final String URL_5IGU8_BASE = "https://www.5igu8.cn";
-//	public static final String URL_5IGU8_BASE = "https://47.92.157.16";
+	public static final String URL_5IGU8_BASE = "http://www.5igu8.cn";
+//	public static final String URL_5IGU8_BASE = "http://47.92.157.16";
 	public static final String URL_5IGU8_DETAIL = URL_5IGU8_BASE + "/ccc";
 	public static final String URL_5IGU8_LIST = URL_5IGU8_BASE + "/cc/list";
 	
