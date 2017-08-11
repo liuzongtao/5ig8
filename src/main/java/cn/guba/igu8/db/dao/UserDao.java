@@ -15,6 +15,7 @@ import org.nutz.lang.Strings;
 
 import com.jfinal.plugin.activerecord.Page;
 
+import cn.guba.igu8.core.init.SysInit;
 import cn.guba.igu8.db.mysqlModel.User;
 
 /**
@@ -38,6 +39,14 @@ public class UserDao {
 			user = userMap.get(uid);
 		}
 		return user;
+	}
+	
+	/**
+	 * 获取管理员账户
+	 * @return
+	 */
+	public static User getAdmin(){
+		return getUser(SysInit.adminNickname);
 	}
 
 	private static void updateUserMap() {

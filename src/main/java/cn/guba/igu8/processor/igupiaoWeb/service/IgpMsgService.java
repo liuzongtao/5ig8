@@ -364,7 +364,7 @@ public class IgpMsgService {
 		int curday = instance.get(Calendar.DAY_OF_WEEK);
 		int beginday = 2;
 		int endday = 6;
-		if (curday < beginday && curday > endday) {
+		if (curday < beginday || curday > endday) {
 			return false;
 		}
 		// 判断是否是开市时间

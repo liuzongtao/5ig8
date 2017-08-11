@@ -65,20 +65,28 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 
 	/**
 	 * 获取间隔时间
+	 * 
 	 * @return
 	 */
 	private long getIntervalTime() {
 		Calendar cal = Calendar.getInstance();
+
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int interval = 0;// 秒为单位
-		if (hour >= 1 && hour <= 6) {// 早上
+		if (hour >= 1 && hour <= 7) {// 早上
 			interval = 60 * 60;
-		} else if (hour > 6 && hour < 18) {
-			interval = 0;
-		} else if (hour >= 18 && hour <= 11) {
-			interval = 5 * 60;
-		} else {
+		} else if (hour > 7 && hour < 17) {
+			// 如果是周末则10分钟一次
+			int curday = cal.get(Calendar.DAY_OF_WEEK);
+			if (curday < 2 || curday > 6) {
+				interval = 10 * 60;
+			} else {
+				interval = 0;
+			}
+		} else if (hour >= 17 && hour <= 23) {
 			interval = 10 * 60;
+		} else {
+			interval = 30 * 60;
 		}
 		return interval * 1000;
 	}

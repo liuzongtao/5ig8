@@ -22,10 +22,14 @@ import org.nutz.log.Logs;
 import com.jfinal.kit.PropKit;
 
 import cn.guba.igu8.core.constants.Constant;
+import cn.guba.igu8.core.mail.MailFactory;
 import cn.guba.igu8.core.utils.HttpUtil;
+import cn.guba.igu8.core.utils.Util;
 import cn.guba.igu8.db.dao.IgpcontentDao;
 import cn.guba.igu8.db.dao.TeacherDao;
+import cn.guba.igu8.db.dao.UserDao;
 import cn.guba.igu8.db.mysqlModel.Teacher;
+import cn.guba.igu8.db.mysqlModel.User;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpContentSource;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.EIgpKind;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpDetailBean;
@@ -42,6 +46,8 @@ import cn.guba.igu8.processor.igupiaoWeb.threads.ThreadsManager;
 public class IgpMsgFactory {
 
 	private static Log log = Logs.get();
+
+	private static long lastSendMailTime = 0;
 
 	private static volatile IgpMsgFactory msgFactory;
 
@@ -139,7 +145,20 @@ public class IgpMsgFactory {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
-		log.debug("uid == " + uid + " ; liverMsg == " + Json.toJson(liverMsg, JsonFormat.compact()));
+		if (liverMsg == null) {
+			log.error("uid == " + uid + " ; liverMsg is null ! ");
+			long now = System.currentTimeMillis();
+			// 每10分钟发送一次
+			if (now - lastSendMailTime > 10 * 60 * 1000l) {
+				lastSendMailTime = now;
+				User admin = UserDao.getAdmin();
+				MailFactory.getInstance().sendEmail(admin.getEmail(), Constant.EMAIL_NAME + ":获取消息失败",
+						"获取老师：" + pfId + "消息失败！时间：" + Util.dateformat(now));
+			}
+		} else {
+			log.debug("uid == " + uid + " ; liverMsg == " + Json.toJson(liverMsg, JsonFormat.compact()));
+		}
+
 		return liverMsg;
 	}
 

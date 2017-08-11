@@ -23,6 +23,8 @@ import cn.guba.igu8.web.vip.service.VipService;
 public class SysInit {
 
 	private static volatile SysInit sysInit;
+	
+	public static final String adminNickname = "admin";
 
 	private SysInit() {
 	}
@@ -62,7 +64,7 @@ public class SysInit {
 	 * @return
 	 */
 	private long initAdmin() {
-		String nickName = "admin";
+		String nickName = adminNickname;
 		User user = UserDao.getUser(nickName);
 		if (user == null) {
 			user = new User();
