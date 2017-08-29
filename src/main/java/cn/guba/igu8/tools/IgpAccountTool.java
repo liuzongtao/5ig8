@@ -58,7 +58,7 @@ public class IgpAccountTool {
 	}
 	
 	public static void test(){
-		String filepath = "E:\\igpAccount.xlsx";
+		String filepath = "E:\\igpAccount_20170829.xlsx";
 		String sheetName = "account";
 		Set<Long> idSet = new HashSet<Long>();
 		List<IgpAccountBean> list = ExcelUtil.getExcelObjList(filepath, sheetName, IgpAccountBean.class);
