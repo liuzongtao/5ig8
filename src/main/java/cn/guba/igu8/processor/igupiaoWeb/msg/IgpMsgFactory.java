@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -49,6 +50,8 @@ public class IgpMsgFactory {
 
 	private static long lastSendMailTime = 0;
 
+	private Random random = new Random();
+
 	private static volatile IgpMsgFactory msgFactory;
 
 	private IgpMsgFactory() {
@@ -83,7 +86,7 @@ public class IgpMsgFactory {
 				continue;
 			}
 			if (uid == 0) {
-				uid = teacher.getPfVipUid();
+				uid = 5 + random.nextInt(99999);
 			}
 			int pfId = teacher.getPfId();
 			long tearcherId = teacher.getId();
@@ -146,14 +149,14 @@ public class IgpMsgFactory {
 			e.printStackTrace();
 		}
 		if (liverMsg == null) {
-			log.error("uid == " + uid + " ; liverMsg is null ! ");
+			log.error("uid == " + uid + " ; liverMsg is null ! pfId == " + pfId);
 			long now = System.currentTimeMillis();
 			// 每10分钟发送一次
 			if (now - lastSendMailTime > 10 * 60 * 1000l) {
 				lastSendMailTime = now;
 				User admin = UserDao.getAdmin();
 				MailFactory.getInstance().sendEmail(admin.getEmail(), Constant.EMAIL_NAME + ":获取消息失败",
-						"获取老师：" + pfId + "消息失败！时间：" + Util.dateformat(now));
+						"获取老师：" + pfId + " 消息失败！时间：" + Util.dateformat(now));
 			}
 		} else {
 			log.debug("uid == " + uid + " ; liverMsg == " + Json.toJson(liverMsg, JsonFormat.compact()));
