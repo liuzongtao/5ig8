@@ -246,7 +246,7 @@ public class IgpMsgFactory {
 			try {
 				log.debug(teacher.getName() + " ; getBuyEndTime == " + teacher.getBuyEndTime());
 				if (uid == 0) {
-					uid = teacher.getPfVipUid();
+					uid = 5 + random.nextInt(99999);
 				}
 				updateMsgByTeacher(cookie, uid, teacher.getPfId(), teacher.getId());
 			} catch (InterruptedException e) {

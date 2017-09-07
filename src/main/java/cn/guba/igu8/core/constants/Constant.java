@@ -23,7 +23,7 @@ public class Constant {
 	public static final String EMAIL_NAME = "股⑧";
 
 	/**************************** 爱股票相关 *********************************/
-	public static final String URL_IGP_BASE = "https://www.5igupiao.com/";
+	public static final String URL_IGP_BASE = "https://www.aigupiao.com/";
 
 	public static final String URL_IGP_LOGIN = URL_IGP_BASE + "user/login.php";
 
