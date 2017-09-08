@@ -81,11 +81,15 @@ public class IgpMsgFactory {
 		List<Teacher> igpTeacherList = TeacherDao.getIgpTeachers();
 		log.debug("uid = " + uid + " ; igpTeacherList = " + Json.toJson(igpTeacherList));
 		long now = System.currentTimeMillis();
+		boolean uidNone = false;
+		if (uid == 0) {
+			uidNone = true;
+		}
 		for (Teacher teacher : igpTeacherList) {
 			if (now > teacher.getBuyEndTime()) {
 				continue;
 			}
-			if (uid == 0) {
+			if (uidNone) {
 				uid = 5 + random.nextInt(99999);
 			}
 			int pfId = teacher.getPfId();
@@ -239,13 +243,17 @@ public class IgpMsgFactory {
 		List<Teacher> igpTeacherList = TeacherDao.getIgpTeachers();
 		log.debug(Json.toJson(igpTeacherList, JsonFormat.compact()));
 		long now = System.currentTimeMillis();
+		boolean uidNone = false;
+		if (uid == 0) {
+			uidNone = true;
+		}
 		for (Teacher teacher : igpTeacherList) {
 			if (teacher.getBuyEndTime() == null || now > teacher.getBuyEndTime()) {
 				continue;
 			}
 			try {
 				log.debug(teacher.getName() + " ; getBuyEndTime == " + teacher.getBuyEndTime());
-				if (uid == 0) {
+				if (uidNone) {
 					uid = 5 + random.nextInt(99999);
 				}
 				updateMsgByTeacher(cookie, uid, teacher.getPfId(), teacher.getId());
