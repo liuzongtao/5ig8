@@ -16,6 +16,7 @@ import cn.guba.igu8.db.mysqlModel.EovaMenu;
 import cn.guba.igu8.db.mysqlModel.Teacher;
 import cn.guba.igu8.db.mysqlModel.Uservipinfo;
 import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
+import cn.guba.igu8.web.teacher.beans.EIgpTeacher;
 import cn.guba.igu8.web.teacher.beans.TeacherViewInfoBean;
 import cn.guba.igu8.web.vip.beans.EVipType;
 import cn.guba.igu8.web.vip.service.VipService;
@@ -178,6 +179,23 @@ public class TeacherService {
 		}
 		list.removeAll(removeList);
 		return list;
+	}
+	
+	/**
+	 * 获取爱股票老师名字
+	 * @param pfId
+	 * @return
+	 */
+	public String getIgpTeacherNameByPfId(int pfId){
+		String igpTeacherName = pfId + "";
+		EIgpTeacher[] values = EIgpTeacher.values();
+		for(EIgpTeacher teacher : values){
+			if(teacher.getValue() == pfId){
+				igpTeacherName = teacher.getName();
+				break;
+			}
+		}
+		return igpTeacherName;
 	}
 
 }

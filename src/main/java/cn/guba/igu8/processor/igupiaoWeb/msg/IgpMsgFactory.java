@@ -39,6 +39,7 @@ import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpWebLiverMsgBean;
 import cn.guba.igu8.processor.igupiaoWeb.msg.beans.IgpWebMsgBean;
 import cn.guba.igu8.processor.igupiaoWeb.threads.SendMessageThread;
 import cn.guba.igu8.processor.igupiaoWeb.threads.ThreadsManager;
+import cn.guba.igu8.web.teacher.service.TeacherService;
 
 /**
  * @author zongtao liu
@@ -159,8 +160,9 @@ public class IgpMsgFactory {
 			if (now - lastSendMailTime > 10 * 60 * 1000l) {
 				lastSendMailTime = now;
 				User admin = UserDao.getAdmin();
+				String teacherName = TeacherService.getInstance().getIgpTeacherNameByPfId(pfId);
 				MailFactory.getInstance().sendEmail(admin.getEmail(), Constant.EMAIL_NAME + ":获取消息失败",
-						"获取老师：" + pfId + " 消息失败！时间：" + Util.dateformat(now));
+						"获取老师：" + teacherName + " 消息失败！时间：" + Util.dateformat(now));
 			}
 		} else {
 			log.debug("uid == " + uid + " ; liverMsg == " + Json.toJson(liverMsg, JsonFormat.compact()));
