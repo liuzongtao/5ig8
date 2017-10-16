@@ -11,9 +11,11 @@ import java.util.Map;
 import org.nutz.http.Response;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -138,9 +140,18 @@ public class IgpcontentDao {
 		String detail = "";
 		String chargeUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, id,
 				oid);
+		String mdValue = PropKit.get("md");
+		if(Strings.isNotBlank(mdValue)){
+			chargeUrl += "&md=" + mdValue;
+		}
 		Response response = HttpUtil.get(chargeUrl);
 		if (response != null) {
 			String content = response.getContent();
+			if(content.contains("<Sitemap>")){
+				String flag = "</Sitemap>";
+				int end = content.indexOf(flag);
+				content = content.substring(end + flag.length(), content.length());
+			}
 			IgpDetailMsgBean detailMsg = Json.fromJson(IgpDetailMsgBean.class, content);
 			IgpDetailBean[] show_detail = detailMsg.getShow_detail();
 			if (show_detail.length > 0) {

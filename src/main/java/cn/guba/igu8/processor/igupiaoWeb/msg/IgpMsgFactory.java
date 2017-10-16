@@ -129,6 +129,10 @@ public class IgpMsgFactory {
 
 	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int pfId, long time) {
 		String url = Constant.URL_IGP_MSG_LIVER;
+		String mdValue = PropKit.get("md");
+		if(Strings.isNotBlank(mdValue)){
+			url += "&md=" + mdValue;
+		}
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", pfId);
 		params.put("u_id", uid);
@@ -139,7 +143,13 @@ public class IgpMsgFactory {
 			Response response = HttpUtil.httpsPost(url, params, cookie);
 			if (response != null && Strings.isNotBlank(response.getContent()) && response.getContent().contains("rslt")
 					&& response.getContent().contains("msg_list")) {
-				liverMsg = Json.fromJson(IgpWebLiverMsgBean.class, response.getContent());
+				String content = response.getContent();
+				if(content.contains("<Sitemap>")){
+					String flag = "</Sitemap>";
+					int end = content.indexOf(flag);
+					content = content.substring(end + flag.length(), content.length());
+				}
+				liverMsg = Json.fromJson(IgpWebLiverMsgBean.class, content);
 				String contentSource = "";
 				try {
 					contentSource = PropKit.get("contentSource");
@@ -219,14 +229,24 @@ public class IgpMsgFactory {
 		if (Strings.isBlank(msg.getContent())) {
 			try {
 				String tmpUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, pfId, msg.getId());
+				String mdValue = PropKit.get("md");
+				if(Strings.isNotBlank(mdValue)){
+					tmpUrl += "&md=" + mdValue;
+				}
 				Response response = HttpUtil.httpsPost(tmpUrl, null, cookie);
 				if (response != null && response.isOK() && Strings.isNotBlank(response.getContent())) {
-					IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class, response.getContent());
+					String content = response.getContent();
+					if(content.contains("<Sitemap>")){
+						String flag = "</Sitemap>";
+						int end = content.indexOf(flag);
+						content = content.substring(end + flag.length(), content.length());
+					}
+					IgpDetailMsgBean fromJson = Json.fromJson(IgpDetailMsgBean.class, content);
 					IgpDetailBean[] show_detail = fromJson.getShow_detail();
 					if (show_detail != null && show_detail.length > 0) {
-						String content = show_detail[0].getContent();
-						msg.setContent(content);
-						msg.setContent_new(content);
+						String detailContent = show_detail[0].getContent();
+						msg.setContent(detailContent);
+						msg.setContent_new(detailContent);
 					}
 				}
 			} catch (Exception e) {
@@ -585,8 +605,16 @@ public class IgpMsgFactory {
 		// e.printStackTrace();
 		// }
 
-		int uidFromAll = IgpMsgFactory.getInstance().getUidFromAll(585);
-		System.out.println(uidFromAll);
+//		int uidFromAll = IgpMsgFactory.getInstance().getUidFromAll(585);
+//		System.out.println(uidFromAll);
+		
+		String content = "<Sitemap>123</Sitemap>122311";
+		if(content.contains("<Sitemap>")){
+			String flag = "</Sitemap>";
+			int end = content.indexOf(flag);
+			content = content.substring(end + flag.length(), content.length());
+		}
+		System.out.println(content);
 	}
 
 }
