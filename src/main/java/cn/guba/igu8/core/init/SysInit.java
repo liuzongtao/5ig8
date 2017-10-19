@@ -84,7 +84,7 @@ public class SysInit {
 	 */
 	private String getIgpUrlParamMdFromNet() {
 		String igpUrlParamMd = "";
-		Response response = HttpUtil.get(Constant.URL_IGP_BASE);
+		Response response = HttpUtil.get(Constant.URL_IGP_TEACHER2);
 		String content = response.getContent();
 		String mdBegin = "var _Libs=";
 		if (content.contains(mdBegin)) {
