@@ -22,6 +22,7 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 
 	public static volatile boolean isWorking = false;
 	public static volatile long lastUpdateTime = 0;
+	public static volatile long lastUpdateParamTime = 0;
 
 	private int uid;
 
@@ -41,8 +42,8 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 			isWorking = true;
 			long intervalTime = getIntervalTime();
 			boolean canEnter = true;
+			long now = System.currentTimeMillis();
 			if (intervalTime != 0) {
-				long now = System.currentTimeMillis();
 				if (now - lastUpdateTime > intervalTime) {
 					lastUpdateTime = now;
 				} else {
@@ -52,9 +53,14 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 			}
 			if (canEnter) {
 				try {
+					// 10分钟更新一次
+					if (now - lastUpdateParamTime > 10 * 60 * 1000) {
+						// 系统爱股票平台特有参数
+						SysInit.getInstance().initIgpUrlParam();
+						lastUpdateParamTime = now;
+					}
+
 					Cookie cookie = IgpMsgFactory.getInstance().getCookie();
-					// 系统爱股票平台特有参数
-					SysInit.getInstance().initIgpUrlParam();
 					IgpMsgFactory.getInstance().updateLiverMsg(cookie, uid);
 				} catch (Exception e) {
 					log.error(e.getMessage());
