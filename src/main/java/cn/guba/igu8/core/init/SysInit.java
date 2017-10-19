@@ -4,7 +4,18 @@
 package cn.guba.igu8.core.init;
 
 import java.util.List;
+import java.util.Map;
 
+import org.nutz.http.Response;
+import org.nutz.json.Json;
+import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
+
+import com.jfinal.kit.PropKit;
+
+import cn.guba.igu8.core.constants.Constant;
+import cn.guba.igu8.core.utils.HttpUtil;
 import cn.guba.igu8.db.dao.TeacherDao;
 import cn.guba.igu8.db.dao.UserDao;
 import cn.guba.igu8.db.dao.VipTypeDao;
@@ -22,8 +33,10 @@ import cn.guba.igu8.web.vip.service.VipService;
  */
 public class SysInit {
 
+	private static Log log = Logs.get();
+
 	private static volatile SysInit sysInit;
-	
+
 	public static final String adminNickname = "admin";
 
 	private SysInit() {
@@ -43,6 +56,46 @@ public class SysInit {
 	public void init() {
 		initDb();
 		initUser();
+		// 初始化参数
+		initParam();
+	}
+
+	private void initParam() {
+		Constant.IGP_URL_PARAM_MD = PropKit.get("md");
+		// 从网络获取，如果获取的到新的，则用最新的
+		initIgpUrlParam();
+		log.info("Constant.IGP_URL_PARAM_MD == " + Constant.IGP_URL_PARAM_MD);
+	}
+
+	/**
+	 * 初始化股票参数
+	 */
+	public void initIgpUrlParam() {
+		String igpUrlParamMd = getIgpUrlParamMdFromNet();
+		if (Strings.isNotBlank(igpUrlParamMd)) {
+			Constant.IGP_URL_PARAM_MD = igpUrlParamMd;
+		}
+	}
+
+	/**
+	 * 从网上获取网络参数
+	 * 
+	 * @return
+	 */
+	private String getIgpUrlParamMdFromNet() {
+		String igpUrlParamMd = "";
+		Response response = HttpUtil.get(Constant.URL_IGP_BASE);
+		String content = response.getContent();
+		String mdBegin = "var _Libs=";
+		if (content.contains(mdBegin)) {
+			int begin = content.indexOf(mdBegin) + mdBegin.length();
+			content = content.substring(begin, content.length());
+			int end = content.indexOf("}");
+			String substring = content.substring(0, end + 1);
+			Map<String, String> fromJsonAsMap = Json.fromJsonAsMap(String.class, substring);
+			igpUrlParamMd = fromJsonAsMap.get("md");
+		}
+		return igpUrlParamMd;
 	}
 
 	/***

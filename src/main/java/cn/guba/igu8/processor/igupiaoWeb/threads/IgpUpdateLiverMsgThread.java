@@ -9,6 +9,7 @@ import org.nutz.http.Cookie;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+import cn.guba.igu8.core.init.SysInit;
 import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
 
 /**
@@ -52,6 +53,8 @@ public class IgpUpdateLiverMsgThread implements Runnable {
 			if (canEnter) {
 				try {
 					Cookie cookie = IgpMsgFactory.getInstance().getCookie();
+					// 系统爱股票平台特有参数
+					SysInit.getInstance().initIgpUrlParam();
 					IgpMsgFactory.getInstance().updateLiverMsg(cookie, uid);
 				} catch (Exception e) {
 					log.error(e.getMessage());

@@ -34,8 +34,6 @@ public class Constant {
 	
 	public static final String URL_IGP_MSG_LIVER_DETAIL = URL_IGP_BASE + "api/live.php?act=load_detail&id=%d&oid=%s&soc&source=pc";
 	
-	
-	
 	public static final String URL_5IGU8_BASE = "http://www.5igu8.cn";
 //	public static final String URL_5IGU8_BASE = "http://47.92.157.16";
 	public static final String URL_5IGU8_DETAIL = URL_5IGU8_BASE + "/ccc";
@@ -47,6 +45,13 @@ public class Constant {
 	public static final String MAIL_TEMP_UPDATE = "尊敬的会员：<br /> &nbsp;&nbsp;您关注的会员老师：%s，会员结束时间为%s。<br /> &nbsp;&nbsp;如有疑问请联系客服人员。";
 	public static final String MAIL_TEMP_END = "尊敬的会员：<br /> &nbsp;&nbsp;您关注的会员老师：%s，会员服务将于%s结束。如果想继续使用，请及时续费！<br /> &nbsp;&nbsp;如有疑问请联系客服人员。";
 	public static final String MAIL_TEMP_END_SUBJECT = EMAIL_NAME + ":【通知】会员信息即将结束";
+	
+	
+	
+	/**
+	 * md参数
+	 */
+	public static String IGP_URL_PARAM_MD = "";
 	
 	
 	

@@ -129,8 +129,8 @@ public class IgpMsgFactory {
 
 	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int pfId, long time) {
 		String url = Constant.URL_IGP_MSG_LIVER;
-		String mdValue = PropKit.get("md");
-		if(Strings.isNotBlank(mdValue)){
+		String mdValue = Constant.IGP_URL_PARAM_MD;
+		if (Strings.isNotBlank(mdValue)) {
 			url += "&md=" + mdValue;
 		}
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -144,7 +144,7 @@ public class IgpMsgFactory {
 			if (response != null && Strings.isNotBlank(response.getContent()) && response.getContent().contains("rslt")
 					&& response.getContent().contains("msg_list")) {
 				String content = response.getContent();
-				if(content.contains("<Sitemap>")){
+				if (content.contains("<Sitemap>")) {
 					String flag = "</Sitemap>";
 					int end = content.indexOf(flag);
 					content = content.substring(end + flag.length(), content.length());
@@ -229,14 +229,14 @@ public class IgpMsgFactory {
 		if (Strings.isBlank(msg.getContent())) {
 			try {
 				String tmpUrl = String.format(Constant.URL_IGP_MSG_LIVER_DETAIL, pfId, msg.getId());
-				String mdValue = PropKit.get("md");
-				if(Strings.isNotBlank(mdValue)){
+				String mdValue = Constant.IGP_URL_PARAM_MD;
+				if (Strings.isNotBlank(mdValue)) {
 					tmpUrl += "&md=" + mdValue;
 				}
 				Response response = HttpUtil.httpsPost(tmpUrl, null, cookie);
 				if (response != null && response.isOK() && Strings.isNotBlank(response.getContent())) {
 					String content = response.getContent();
-					if(content.contains("<Sitemap>")){
+					if (content.contains("<Sitemap>")) {
 						String flag = "</Sitemap>";
 						int end = content.indexOf(flag);
 						content = content.substring(end + flag.length(), content.length());
@@ -605,11 +605,11 @@ public class IgpMsgFactory {
 		// e.printStackTrace();
 		// }
 
-//		int uidFromAll = IgpMsgFactory.getInstance().getUidFromAll(585);
-//		System.out.println(uidFromAll);
-		
+		// int uidFromAll = IgpMsgFactory.getInstance().getUidFromAll(585);
+		// System.out.println(uidFromAll);
+
 		String content = "<Sitemap>123</Sitemap>122311";
-		if(content.contains("<Sitemap>")){
+		if (content.contains("<Sitemap>")) {
 			String flag = "</Sitemap>";
 			int end = content.indexOf(flag);
 			content = content.substring(end + flag.length(), content.length());
