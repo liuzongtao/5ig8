@@ -45,8 +45,6 @@ public class Email {
 	private static final String SMPT_HOST_QQ = "smtp.qq.com";
 	private static final String SMPT_HOST_163 = "smtp.163.com";
 
-	private volatile long lastSendTime = 0;
-
 	/***
 	 * 账号
 	 */
@@ -159,16 +157,6 @@ public class Email {
 	 */
 	public boolean sendMessage(String receiveAccount, String receiveAccountName, String mailSubject, String mailContent,
 			Set<String> bccAccountList) throws Exception {
-		long now = System.currentTimeMillis();
-		long intervalTime = 3 * 1000;
-		if (now - lastSendTime < intervalTime) {
-			try {
-				Thread.sleep(lastSendTime + intervalTime - now);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		intervalTime = now;
 		boolean result = false;
 		Transport transport = null;
 		// 1.1. 创建一封邮件
@@ -287,8 +275,7 @@ public class Email {
 	public boolean sendMessage(String receiveAccount, String mailSubject, String mailContent) {
 		boolean result = false;
 		try {
-			sendMessage(receiveAccount, null, mailSubject, mailContent, null);
-			result = true;
+			result = sendMessage(receiveAccount, null, mailSubject, mailContent, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -308,8 +295,7 @@ public class Email {
 			Set<String> bccAccountList) {
 		boolean result = false;
 		try {
-			sendMessage(receiveAccount, null, mailSubject, mailContent, bccAccountList);
-			result = true;
+			result = sendMessage(receiveAccount, null, mailSubject, mailContent, bccAccountList);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -327,8 +313,7 @@ public class Email {
 	public boolean sendBccMessage(Set<String> bccAccountList, String mailSubject, String mailContent) {
 		boolean result = false;
 		try {
-			sendMessage(this.account, null, mailSubject, mailContent, bccAccountList);
-			result = true;
+			result = sendMessage(this.account, null, mailSubject, mailContent, bccAccountList);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
