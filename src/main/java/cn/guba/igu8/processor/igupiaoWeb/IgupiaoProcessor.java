@@ -19,7 +19,7 @@ import cn.guba.igu8.core.utils.Util;
 import cn.guba.igu8.processor.igupiaoWeb.account.IgpAccount;
 import cn.guba.igu8.processor.igupiaoWeb.msg.IgpMsgFactory;
 import cn.guba.igu8.processor.igupiaoWeb.threads.IgpUpdateLiverMsgThread;
-import cn.guba.igu8.processor.igupiaoWeb.threads.VipCheckThread;
+import cn.guba.igu8.processor.igupiaoWeb.threads.VipCheckAndContentThread;
 
 /**
  * @author zongtao liu
@@ -62,7 +62,7 @@ public class IgupiaoProcessor {
 
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 		long period = 24 * 60 * 60 * 1000l;
-		executor.scheduleAtFixedRate(new VipCheckThread(), Util.getSurplusTime(8), period, TimeUnit.MILLISECONDS);
+		executor.scheduleAtFixedRate(new VipCheckAndContentThread(), Util.getSurplusTime(8), period, TimeUnit.MILLISECONDS);
 	}
 
 	private void initNonUser() {
@@ -76,7 +76,7 @@ public class IgupiaoProcessor {
 		executor.scheduleAtFixedRate(new IgpUpdateLiverMsgThread(uid), 0, 30, TimeUnit.SECONDS);
 		log.info("IgupiaoProcessor init IgpUpdateLiverMsgThread is over ;" + new Date());
 		long period = 24 * 60 * 60 * 1000l;
-		executor.scheduleAtFixedRate(new VipCheckThread(), Util.getSurplusTime(8), period, TimeUnit.MILLISECONDS);
+		executor.scheduleAtFixedRate(new VipCheckAndContentThread(), Util.getSurplusTime(8), period, TimeUnit.MILLISECONDS);
 		log.info("IgupiaoProcessor init VipCheckThread is over ;" + new Date());
 	}
 	

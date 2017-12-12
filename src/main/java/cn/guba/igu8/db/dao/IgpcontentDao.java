@@ -231,4 +231,7 @@ public class IgpcontentDao {
 				+ EIgpKind.VIP.getValue() + "' and teacherId=" + teacherId + " order by id desc");
 	}
 
+	public static int delByTime(long time) {
+		return Db.update("delete from igpcontent where rec_time < " + time);
+	}
 }

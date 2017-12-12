@@ -60,7 +60,7 @@ public enum EIgpTeacher {
 	/***
 	 * 每日一股
 	 */
-	meiriyigu(219, "每日一股", Long.MAX_VALUE),
+	meiriyigu(219, "每日一股"),
 	/***
 	 * 龙迈
 	 */
@@ -80,7 +80,7 @@ public enum EIgpTeacher {
 	/***
 	 * 股哥
 	 */
-	guge(177, "股哥"),
+	guge(177, "股哥", Long.MAX_VALUE),
 	/***
 	 * 盘手看盘
 	 */

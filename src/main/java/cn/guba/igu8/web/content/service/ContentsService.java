@@ -157,6 +157,7 @@ public class ContentsService {
 
 	/**
 	 * 获取该显示的图像数组
+	 * 
 	 * @param imageArr
 	 * @param imageThumbArr
 	 * @return
@@ -207,4 +208,16 @@ public class ContentsService {
 		return list;
 	}
 
+	/**
+	 * 删除多少天前的数据
+	 * 
+	 * @param day
+	 * @return
+	 */
+	public int delContentsByDay(int day) {
+		long now = System.currentTimeMillis();
+		long time = now - (long) day * 24 * 60 * 60 * 1000;
+		int res = IgpcontentDao.delByTime(time / 1000);
+		return res;
+	}
 }

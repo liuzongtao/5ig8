@@ -12,13 +12,14 @@ import org.nutz.log.Logs;
 
 import cn.guba.igu8.db.dao.UserVipInfoDao;
 import cn.guba.igu8.db.mysqlModel.Uservipinfo;
+import cn.guba.igu8.web.content.service.ContentsService;
 import cn.guba.igu8.web.mail.service.MailService;
 
 /**
  * @author zongtao liu
  *
  */
-public class VipCheckThread implements Runnable {
+public class VipCheckAndContentThread implements Runnable {
 
 	private static Log log = Logs.get();
 
@@ -46,6 +47,10 @@ public class VipCheckThread implements Runnable {
 				}
 			}
 		}
+		int day = 120;
+		// 删除120天之前的数据
+		int num = ContentsService.getInstance().delContentsByDay(day);
+		log.info("has del content num is " + num);
 	}
 
 }
