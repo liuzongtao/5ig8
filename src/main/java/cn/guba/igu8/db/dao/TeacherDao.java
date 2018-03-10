@@ -40,6 +40,7 @@ public class TeacherDao {
 				teacher.setVipTypeId(EVipType.igupiao.getValue());
 				// teacher.setBuyEndTime(Long.MAX_VALUE);
 				teacher.setBuyEndTime(igpTeacher.getBuyEndTime());
+				teacher.setPfVipUid(igpTeacher.getValue());
 				teacherList.add(teacher);
 			}
 		}
