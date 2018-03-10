@@ -105,6 +105,14 @@ public enum EIgpTeacher {
 	 * 抱拙居士
 	 */
 	baozhuojushi(585, "抱拙居士", Long.MAX_VALUE),
+	/**
+	 * 龙神
+	 */
+	longshen(699, "龙神", Long.MAX_VALUE),
+	/**
+	 * 花相传
+	 */
+	huaxiangchuan(648, "花相传", Long.MAX_VALUE),
 	
 	;
 	private int value;
