@@ -21,7 +21,7 @@
 2.修改packaged/config.txt文件
 
 3.导出war包
-
+幸运mvn install
 
 	
 	
