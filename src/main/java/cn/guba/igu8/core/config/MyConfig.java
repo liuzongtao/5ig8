@@ -31,8 +31,8 @@ import cn.guba.igu8.web.vip.controller.VipController;
 public class MyConfig extends JFinalConfig {
 
 	public static void main(String[] args) {
-		JFinal.start("src/main/webapp", 80, "/");
-//		 启动时无法切换成 jfinal 自定义的 classloader
+		JFinal.start("src/main/webapp", 8080, "/");
+//		启动时无法切换成 jfinal 自定义的 classloader
 //		JFinal.start("src/main/webapp", 80, "/", 5);
 		// System.out.println(System.currentTimeMillis() + 1000l*
 		// 60*60*24*365*100);//4649279698951
