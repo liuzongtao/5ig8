@@ -113,6 +113,10 @@ public enum EIgpTeacher {
 	 * 花相传
 	 */
 	huaxiangchuan(648, "花相传", Long.MAX_VALUE),
+	/**
+	 * 刀锋投研
+	 */
+	daofengtouyan(792, "刀锋投研", Long.MAX_VALUE),
 	
 	;
 	private int value;
