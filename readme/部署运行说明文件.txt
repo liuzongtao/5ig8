@@ -23,5 +23,8 @@
 3.导出war包
 幸运mvn install
 
+测试链接
+https://www.aigupiao.com/api/live.php?act=load_detail&id=57&oid=1066715&soc&source=pc&md=b502a070217fce1eff76d22796ef1fa3
+
 	
 	
