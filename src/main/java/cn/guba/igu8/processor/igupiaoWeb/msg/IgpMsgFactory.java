@@ -94,24 +94,30 @@ public class IgpMsgFactory {
 				uid = 5 + random.nextInt(99999);
 			}
 			int pfId = teacher.getPfId();
-			long tearcherId = teacher.getId();
-			IgpWebLiverMsgBean liverMsg = getLiverMsg(cookie, uid, pfId);
+			long teacherId = teacher.getId();
+			long maxId = IgpcontentDao.getMaxId(teacherId);
+			IgpWebLiverMsgBean liverMsg = getLiverMsgLimit(cookie, uid, pfId,maxId);
 			// 如果获取失败，再次获取一次
 			if (liverMsg == null) {
-				liverMsg = getLiverMsg(cookie, uid, pfId);
+				liverMsg = getLiverMsgLimit(cookie, uid, pfId,maxId);
 			}
 			log.debug("teacher = " + teacher.getName());
 			if (liverMsg != null) {
 				log.debug("teacher = " + teacher.getName() + " ; liverMsg is " + liverMsg.getRslt());
 				IgpAceInfo aceInfo = null;
-				if (aceInfoMap.containsKey(tearcherId)) {
-					aceInfo = aceInfoMap.get(tearcherId);
+				if (aceInfoMap.containsKey(teacherId)) {
+					aceInfo = aceInfoMap.get(teacherId);
 				} else {
-					aceInfo = new IgpAceInfo(tearcherId);
-					aceInfoMap.put(tearcherId, aceInfo);
+					aceInfo = new IgpAceInfo(teacherId);
+					aceInfoMap.put(teacherId, aceInfo);
 				}
 				aceInfo.addMsg(liverMsg);
 			}
+			try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                 e.printStackTrace();
+            }
 		}
 	}
 
@@ -123,11 +129,15 @@ public class IgpMsgFactory {
 	 * @param pfId
 	 * @return
 	 */
-	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int pfId) {
-		return getLiverMsg(cookie, uid, pfId, 0);
-	}
+	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid,int pfId, long time) {
+        return getLiverMsg(cookie, uid, pfId, time,0);
+    }
+	
+	private IgpWebLiverMsgBean getLiverMsgLimit(Cookie cookie, int uid, int pfId,long maxId) {
+        return getLiverMsg(cookie, uid, pfId, 0,maxId);
+    }
 
-	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int pfId, long time) {
+	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int pfId, long time,long maxId) {
 		String url = Constant.URL_IGP_MSG_LIVER;
 		String mdValue = Constant.IGP_URL_PARAM_MD;
 		if (Strings.isNotBlank(mdValue)) {
@@ -156,7 +166,7 @@ public class IgpMsgFactory {
 				} catch (Exception e) {
 				}
 				if (Strings.equals(contentSource, EIgpContentSource.DETAIL.getValue())) {
-					getContentFromDetail(liverMsg, cookie, pfId);
+					getContentFromDetail(liverMsg, cookie, pfId, maxId);
 				}
 			}
 		} catch (Exception e) {
@@ -188,7 +198,7 @@ public class IgpMsgFactory {
 	 * @param cookie
 	 * @param pfId
 	 */
-	private void getContentFromDetail(IgpWebLiverMsgBean liverMsg, Cookie cookie, int pfId) {
+	private void getContentFromDetail(IgpWebLiverMsgBean liverMsg, Cookie cookie, int pfId,long maxId) {
 		if (liverMsg == null) {
 			return;
 		}
@@ -199,22 +209,39 @@ public class IgpMsgFactory {
 		// 补充普通信息
 		Set<Long> idSet = new HashSet<Long>();
 		for (IgpWebMsgBean msg : msg_list) {
+		    long id = Long.valueOf(msg.getId());
+            if (id <= maxId) {
+                break;
+            }
 			idSet.add(Long.valueOf(msg.getId()));
 			supplementMsg(cookie, pfId, msg);
+			try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                 e.printStackTrace();
+            }
 		}
 
 		// 补充置顶帖
-		if (liverMsg.getTop_msg_list() != null && liverMsg.getTop_msg_list().length > 0) {
-			long minId = Long.valueOf(msg_list[msg_list.length - 1].getId());
-			for (IgpWebMsgBean msg : liverMsg.getTop_msg_list()) {
-				long id = Long.valueOf(msg.getId());
-				if (id < minId || idSet.contains(id)) {
-					continue;
-				} else {
-					supplementMsg(cookie, pfId, msg);
-				}
-			}
-		}
+        if (liverMsg.getTop_msg_list() != null && liverMsg.getTop_msg_list().length > 0) {
+            long minId = Long.valueOf(msg_list[msg_list.length - 1].getId());
+            for (IgpWebMsgBean msg : liverMsg.getTop_msg_list()) {
+                long id = Long.valueOf(msg.getId());
+                if (id <= maxId) {
+                    break;
+                }
+                if (id < minId || idSet.contains(id)) {
+                    continue;
+                } else {
+                    supplementMsg(cookie, pfId, msg);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                         e.printStackTrace();
+                    }
+                }
+            }
+        }
 	}
 
 	/**
@@ -304,12 +331,12 @@ public class IgpMsgFactory {
 		while (lastTime > 0) {
 			timeList.add(lastTime);
 			lastTime = findOldest(cookie, uid, teacherPfId, lastTime, teacherId);
-			Thread.sleep(100);
+			Thread.sleep(1000);
 		}
 		int size = timeList.size();
 		for (int i = size - 1; i >= 0; i--) {
 			updateMsgByTeacher(cookie, uid, teacherPfId, timeList.get(i), teacherId);
-			Thread.sleep(100);
+			Thread.sleep(1000);
 		}
 	}
 
