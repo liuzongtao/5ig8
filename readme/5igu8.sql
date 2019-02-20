@@ -234,3 +234,30 @@ CREATE TABLE `viptype` (
 
 
 INSERT INTO `eova_menu` VALUES (1,'user','用户管理','dir','icon-bricks',1,0,0,NULL,NULL,NULL,NULL,0,NULL),(2,'sys','系统管理','dir','icon-cog',2,0,0,NULL,NULL,NULL,NULL,0,NULL),(3,'biz','综合信息','dir','icon-plugin',3,0,0,NULL,NULL,NULL,NULL,0,NULL),(20,'user_list','用户列表','diy','icon-applicationsidetree',1,1,0,'','/user/list','',NULL,0,NULL),(21,'user_add','添加用户','diy','icon-layout',2,1,0,NULL,'/user/toAdd','',NULL,0,NULL),(22,'user_pwd','修改密码','diy','icon-databasetable',3,1,0,'','/user/toUpdatePwd','',NULL,0,NULL),(51,'sys_log','系统日志','diy','icon-tablemultiple',1,2,0,NULL,'/log/list4Recharge','',NULL,0,NULL);
+
+
+
+股票信息表
+1.股票代码
+2.股票名称
+3.购买时间
+4.购买价格
+5.购买均价
+6.购买总数
+7.区间最高价
+8.区间最低价
+9.当前价
+
+
+
+购买记录表
+1.股票代码
+2.购买时间
+3.购买价格
+4.购买数量
+
+关注提醒表
+1.股票代码
+2.关注人员id
+3.提醒策略
+4.提醒执行结果及时间
