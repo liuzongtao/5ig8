@@ -25,7 +25,7 @@ public class MailService {
 
 	public static MailService getInstance() {
 		if (mailService == null) {
-			synchronized (UserService.class) {
+			synchronized (MailService.class) {
 				if (mailService == null) {
 					mailService = new MailService();
 				}

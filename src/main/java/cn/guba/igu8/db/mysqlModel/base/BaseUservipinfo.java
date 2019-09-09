@@ -81,4 +81,13 @@ public abstract class BaseUservipinfo<M extends BaseUservipinfo<M>> extends Mode
 		return get("showUrl");
 	}
 
+	public M setVipGroup(java.lang.String vipGroup) {
+		set("vipGroup", vipGroup);
+		return (M)this;
+	}
+
+	public java.lang.String getVipGroup() {
+		return get("vipGroup");
+	}
+
 }
