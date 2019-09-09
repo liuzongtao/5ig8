@@ -238,7 +238,7 @@ public class IgpMsgService {
                         emailMap.put(showUrl, emailSet);
                     }
                     //判断是否有特殊分组要求
-                    if (Strings.isNotBlank(vip.getVipGroup()) && Strings.isNotBlank(vipGroup) && Strings.equals(vip.getVipGroup(), vipGroup)) {
+                    if (Strings.isNotBlank(vip.getVipGroup()) && Strings.isNotBlank(vipGroup) && !Strings.equals(vip.getVipGroup(), vipGroup)) {
                         continue;
                     }
                     emailSet.add(user.getEmail());
