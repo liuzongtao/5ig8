@@ -121,6 +121,7 @@ public class VipService {
 		String teacherName = TeacherService.getInstance().getTeacherName(teacherId);
 		view.setTeacherId(teacherId);
 		view.setTeacherName(teacherName);
+		view.setVipGroup(info.getVipGroup());
 		view.setEndTime(Util.dateformat(info.getVipEndTime()));
 		view.setEmailType(info.getSendEmail());
 		view.setIsSendSms(info.getSendSms() ? 1 : 0);
@@ -168,6 +169,7 @@ public class VipService {
 		long endTime = addTime(System.currentTimeMillis(), viewInfo.getPeriodNum(), viewInfo.getPeriodType());
 		vipInfo.setVipEndTime(endTime);
 		vipInfo.setConcernedTeacherId(viewInfo.getTeacherId());
+		vipInfo.setVipGroup(viewInfo.getVipGroup());
 		String sendEmail = getSendEmail(emailTypeArr);
 		vipInfo.setSendEmail(sendEmail);
 		vipInfo.setSendSms(viewInfo.getIsSendSms() == 1 ? true : false);
@@ -194,6 +196,7 @@ public class VipService {
 		long oldVipEndTime = uservipinfo.getVipEndTime();
 		uservipinfo.setVipEndTime(endTime);
 		uservipinfo.setConcernedTeacherId(newTeacherId);
+		uservipinfo.setVipGroup(viewInfo.getVipGroup());
 		String sendEmail = getSendEmail(emailTypeArr);
 		uservipinfo.setSendEmail(sendEmail);
 		uservipinfo.setSendSms(viewInfo.getIsSendSms() == 1 ? true : false);

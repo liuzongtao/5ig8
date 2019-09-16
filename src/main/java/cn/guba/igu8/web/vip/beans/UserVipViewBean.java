@@ -17,6 +17,7 @@ public class UserVipViewBean {
 	public int periodNum = 1;
 	public int periodType;
 	public String teacherName;
+	public String vipGroup;
 	public long teacherId;
 	public String emailType;
 	public int isSendSms;
@@ -202,4 +203,11 @@ public class UserVipViewBean {
 		this.teacherId = teacherId;
 	}
 
+	public String getVipGroup() {
+		return vipGroup;
+	}
+
+	public void setVipGroup(String vipGroup) {
+		this.vipGroup = vipGroup;
+	}
 }

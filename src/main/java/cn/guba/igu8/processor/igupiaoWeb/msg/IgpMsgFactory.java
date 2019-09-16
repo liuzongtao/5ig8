@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import cn.guba.igu8.core.init.SysInit;
 import org.nutz.http.Cookie;
 import org.nutz.http.Response;
 import org.nutz.json.Json;
@@ -140,6 +141,10 @@ public class IgpMsgFactory {
 	private IgpWebLiverMsgBean getLiverMsg(Cookie cookie, int uid, int pfId, long time,long maxId) {
 		String url = Constant.URL_IGP_MSG_LIVER;
 		String mdValue = Constant.IGP_URL_PARAM_MD;
+		if(Strings.isBlank(mdValue)){
+			SysInit.getInstance().initIgpUrlParam();
+			mdValue = Constant.IGP_URL_PARAM_MD;
+		}
 		if (Strings.isNotBlank(mdValue)) {
 			url += "&md=" + mdValue;
 		}

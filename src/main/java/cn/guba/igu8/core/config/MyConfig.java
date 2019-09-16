@@ -137,13 +137,14 @@ public class MyConfig extends JFinalConfig {
 	@Override
 	public void afterJFinalStart() {
 		super.afterJFinalStart();
-		// 系统初始化
-		SysInit.getInstance().init();
-		// 初始化消息服务
-		IgpMsgService.getInstance();
-		// 爱股票信息系统初始化
-		IgupiaoProcessor.getInstance();
-
+		synchronized (this.getClass()){
+			// 系统初始化
+			SysInit.getInstance().init();
+			// 初始化消息服务
+			IgpMsgService.getInstance();
+			// 爱股票信息系统初始化
+			IgupiaoProcessor.getInstance();
+		}
 	}
 
 }

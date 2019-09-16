@@ -61,7 +61,6 @@ public class SysInit {
 	}
 
 	private void initParam() {
-		Constant.IGP_URL_PARAM_MD = PropKit.get("md");
 		// 从网络获取，如果获取的到新的，则用最新的
 		initIgpUrlParam();
 		log.info("Constant.IGP_URL_PARAM_MD == " + Constant.IGP_URL_PARAM_MD);
