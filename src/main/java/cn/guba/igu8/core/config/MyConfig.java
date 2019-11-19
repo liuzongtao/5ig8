@@ -91,12 +91,12 @@ public class MyConfig extends JFinalConfig {
 
     @Override
     public void onStart() {
-//        // 系统初始化
-//        SysInit.getInstance().init();
-//        // 初始化消息服务
-//        IgpMsgService.getInstance();
-//        // 爱股票信息系统初始化
-//        IgupiaoProcessor.getInstance();
+        // 系统初始化
+        SysInit.getInstance().init();
+        // 初始化消息服务
+        IgpMsgService.getInstance();
+        // 爱股票信息系统初始化
+        IgupiaoProcessor.getInstance();
         // 初始化民宿信息
         MinsuProcessor.getInstance();
     }
