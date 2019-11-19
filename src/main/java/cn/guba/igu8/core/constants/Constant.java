@@ -54,8 +54,31 @@ public class Constant {
 	 * md参数
 	 */
 	public static String IGP_URL_PARAM_MD = "";
-	
-	
-	
+
+	/**
+	 * 空格符
+	 */
+	public static final String SYMBOL_SPACE = Character.toString((char) 32);
+	/**
+	 * 统一的时间格式（短） 年-月
+	 */
+	public static final String DATE_FORMAT_MONTH = "yyyy-MM";
+	/**
+	 * 统一的时间格式（短） 年-月-日
+	 */
+	public static final String DATE_FORMAT_MEDIUM = "yyyy-MM-dd";
+	/**
+	 * 统一的时间格式（短） 年-月-日
+	 */
+	public static final String DATE_FORMAT_MEDIUM_WORD = "yyyy年MM月dd日";
+	/**
+	 * 统一的时间格式（短）时:分:秒
+	 */
+	public static final String DATE_FORMAT_TIME_SHORT = "HH:mm:ss";
+	/**
+	 * 统一的时间格式（长） 年-月-日 时:分:秒
+	 */
+	public static final String DATE_FORMAT_FULL = DATE_FORMAT_MEDIUM + SYMBOL_SPACE + DATE_FORMAT_TIME_SHORT;
+
 
 }

@@ -3,6 +3,7 @@ package cn.guba.igu8.core.config;
 import cn.guba.igu8.core.init.SysInit;
 import cn.guba.igu8.core.interceptor.AuthInterceptor;
 import cn.guba.igu8.db.mysqlModel._MappingKit;
+import cn.guba.igu8.minsu.tj.MinsuProcessor;
 import cn.guba.igu8.processor.igupiaoWeb.IgupiaoProcessor;
 import cn.guba.igu8.processor.igupiaoWeb.service.IgpMsgService;
 import cn.guba.igu8.web.content.controller.CommenedContentController;
@@ -23,21 +24,16 @@ import com.jfinal.template.Engine;
  */
 public class MyConfig extends JFinalConfig {
 
+
     public static void main(String[] args) {
-        JFinal.start("src/main/webapp", 8080, "/");
-//		启动时无法切换成 jfinal 自定义的 classloader
-//		JFinal.start("src/main/webapp", 80, "/", 5);
+//        JFinal.start("src/main/webapp", 8080, "/",5);
+//		线上
+		JFinal.start("src/main/webapp", 80, "/", 5);
         // System.out.println(System.currentTimeMillis() + 1000l*
         // 60*60*24*365*100);//4649279698951
         // System.out.println("http://47.92.157.16/cc/158262".length());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jfinal.config.JFinalConfig#configConstant(com.jfinal.config.
-     * Constants)
-     */
     @Override
     public void configConstant(Constants me) {
         // 加载少量必要配置，随后可用PropKit.get(...)获取值
@@ -46,11 +42,6 @@ public class MyConfig extends JFinalConfig {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jfinal.config.JFinalConfig#configRoute(com.jfinal.config.Routes)
-     */
     @Override
     public void configRoute(Routes me) {
         me.setBaseViewPath("/view");
@@ -62,12 +53,6 @@ public class MyConfig extends JFinalConfig {
         me.add("/log", LogController.class);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jfinal.config.JFinalConfig#configEngine(com.jfinal.template.Engine)
-     */
     @Override
     public void configEngine(Engine me) {
         me.addSharedFunction("/view/common/_layout.html");
@@ -79,12 +64,6 @@ public class MyConfig extends JFinalConfig {
         return new DruidPlugin(PropKit.get("jdbcUrl"), PropKit.get("user"), PropKit.get("password").trim());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jfinal.config.JFinalConfig#configPlugin(com.jfinal.config.Plugins)
-     */
     @Override
     public void configPlugin(Plugins me) {
         // 配置C3p0数据库连接池插件
@@ -98,45 +77,28 @@ public class MyConfig extends JFinalConfig {
         me.add(arp);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jfinal.config.JFinalConfig#configInterceptor(com.jfinal.config.
-     * Interceptors)
-     */
     @Override
     public void configInterceptor(Interceptors me) {
         me.add(new AuthInterceptor());
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.jfinal.config.JFinalConfig#configHandler(com.jfinal.config.Handlers)
-     */
     @Override
-    public void configHandler(Handlers me) {
-        // TODO Auto-generated method stub
+    public void configHandler(Handlers handlers) {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jfinal.config.JFinalConfig#afterJFinalStart()
-     */
-    @Override
-    public void afterJFinalStart() {
-        super.afterJFinalStart();
-        // 系统初始化
-        SysInit.getInstance().init();
-        // 初始化消息服务
-        IgpMsgService.getInstance();
-        // 爱股票信息系统初始化
-        IgupiaoProcessor.getInstance();
 
+    @Override
+    public void onStart() {
+//        // 系统初始化
+//        SysInit.getInstance().init();
+//        // 初始化消息服务
+//        IgpMsgService.getInstance();
+//        // 爱股票信息系统初始化
+//        IgupiaoProcessor.getInstance();
+        // 初始化民宿信息
+        MinsuProcessor.getInstance();
     }
 
 }

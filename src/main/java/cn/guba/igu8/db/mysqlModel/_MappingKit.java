@@ -20,6 +20,8 @@ public class _MappingKit {
 		arp.addMapping("igpcontent", "lid", Igpcontent.class);
 		arp.addMapping("rechargelog", "id", Rechargelog.class);
 		arp.addMapping("teacher", "id", Teacher.class);
+		arp.addMapping("tj_deal_info", "id", TjDealInfo.class);
+		arp.addMapping("tj_unit_info", "id", TjUnitInfo.class);
 		arp.addMapping("user", "id", User.class);
 		arp.addMapping("userdiscountinfo", "id", Userdiscountinfo.class);
 		arp.addMapping("uservipinfo", "id", Uservipinfo.class);

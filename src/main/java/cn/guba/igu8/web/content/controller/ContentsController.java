@@ -3,6 +3,7 @@
  */
 package cn.guba.igu8.web.content.controller;
 
+import cn.guba.igu8.minsu.tj.threads.MinsuInfoThread;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 

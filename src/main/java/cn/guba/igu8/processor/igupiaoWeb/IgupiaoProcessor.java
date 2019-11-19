@@ -47,7 +47,7 @@ public class IgupiaoProcessor {
 	}
 
 	private void init() {
-		log.info("IgupiaoProcessor init ;" + new Date());
+		log.info("MinsuProcessor init ;" + new Date());
 
 		IgpAccount user = new IgpAccount(PropKit.get("igpAcc"), PropKit.get("igpPwd"));
 
@@ -66,7 +66,7 @@ public class IgupiaoProcessor {
 	}
 
 	private void initNonUser() {
-		log.info("IgupiaoProcessor initNonUser ;" + new Date());
+		log.info("MinsuProcessor initNonUser ;" + new Date());
 		Cookie cookie = IgpMsgFactory.getInstance().getCookie();
 		int uid = 0;
 		// 初始化老数据
@@ -74,10 +74,10 @@ public class IgupiaoProcessor {
 
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 		executor.scheduleAtFixedRate(new IgpUpdateLiverMsgThread(uid), 0, 30, TimeUnit.SECONDS);
-		log.info("IgupiaoProcessor init IgpUpdateLiverMsgThread is over ;" + new Date());
+		log.info("MinsuProcessor init IgpUpdateLiverMsgThread is over ;" + new Date());
 		long period = 24 * 60 * 60 * 1000l;
 		executor.scheduleAtFixedRate(new VipCheckAndContentThread(), Util.getSurplusTime(8), period, TimeUnit.MILLISECONDS);
-		log.info("IgupiaoProcessor init VipCheckThread is over ;" + new Date());
+		log.info("MinsuProcessor init VipCheckThread is over ;" + new Date());
 	}
 	
 	
