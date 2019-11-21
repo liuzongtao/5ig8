@@ -48,8 +48,7 @@ public class MinsuInfoThread implements Runnable {
 
         List<Integer> houseIdList = Arrays.asList(HOUSE_ID_ARR);
         int size = 20;
-        List<Integer> allList = houseIdList.subList(0, houseIdList.size() > size ? size : houseIdList.size());
-        List<List<Integer>> listPar = Lists.partition(allList, size);
+        List<List<Integer>> listPar = Lists.partition(houseIdList, size);
         for (List<Integer> list : listPar) {
             updateInfo(list);
         }
@@ -135,7 +134,7 @@ public class MinsuInfoThread implements Runnable {
     private void updateInfo(List<Integer> list) {
         // 获取信息
         List<TjUnitInfoBean> tjUnitInfoBeans = TjInfoService.getInstance().getTjUnitInfoBeans(list);
-
+        Date today = new Date();
         // 遍历更新 单元信息表和 入住信息表
         for (TjUnitInfoBean tmpTjUnitInfoBean : tjUnitInfoBeans) {
             Long unitId = Long.valueOf(tmpTjUnitInfoBean.getUnitId());
@@ -151,6 +150,7 @@ public class MinsuInfoThread implements Runnable {
                 tmpTjUnitInfo.setDitrictName(tmpTjUnitInfoBean.getDistrictName());
                 tmpTjUnitInfo.setLongitude(tmpTjUnitInfoBean.getLongitude());
                 tmpTjUnitInfo.setLatitude(tmpTjUnitInfoBean.getLatitude());
+                tmpTjUnitInfo.setCreatedAt(today);
                 TjUnitInfoDao.insert(tmpTjUnitInfo);
             }
 
@@ -161,8 +161,9 @@ public class MinsuInfoThread implements Runnable {
             if (!tmpTjUnitInfoBean.getAllowBooking()) {
                 tmpTjDealInfo.setFinalPrice(tmpTjUnitInfoBean.getFinalPrice());
             } else {
-                tmpTjDealInfo.setFinalPrice("0");
+                tmpTjDealInfo.setFinalPrice("-1");
             }
+            tmpTjDealInfo.setCreatedAt(today);
             TjDealInfoDao.insert(tmpTjDealInfo);
         }
 
