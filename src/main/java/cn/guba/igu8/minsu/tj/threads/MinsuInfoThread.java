@@ -13,6 +13,7 @@ import cn.guba.igu8.minsu.tj.service.TjInfoService;
 import com.google.common.collect.Lists;
 import com.jfinal.ext.kit.DateKit;
 import org.apache.commons.collections4.CollectionUtils;
+import org.nutz.json.Json;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -57,6 +58,7 @@ public class MinsuInfoThread implements Runnable {
         Date today = new Date();
         String title = EMAIL_TITLE + DateKit.toStr(today);
         String latestData = getLatestData(dayNum);
+        log.info("latestData == " + latestData);
         MailFactory.getInstance().sendEmail(EMAIL_ADDRESS, title, latestData);
     }
 
@@ -69,7 +71,7 @@ public class MinsuInfoThread implements Runnable {
     private String getLatestData(int dayNum) {
         //获取每天数据
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -dayNum);
+        cal.add(Calendar.DAY_OF_MONTH, -dayNum + 1);
         Map<Long, List<TjDealInfo>> allTjDealInfos = new TreeMap<>();
         for (int i = dayNum; i > 0; i--) {
             List<TjDealInfo> list = TjDealInfoDao.getInfoListByDate(cal.getTime());
@@ -82,10 +84,15 @@ public class MinsuInfoThread implements Runnable {
                 List<TjDealInfo> tjDealInfos = allTjDealInfos.get(unitId);
                 if (tjDealInfos == null) {
                     tjDealInfos = new ArrayList<>(dayNum);
+                    for (int j = 0; j < dayNum; j++) {
+                        tjDealInfos.add(null);
+                    }
+                    allTjDealInfos.put(unitId, tjDealInfos);
                 }
-                tjDealInfos.add(dayNum - i, tmpTjDealInfo);
+                tjDealInfos.set(dayNum - i, tmpTjDealInfo);
             }
         }
+        log.info("allTjDealInfos == " + Json.toJson(allTjDealInfos));
         //组装为字符串
         return formatTable(allTjDealInfos, dayNum);
     }
@@ -102,22 +109,29 @@ public class MinsuInfoThread implements Runnable {
         //标题行
         content.append("<tr style=\"background-color: #428BCA; color:#ffffff\"><th>名称</th>");
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -dayNum);
+        cal.add(Calendar.DAY_OF_MONTH, -dayNum + 1);
         for (int i = dayNum; i > 0; i--) {
             content.append("<th>" + DateKit.toStr(cal.getTime()) + "</th>");
             cal.add(Calendar.DAY_OF_MONTH, 1);
         }
         content.append("</tr>");
 
+        int index = 1;
         for (Map.Entry<Long, List<TjDealInfo>> entry : allTjDealInfos.entrySet()) {
             content.append("<tr>");
             Long unitId = entry.getKey();
             TjUnitInfo tjUnitInfo = TjUnitInfoDao.selectByUnitId(unitId);
             //第一列
-            content.append("<td>" + tjUnitInfo.getUnitName() + "</td>");
+            content.append("<td>" + index++ + " : " + tjUnitInfo.getUnitName() + "</td>");
             List<TjDealInfo> tjDealInfoList = entry.getValue();
             for (TjDealInfo tjDealInfo : tjDealInfoList) {
-                content.append("<td>" + tjDealInfo.getFinalPrice() + "</td>");
+                content.append("<td>");
+                if (tjDealInfo == null) {
+                    content.append(0);
+                } else {
+                    content.append(tjDealInfo.getFinalPrice());
+                }
+                content.append("</td>");
             }
             content.append("</tr>");
         }

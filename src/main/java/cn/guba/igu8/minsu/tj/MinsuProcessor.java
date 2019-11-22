@@ -46,6 +46,10 @@ public class MinsuProcessor {
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 30);
         long delay = (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
+        if (delay < 0) {
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            delay = (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
+        }
         executor.scheduleAtFixedRate(new MinsuInfoThread(), delay, 24 * 60 * 60, TimeUnit.SECONDS);
         log.info("MinsuProcessor init MinsuInfoThread is over ;" + new Date());
     }
