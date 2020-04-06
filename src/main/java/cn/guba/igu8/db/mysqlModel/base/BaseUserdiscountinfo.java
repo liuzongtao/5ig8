@@ -13,54 +13,54 @@ public abstract class BaseUserdiscountinfo<M extends BaseUserdiscountinfo<M>> ex
 		set("id", id);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getId() {
-		return get("id");
+		return getLong("id");
 	}
 
 	public M setUid(java.lang.Long uid) {
 		set("uid", uid);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getUid() {
-		return get("uid");
+		return getLong("uid");
 	}
 
 	public M setDiscountMoney(java.lang.Integer discountMoney) {
 		set("discountMoney", discountMoney);
 		return (M)this;
 	}
-
+	
 	public java.lang.Integer getDiscountMoney() {
-		return get("discountMoney");
+		return getInt("discountMoney");
 	}
 
 	public M setDiscountEndTime(java.lang.Long discountEndTime) {
 		set("discountEndTime", discountEndTime);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getDiscountEndTime() {
-		return get("discountEndTime");
+		return getLong("discountEndTime");
 	}
 
 	public M setDiscountFromUid(java.lang.Long discountFromUid) {
 		set("discountFromUid", discountFromUid);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getDiscountFromUid() {
-		return get("discountFromUid");
+		return getLong("discountFromUid");
 	}
 
 	public M setCurTime(java.lang.Long curTime) {
 		set("curTime", curTime);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getCurTime() {
-		return get("curTime");
+		return getLong("curTime");
 	}
 
 }

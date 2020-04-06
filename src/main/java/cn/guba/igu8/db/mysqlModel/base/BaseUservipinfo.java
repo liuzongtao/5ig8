@@ -13,61 +13,61 @@ public abstract class BaseUservipinfo<M extends BaseUservipinfo<M>> extends Mode
 		set("id", id);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getId() {
-		return get("id");
+		return getLong("id");
 	}
 
 	public M setUid(java.lang.Long uid) {
 		set("uid", uid);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getUid() {
-		return get("uid");
+		return getLong("uid");
 	}
 
 	public M setVipTypeId(java.lang.Integer vipTypeId) {
 		set("vipTypeId", vipTypeId);
 		return (M)this;
 	}
-
+	
 	public java.lang.Integer getVipTypeId() {
-		return get("vipTypeId");
+		return getInt("vipTypeId");
 	}
 
 	public M setVipEndTime(java.lang.Long vipEndTime) {
 		set("vipEndTime", vipEndTime);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getVipEndTime() {
-		return get("vipEndTime");
+		return getLong("vipEndTime");
 	}
 
 	public M setConcernedTeacherId(java.lang.Long concernedTeacherId) {
 		set("concernedTeacherId", concernedTeacherId);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getConcernedTeacherId() {
-		return get("concernedTeacherId");
+		return getLong("concernedTeacherId");
 	}
 
 	public M setSendEmail(java.lang.String sendEmail) {
 		set("sendEmail", sendEmail);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getSendEmail() {
-		return get("sendEmail");
+		return getStr("sendEmail");
 	}
 
 	public M setSendSms(java.lang.Boolean sendSms) {
 		set("sendSms", sendSms);
 		return (M)this;
 	}
-
+	
 	public java.lang.Boolean getSendSms() {
 		return get("sendSms");
 	}
@@ -76,7 +76,7 @@ public abstract class BaseUservipinfo<M extends BaseUservipinfo<M>> extends Mode
 		set("showUrl", showUrl);
 		return (M)this;
 	}
-
+	
 	public java.lang.Boolean getShowUrl() {
 		return get("showUrl");
 	}
@@ -85,9 +85,9 @@ public abstract class BaseUservipinfo<M extends BaseUservipinfo<M>> extends Mode
 		set("vipGroup", vipGroup);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getVipGroup() {
-		return get("vipGroup");
+		return getStr("vipGroup");
 	}
 
 }

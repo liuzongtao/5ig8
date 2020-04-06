@@ -13,124 +13,124 @@ public abstract class BaseRechargelog<M extends BaseRechargelog<M>> extends Mode
 		set("id", id);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getId() {
-		return get("id");
+		return getLong("id");
 	}
 
 	public M setUid(java.lang.Long uid) {
 		set("uid", uid);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getUid() {
-		return get("uid");
+		return getLong("uid");
 	}
 
 	public M setNickname(java.lang.String nickname) {
 		set("nickname", nickname);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getNickname() {
-		return get("nickname");
+		return getStr("nickname");
 	}
 
 	public M setInviterUid(java.lang.Long inviterUid) {
 		set("inviterUid", inviterUid);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getInviterUid() {
-		return get("inviterUid");
+		return getLong("inviterUid");
 	}
 
 	public M setInviterNickname(java.lang.String inviterNickname) {
 		set("inviterNickname", inviterNickname);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getInviterNickname() {
-		return get("inviterNickname");
+		return getStr("inviterNickname");
 	}
 
 	public M setCreatTime(java.lang.Long creatTime) {
 		set("creatTime", creatTime);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getCreatTime() {
-		return get("creatTime");
+		return getLong("creatTime");
 	}
 
 	public M setEmail(java.lang.String email) {
 		set("email", email);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getEmail() {
-		return get("email");
+		return getStr("email");
 	}
 
 	public M setPhoneNumber(java.lang.Long phoneNumber) {
 		set("phoneNumber", phoneNumber);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getPhoneNumber() {
-		return get("phoneNumber");
+		return getLong("phoneNumber");
 	}
 
 	public M setCurTime(java.lang.Long curTime) {
 		set("curTime", curTime);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getCurTime() {
-		return get("curTime");
+		return getLong("curTime");
 	}
 
 	public M setOldVipEndTime(java.lang.Long oldVipEndTime) {
 		set("oldVipEndTime", oldVipEndTime);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getOldVipEndTime() {
-		return get("oldVipEndTime");
+		return getLong("oldVipEndTime");
 	}
 
 	public M setNewVipEndTime(java.lang.Long newVipEndTime) {
 		set("newVipEndTime", newVipEndTime);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getNewVipEndTime() {
-		return get("newVipEndTime");
+		return getLong("newVipEndTime");
 	}
 
 	public M setConcernedTeacherId(java.lang.Long concernedTeacherId) {
 		set("concernedTeacherId", concernedTeacherId);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getConcernedTeacherId() {
-		return get("concernedTeacherId");
+		return getLong("concernedTeacherId");
 	}
 
 	public M setEmailTypes(java.lang.String emailTypes) {
 		set("emailTypes", emailTypes);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getEmailTypes() {
-		return get("emailTypes");
+		return getStr("emailTypes");
 	}
 
 	public M setIsSendSms(java.lang.Boolean isSendSms) {
 		set("isSendSms", isSendSms);
 		return (M)this;
 	}
-
+	
 	public java.lang.Boolean getIsSendSms() {
 		return get("isSendSms");
 	}
@@ -139,7 +139,7 @@ public abstract class BaseRechargelog<M extends BaseRechargelog<M>> extends Mode
 		set("isShowUrl", isShowUrl);
 		return (M)this;
 	}
-
+	
 	public java.lang.Boolean getIsShowUrl() {
 		return get("isShowUrl");
 	}
@@ -148,36 +148,36 @@ public abstract class BaseRechargelog<M extends BaseRechargelog<M>> extends Mode
 		set("disCountInfosStr", disCountInfosStr);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getDisCountInfosStr() {
-		return get("disCountInfosStr");
+		return getStr("disCountInfosStr");
 	}
 
 	public M setVipTypeId(java.lang.Long vipTypeId) {
 		set("vipTypeId", vipTypeId);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getVipTypeId() {
-		return get("vipTypeId");
+		return getLong("vipTypeId");
 	}
 
 	public M setVipTypeDescr(java.lang.String vipTypeDescr) {
 		set("vipTypeDescr", vipTypeDescr);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getVipTypeDescr() {
-		return get("vipTypeDescr");
+		return getStr("vipTypeDescr");
 	}
 
 	public M setCostMoney(java.lang.Integer costMoney) {
 		set("costMoney", costMoney);
 		return (M)this;
 	}
-
+	
 	public java.lang.Integer getCostMoney() {
-		return get("costMoney");
+		return getInt("costMoney");
 	}
 
 }

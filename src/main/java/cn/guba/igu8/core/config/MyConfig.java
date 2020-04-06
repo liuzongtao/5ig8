@@ -1,5 +1,6 @@
 package cn.guba.igu8.core.config;
 
+import cn.guba.igu8.convertibleBond.ConvertibleBondProcessor;
 import cn.guba.igu8.core.init.SysInit;
 import cn.guba.igu8.core.interceptor.AuthInterceptor;
 import cn.guba.igu8.db.mysqlModel._MappingKit;
@@ -10,6 +11,7 @@ import cn.guba.igu8.web.content.controller.CommenedContentController;
 import cn.guba.igu8.web.content.controller.ContentsController;
 import cn.guba.igu8.web.index.controller.IndexController;
 import cn.guba.igu8.web.log.controller.LogController;
+import cn.guba.igu8.web.stock.controller.ConvertibleBondController;
 import cn.guba.igu8.web.user.controller.UserController;
 import cn.guba.igu8.web.vip.controller.VipController;
 import com.jfinal.config.*;
@@ -53,6 +55,8 @@ public class MyConfig extends JFinalConfig {
         me.add("/user", UserController.class);
         me.add("/vip", VipController.class);
         me.add("/log", LogController.class);
+        me.add("/cb", ConvertibleBondController.class);
+
     }
 
     @Override
@@ -101,6 +105,8 @@ public class MyConfig extends JFinalConfig {
         IgupiaoProcessor.getInstance();
         // 初始化民宿信息
         MinsuProcessor.getInstance();
+        // 初始化可转债信息
+        ConvertibleBondProcessor.getInstance();
         log.info(" ======= onStart init end =======");
     }
 

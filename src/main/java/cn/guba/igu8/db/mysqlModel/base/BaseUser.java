@@ -13,72 +13,72 @@ public abstract class BaseUser<M extends BaseUser<M>> extends Model<M> implement
 		set("id", id);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getId() {
-		return get("id");
+		return getLong("id");
 	}
 
 	public M setNickname(java.lang.String nickname) {
 		set("nickname", nickname);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getNickname() {
-		return get("nickname");
+		return getStr("nickname");
 	}
 
 	public M setPasswd(java.lang.String passwd) {
 		set("passwd", passwd);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getPasswd() {
-		return get("passwd");
+		return getStr("passwd");
 	}
 
 	public M setCreatTime(java.lang.Long creatTime) {
 		set("creatTime", creatTime);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getCreatTime() {
-		return get("creatTime");
+		return getLong("creatTime");
 	}
 
 	public M setPhoneNumber(java.lang.Long phoneNumber) {
 		set("phoneNumber", phoneNumber);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getPhoneNumber() {
-		return get("phoneNumber");
+		return getLong("phoneNumber");
 	}
 
 	public M setEmail(java.lang.String email) {
 		set("email", email);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getEmail() {
-		return get("email");
+		return getStr("email");
 	}
 
 	public M setInviterUid(java.lang.Long inviterUid) {
 		set("inviterUid", inviterUid);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getInviterUid() {
-		return get("inviterUid");
+		return getLong("inviterUid");
 	}
 
 	public M setRoleType(java.lang.Integer roleType) {
 		set("roleType", roleType);
 		return (M)this;
 	}
-
+	
 	public java.lang.Integer getRoleType() {
-		return get("roleType");
+		return getInt("roleType");
 	}
 
 }

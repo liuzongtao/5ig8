@@ -14,11 +14,13 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
  * </pre>
  */
 public class _MappingKit {
-
+	
 	public static void mapping(ActiveRecordPlugin arp) {
 		arp.addMapping("eova_menu", "id", EovaMenu.class);
 		arp.addMapping("igpcontent", "lid", Igpcontent.class);
 		arp.addMapping("rechargelog", "id", Rechargelog.class);
+		arp.addMapping("stock_bond_log", "id", StockBondLog.class);
+		arp.addMapping("stock_bond_record", "id", StockBondRecord.class);
 		arp.addMapping("teacher", "id", Teacher.class);
 		arp.addMapping("tj_deal_info", "id", TjDealInfo.class);
 		arp.addMapping("tj_unit_info", "id", TjUnitInfo.class);

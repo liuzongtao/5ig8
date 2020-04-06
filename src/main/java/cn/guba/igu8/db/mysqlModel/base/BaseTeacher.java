@@ -13,54 +13,54 @@ public abstract class BaseTeacher<M extends BaseTeacher<M>> extends Model<M> imp
 		set("id", id);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getId() {
-		return get("id");
+		return getLong("id");
 	}
 
 	public M setPfId(java.lang.Integer pfId) {
 		set("pfId", pfId);
 		return (M)this;
 	}
-
+	
 	public java.lang.Integer getPfId() {
-		return get("pfId");
+		return getInt("pfId");
 	}
 
 	public M setName(java.lang.String name) {
 		set("name", name);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getName() {
-		return get("name");
+		return getStr("name");
 	}
 
 	public M setBuyEndTime(java.lang.Long buyEndTime) {
 		set("buyEndTime", buyEndTime);
 		return (M)this;
 	}
-
+	
 	public java.lang.Long getBuyEndTime() {
-		return get("buyEndTime");
+		return getLong("buyEndTime");
 	}
 
 	public M setPfVipUid(java.lang.Integer pfVipUid) {
 		set("pfVipUid", pfVipUid);
 		return (M)this;
 	}
-
+	
 	public java.lang.Integer getPfVipUid() {
-		return get("pfVipUid");
+		return getInt("pfVipUid");
 	}
 
 	public M setVipTypeId(java.lang.Integer vipTypeId) {
 		set("vipTypeId", vipTypeId);
 		return (M)this;
 	}
-
+	
 	public java.lang.Integer getVipTypeId() {
-		return get("vipTypeId");
+		return getInt("vipTypeId");
 	}
 
 }

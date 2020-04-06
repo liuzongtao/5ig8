@@ -13,27 +13,27 @@ public abstract class BaseViptype<M extends BaseViptype<M>> extends Model<M> imp
 		set("id", id);
 		return (M)this;
 	}
-
+	
 	public java.lang.Integer getId() {
-		return get("id");
+		return getInt("id");
 	}
 
 	public M setDescr(java.lang.String descr) {
 		set("descr", descr);
 		return (M)this;
 	}
-
+	
 	public java.lang.String getDescr() {
-		return get("descr");
+		return getStr("descr");
 	}
 
 	public M setCostMoney(java.lang.Integer costMoney) {
 		set("costMoney", costMoney);
 		return (M)this;
 	}
-
+	
 	public java.lang.Integer getCostMoney() {
-		return get("costMoney");
+		return getInt("costMoney");
 	}
 
 }
