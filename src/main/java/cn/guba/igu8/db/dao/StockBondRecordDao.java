@@ -13,9 +13,12 @@ import java.util.List;
 public class StockBondRecordDao {
 
     public static void batchInsertRecord(List<ConvertibleBondDetailBean> list, int size) {
+        if (list.size() < size) {
+            size = list.size();
+        }
         List<StockBondRecord> contentList = new ArrayList<>();
         for (int i = 1; i <= size; i++) {
-            ConvertibleBondDetailBean convertibleBondDetailBean = list.get(i);
+            ConvertibleBondDetailBean convertibleBondDetailBean = list.get(i - 1);
             StockBondRecord stockBondRecord = getStockBondRecord(convertibleBondDetailBean.getBondId());
             if (stockBondRecord == null) {
                 StockBondRecord record = generStockBondRecord(convertibleBondDetailBean, i);
@@ -38,7 +41,7 @@ public class StockBondRecordDao {
     }
 
     public static boolean updateAllStockBondRecord(List<StockBondRecord> records) {
-        Db.batchUpdate(records,records.size());
+        Db.batchUpdate(records, records.size());
         return true;
     }
 

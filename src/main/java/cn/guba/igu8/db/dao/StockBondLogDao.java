@@ -33,7 +33,11 @@ public class StockBondLogDao {
         log.setCbType(bean.getCbType());
         log.setConvertDt(bean.getConvertDt());
         log.setConvertPrice(bean.getConvertPrice());
-        log.setPutConvertPrice(bean.getPutConvertPrice());
+        float putConvertPrice = 0;
+        if (!bean.getPutConvertPrice().equals("-")) {
+            putConvertPrice = Float.valueOf(bean.getPutConvertPrice());
+        }
+        log.setPutConvertPrice(putConvertPrice);
         log.setCurrIssAmt(bean.getCurrIssAmt());
         log.setForceRedeemPrice(bean.getForceRedeemPrice());
         log.setIncreaseRt(getRt(bean.getIncreaseRt()));

@@ -114,7 +114,7 @@ public class ConvertibleBondDetailBean implements Comparable<ConvertibleBondDeta
      * 回购触发价
      */
     @JsonField("put_convert_price")
-    private float putConvertPrice;
+    private String putConvertPrice;
 
     /**
      * 初始规模（亿元）
