@@ -43,14 +43,14 @@ public class ConvertibleBondProcessor {
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 19);
-        cal.set(Calendar.MINUTE, 30);
+        cal.set(Calendar.HOUR_OF_DAY, 22);
+        cal.set(Calendar.MINUTE, 15);
         long delay = (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
         if (delay < 0) {
             cal.add(Calendar.DAY_OF_MONTH, 1);
             delay = (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
         }
-        executor.scheduleAtFixedRate(new ConvertibleBondThread(), delay, 1, TimeUnit.DAYS);
+        executor.scheduleAtFixedRate(new ConvertibleBondThread(), delay, 24 * 60 * 60, TimeUnit.SECONDS);
         log.info("convertibleBondProcessor init ConvertibleBondThread is over ;" + new Date());
     }
 
