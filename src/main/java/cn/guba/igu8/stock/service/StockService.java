@@ -42,7 +42,7 @@ public class StockService {
         String url = String.format(REST_URL, begin, end, System.currentTimeMillis());
         String content = HttpKit.post(url, null);
 
-        log.info("content === " + content);
+        log.info("StockService.isRest.content === " + content);
         List<StockRestBean> stockRestBeans = Json.fromJsonAsList(StockRestBean.class, content);
         List<StockRestBean> beans = stockRestBeans.stream()
                 .filter(e -> e.getTitle()

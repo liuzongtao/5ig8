@@ -39,7 +39,7 @@ public class ConvertibleBondService {
         String param = "is_search=N&btype=C&listed=Y&rp=50";
         String content = HttpKit.post(url, param);
 
-        log.info("content === " + content);
+        log.info("getConvertibleBondsBeanByKit.content === " + content);
         return Json.fromJson(ConvertibleBondsBean.class, content);
     }
 

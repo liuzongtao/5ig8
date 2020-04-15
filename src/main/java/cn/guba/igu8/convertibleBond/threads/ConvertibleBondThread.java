@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import com.jfinal.ext.kit.DateKit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.nutz.json.Json;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +35,7 @@ public class ConvertibleBondThread implements Runnable {
 
     @Override
     public void run() {
+        log.info("ConvertibleBondThread begin run !!!");
         //判断是不是休息日
         boolean isRestDay = DateUtils.isRestDay();
         if (isRestDay) {
@@ -45,23 +47,25 @@ public class ConvertibleBondThread implements Runnable {
             log.info("today is stock rest !!!");
             return;
         }
-
+        log.info("today is stock rest !!!");
         //随机一段时间
         Random random = new Random();
         int time = random.nextInt(10);
+        log.info("ConvertibleBondThread.random == " + time);
         try {
             TimeUnit.MINUTES.sleep(time);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         coreRun();
+        log.info("ConvertibleBondThread is end !!!");
     }
 
     public void coreRun() {
         //获取所有的可转债
         List<ConvertibleBondBean> convertibleBondBeans = ConvertibleBondService.getInstance().getConvertibleBondBeans();
         if (CollectionUtils.isEmpty(convertibleBondBeans)) {
+            log.info("convertibleBondBeans is Empty");
             return;
         }
         //防御型列表
@@ -119,6 +123,9 @@ public class ConvertibleBondThread implements Runnable {
         StockBondRecordDao.batchInsertRecord(defensiveBeans, 3);
         StockBondRecordDao.batchInsertRecord(balancedBeans, 5);
         StockBondRecordDao.batchInsertRecord(redicalBeans, 2);
+        log.info("defensiveBeans == " + Json.toJson(defensiveBeans));
+        log.info("balancedBeans == " + Json.toJson(balancedBeans));
+        log.info("redicalBeans == " + Json.toJson(redicalBeans));
 
         // 获取邮件内容
         String emailData = getEmailData(defensiveBeans, balancedBeans, redicalBeans, stockBondRecords, detailMap);
