@@ -60,6 +60,13 @@ public class StockBondLogDao {
         if (Strings.isBlank(rt)) {
             return 0;
         }
-        return Float.valueOf(rt.replace("%", ""));
+        float rtFloat = 0;
+        try {
+            rtFloat = Float.valueOf(rt.replace("%", ""));
+        } catch (Exception e) {
+            log.error("getRt == " + rt, e);
+        }
+
+        return rtFloat;
     }
 }

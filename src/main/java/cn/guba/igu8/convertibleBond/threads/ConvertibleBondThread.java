@@ -36,28 +36,29 @@ public class ConvertibleBondThread implements Runnable {
     @Override
     public void run() {
         log.info("ConvertibleBondThread begin run !!!");
-        //判断是不是休息日
-        boolean isRestDay = DateUtils.isRestDay();
-        if (isRestDay) {
-            log.info("today is restDay");
-            return;
-        }
-        boolean stockRest = StockService.getInstance().isRest();
-        if (stockRest) {
-            log.info("today is stock rest !!!");
-            return;
-        }
-        log.info("today is stock rest !!!");
-        //随机一段时间
-        Random random = new Random();
-        int time = random.nextInt(10);
-        log.info("ConvertibleBondThread.random == " + time);
         try {
+            //判断是不是休息日
+            boolean isRestDay = DateUtils.isRestDay();
+            if (isRestDay) {
+                log.info("today is restDay");
+                return;
+            }
+            boolean stockRest = StockService.getInstance().isRest();
+            if (stockRest) {
+                log.info("today is stock rest !!!");
+                return;
+            }
+            log.info("today is stock rest !!!");
+            //随机一段时间
+            Random random = new Random();
+            int time = random.nextInt(10);
+            log.info("ConvertibleBondThread.random == " + time);
+
             TimeUnit.MINUTES.sleep(time);
+            coreRun();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        coreRun();
         log.info("ConvertibleBondThread is end !!!");
     }
 
