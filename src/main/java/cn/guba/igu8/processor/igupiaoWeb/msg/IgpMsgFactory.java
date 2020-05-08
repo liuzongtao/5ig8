@@ -170,14 +170,14 @@ public class IgpMsgFactory {
         if (liverMsg == null) {
             log.error("uid == " + uid + " ; liverMsg is null ! pfId == " + pfId);
             long now = System.currentTimeMillis();
-            // 每10分钟发送一次
-            if (now - lastSendMailTime > 15 * 60 * 1000l) {
-                lastSendMailTime = now;
-                User admin = UserDao.getAdmin();
-                String teacherName = TeacherService.getInstance().getIgpTeacherNameByPfId(pfId);
-                MailFactory.getInstance().sendEmail(admin.getEmail(), Constant.EMAIL_NAME + ":获取消息失败",
-                        "获取老师：" + teacherName + " 消息失败！时间：" + Util.dateformat(now));
-            }
+//            // 每10分钟发送一次
+//            if (now - lastSendMailTime > 15 * 60 * 1000l) {
+//                lastSendMailTime = now;
+//                User admin = UserDao.getAdmin();
+//                String teacherName = TeacherService.getInstance().getIgpTeacherNameByPfId(pfId);
+//                MailFactory.getInstance().sendEmail(admin.getEmail(), Constant.EMAIL_NAME + ":获取消息失败",
+//                        "获取老师：" + teacherName + " 消息失败！时间：" + Util.dateformat(now));
+//            }
         } else {
             log.debug("uid == " + uid + " ; liverMsg == " + Json.toJson(liverMsg, JsonFormat.compact()));
         }
