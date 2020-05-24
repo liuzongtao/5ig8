@@ -3,6 +3,7 @@
  */
 package cn.guba.igu8.convertibleBond;
 
+import cn.guba.igu8.convertibleBond.threads.ConvertibleBond4PreMiumRtThread;
 import cn.guba.igu8.convertibleBond.threads.ConvertibleBondThread;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -41,7 +42,7 @@ public class ConvertibleBondProcessor {
     private void init() {
         log.info("convertibleBondProcessor init ;" + new Date());
 
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 22);
         cal.set(Calendar.MINUTE, 15);
@@ -51,6 +52,14 @@ public class ConvertibleBondProcessor {
             delay = (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
         }
         executor.scheduleAtFixedRate(new ConvertibleBondThread(), delay, 24 * 60 * 60, TimeUnit.SECONDS);
+        cal.set(Calendar.HOUR_OF_DAY, 14);
+        cal.set(Calendar.MINUTE, 55);
+        long delay2 = (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
+        if (delay2 < 0) {
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            delay2 = (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
+        }
+        executor.scheduleAtFixedRate(new ConvertibleBond4PreMiumRtThread(), delay2, 24 * 60 * 60, TimeUnit.SECONDS);
         log.info("convertibleBondProcessor init ConvertibleBondThread is over ;" + new Date());
     }
 
