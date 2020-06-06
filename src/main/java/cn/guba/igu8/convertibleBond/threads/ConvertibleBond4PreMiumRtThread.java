@@ -22,6 +22,7 @@ public class ConvertibleBond4PreMiumRtThread implements Runnable {
 
 
     private static final String EMAIL_ADDRESS = "369650047@qq.com";
+    private static final String EMAIL_ADDRESS_SUB = "123660735@qq.com";
     private static final String EMAIL_TITLE = "【可转债】统计信息-溢价率";
 
     public static void main(String[] args) {
@@ -98,6 +99,7 @@ public class ConvertibleBond4PreMiumRtThread implements Runnable {
         //发送邮件
         String title = EMAIL_TITLE + DateKit.toStr(new Date());
         MailFactory.getInstance().sendEmail(EMAIL_ADDRESS, title, emailData);
+        MailFactory.getInstance().sendEmail(EMAIL_ADDRESS_SUB, title, emailData);
     }
 
     /**
