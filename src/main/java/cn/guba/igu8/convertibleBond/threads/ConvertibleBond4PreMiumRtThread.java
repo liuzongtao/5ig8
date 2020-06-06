@@ -119,7 +119,7 @@ public class ConvertibleBond4PreMiumRtThread implements Runnable {
 
     private void getEmailFilteredData(StringBuilder content,
                                       List<ConvertibleBondDetailBean> redicalBeans) {
-        content.append("筛选条件：转股溢价率小于0%，并且已到转股期；").append("</br>");
+        content.append("筛选条件：转股溢价率小于0%，并且已到转股期；购买溢价率低于-0.4%的前4只。").append("</br>");
         content.append("<table border=\"5\" style=\"border:solid 1px #E8F2F9;font-size=12px;\">");
         //标题行
         content.append("<tr style=\"background-color: #428BCA; color:#ffffff\">");
@@ -130,11 +130,9 @@ public class ConvertibleBond4PreMiumRtThread implements Runnable {
         content.append("<th>正股价格</th>");
         content.append("<th>转股时间</th>");
         content.append("<th>转股价格</th>");
-        content.append("<th>到期收益率</th>");
-        content.append("<th>溢价率</th>");
+        content.append("<th style=\"color:red\">溢价率</th>");
         content.append("<th>剩余规模</th>");
         content.append("<th>评级</th>");
-        content.append("<th>类型</th>");
         content.append("</tr>");
         generTable(content, redicalBeans, "green");
         content.append("</table>");
@@ -157,12 +155,9 @@ public class ConvertibleBond4PreMiumRtThread implements Runnable {
             content.append("<td>").append(e.getSprice()).append("</td>");
             content.append("<td>").append(DateKit.toStr(e.getConvertDt())).append("</td>");
             content.append("<td>").append(e.getConvertPrice()).append("</td>");
-            content.append("<td>").append(e.getYtmRtTax()).append("</td>");
             content.append("<td>").append(e.getPremiumRt()).append("</td>");
             content.append("<td>").append(e.getCurrIssAmt()).append("</td>");
             content.append("<td>").append(e.getRatingCd()).append("</td>");
-            CbTypeEnum resolve = CbTypeEnum.resolve(e.getCbType());
-            content.append("<td>").append(resolve.getDesc()).append("</td>");
             content.append("</tr>");
         });
     }
